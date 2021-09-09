@@ -1,0 +1,244 @@
+<section data-type="preface" id="preface" xmlns="http://www.w3.org/1999/xhtml">
+<h1>Preface</h1>
+
+<p>Can a system ever truly be considered reliable if it isn’t fundamentally secure? Or can it be considered secure if it’s unreliable?</p>
+
+<p>Successfully designing, implementing, and maintaining systems requires a commitment to the full system lifecycle. This commitment is possible only when security and reliability are central elements in the architecture of systems. Yet both are often afterthoughts, considered only after an incident occurs, resulting in expensive and sometimes difficult improvements.</p>
+
+<p><a contenteditable="false" data-primary="security by design" data-type="indexterm">&nbsp;</a><a href="https://oreil.ly/-46BV">Security by design</a> is increasingly important in a world where many products are connected to the internet, and where cloud technologies are becoming more prevalent. The more we come to rely on those systems, the more reliable they need to be; the more trust we place in their security, the more secure they need to be.</p>
+
+<aside data-type="sidebar" id="systems">
+<h5>Systems</h5>
+
+<p><a contenteditable="false" data-primary="systems (generally)" data-secondary="in context of systems engineering" data-type="indexterm">&nbsp;</a>In this book we talk generally about <em>systems</em>, which is a conceptual way of thinking about the groups of components that cooperate to perform some function. In our context of systems engineering, these components typically include pieces of software running on the processors of various computers. They may also include the hardware itself, as well as the processes by which people design, implement, and maintain the systems. Reasoning about the behavior of systems can be difficult, since they’re prone to complex emergent behaviors.</p>
+</aside>
+
+<section data-type="sect1" id="why_we_wrote_this_book">
+<h1>Why We Wrote This Book</h1>
+
+<p>We wanted to write a book that focuses on integrating security and reliability directly into the software and system lifecycle, both to highlight technologies and practices that protect systems and keep them reliable, and to illustrate how those practices interact with each other. The aim of this book is to provide insights about system design, implementation, and maintenance from practitioners who specialize in security and reliability.</p>
+
+<p>We’d like to explicitly acknowledge that some of the strategies this book recommends require infrastructure support that simply may not exist where you’re currently working. Where possible, we recommend approaches that can be tailored to organizations of any size. However, we felt that it was important to start a conversation about how we can all evolve and improve existing security and reliability practices, as all the members of our growing and skilled community of professionals can learn a lot from one another. We hope other organizations will also be eager to share their successes and war stories with the community. As ideas about security and reliability evolve, the industry can benefit from a diverse set of implementation examples. Security and reliability engineering are still rapidly evolving fields. We constantly find conditions and cases that cause us to revise (or in some cases, replace) previously firmly held beliefs.</p>
+</section>
+
+<section data-type="sect1" id="who_this_book_is_for">
+<h1>Who This Book Is For</h1>
+
+<p>Because security and reliability are everyone’s responsibility, we’re targeting a broad audience: people who design, implement, and maintain systems. We’re challenging the dividing lines between the traditional professional roles of developers, architects, <a href="https://oreil.ly/EVa7K">Site Reliability Engineers (SREs)</a>, systems administrators, and security engineers. While we’ll dive deeply into some subjects that might be more relevant to experienced engineers, we invite you—the reader—to try on different hats as you move through the chapters, imagining yourself in roles you (currently) don’t have and thinking about how you could improve your systems.</p>
+
+<p>We argue that everyone should be thinking about the fundamentals of reliability and security from the very beginning of the development process, and integrating those principles early in the system lifecycle. This is a crucial concept that shapes this entire book. There are many lively active discussions in the industry about security engineers becoming more like software developers, and SREs and software developers becoming more like security engineers.<span data-type="footnote" id="ch01fn1">See, for example, Dino Dai Zovi’s <a href="https://oreil.ly/Wap7b">“Every Security Team Is a Software Team Now” talk</a> at Black Hat USA 2019, Open Security Summit’s <a href="https://oreil.ly/_PAzE">DevSecOps track</a>, and Dave Shackleford’s <a href="https://oreil.ly/_Wmcx">“A DevSecOps Playbook” SANS Analyst paper</a>.</span> We invite you to join in the conversation.</p>
+
+<p>When we say “you” in the book, we mean the reader, independent of a particular job or experience level. This book challenges the traditional expectations of engineering roles and aims to empower you to be responsible for security and reliability throughout the whole product lifecycle. You shouldn’t worry about using all of the practices described here in your specific circumstances. Instead, we encourage you to return to this book at different stages of your career or throughout the evolution of your <span class="keep-together">organization</span>, considering whether ideas that didn’t seem valuable at first might be newly meaningful.</p>
+</section>
+
+<section data-type="sect1" id="a_note_about_culture">
+<h1>A Note About Culture</h1>
+
+<p><a contenteditable="false" data-primary="culture" data-type="indexterm">&nbsp;</a>Building and adopting the widespread best practices we recommend in this book requires a culture that is supportive of such change. We feel it is essential that you address the culture of your organization in parallel with the technology choices you make to focus on both security and reliability, so that any adjustments you make are persistent and resilient. In our opinion, organizations that don’t embrace the importance of both security and reliability need to change—and revamping the culture of an organization in itself often demands an up-front investment.</p>
+
+<p>We’ve woven technical best practices throughout the book and we support them with data, but it’s not possible to include data-backed cultural best practices. While this book calls out approaches that we think others can adapt or generalize, every organization has a distinct and unique culture. We discuss how Google has tried to work within its culture, but this may not be directly applicable to your organization. Instead, we encourage you to extract your own practical applications from the high-level recommendations we’ve included in this book.</p>
+</section>
+
+<section data-type="sect1" id="how_to_read_this_book">
+<h1>How to Read This Book</h1>
+
+<p>While this book includes plenty of examples, it’s not a cookbook. It presents Google and industry stories, and shares what we’ve learned over the years. Everyone’s infrastructure is different, so you may need to significantly adapt some of the solutions we present, and some solutions may not apply to your organization at all. We try to present high-level principles and practical solutions that you can implement in a way that suits your unique environment.</p>
+
+<p>We recommend you start with Chapters <a data-type="xref" data-xrefstyle="select:labelnumber" href="#the_intersection_of_security_and_reliab">#the_intersection_of_security_and_reliab</a> and <a data-type="xref" data-xrefstyle="select:labelnumber" href="#understanding_adversaries">#understanding_adversaries</a>, and then read the chapters that most interest you. Most chapters begin with a boxed preface or executive summary that outlines the following:</p>
+
+<ul>
+	<li>
+	<p>The problem statement</p>
+	</li>
+	<li>
+	<p>When in the software development lifecycle you should apply these principles and practices</p>
+	</li>
+	<li>
+	<p>The intersections of and/or tradeoffs between reliability and security to consider</p>
+	</li>
+</ul>
+
+<p>Within each chapter, topics are generally ordered from the most fundamental to the most sophisticated. We also call out deep dives and specialized subjects with an alligator icon.</p>
+
+
+<p>This book recommends many tools or techniques considered to be good practice in the industry. Not every idea will be suitable for your particular use case, so you should evaluate the requirements of your project and design solutions adapted to your particular risk landscape.</p>
+
+<p>While this book aims to be self-contained, you will find references to <a href="https://oreil.ly/SRE-book-toc"><em>Site Reliability Engineering</em></a> and <a href="https://oreil.ly/SRE-workbook-TOC"><em>The Site Reliability Workbook</em></a>, where experts from Google describe how reliability is fundamental to service design. Reading these books may give you a deeper understanding of certain concepts but is not a prerequisite.</p>
+
+<p>We hope you enjoy this book, and that some of the information in these pages can help you improve the reliability and security of your systems.</p>
+</section>
+
+<section data-type="sect1" id="conventions_used_in_this_book">
+<h1>Conventions Used in This Book</h1>
+
+<p>The following typographical conventions are used in this book:</p>
+
+<dl>
+	<dt><em>Italic</em></dt>
+	<dd>Indicates new terms, URLs, email addresses, filenames, and file extensions.</dd>
+	<dt><code>Constant width</code></dt>
+	<dd>Used for program listings, as well as within paragraphs to refer to program elements such as variable or function names, databases, data types, environment variables, statements, and keywords.</dd>
+	<dt><code><strong>Constant width bold</strong></code></dt>
+	<dd>Shows commands or other text that should be typed literally by the user. Also used for emphasis within program listings.</dd>
+	<dt><code><em>Constant width italic</em></code></dt>
+	<dd>Shows text that should be replaced with user-supplied values or by values determined by context.</dd>
+</dl>
+
+<div data-type="note">
+<p>This element signifies a general note.</p>
+</div>
+
+<div data-type="note" class="dive">
+<p>This icon indicates a deep dive.</p>
+</div>
+
+</section>
+
+<section data-type="sect1" id="_safari_books_online">
+<h1>O'Reilly Online Learning</h1>
+
+<div class="ormenabled" data-type="note">
+<p>For more than 40 years, <a class="orm:hideurl" href="http://oreilly.com"><em class="hyperlink">O'Reilly Media</em></a> has provided technology and business training, knowledge, and insight to help companies succeed.</p>
+</div>
+
+<p>Our unique network of experts and innovators share their knowledge and expertise through books, articles, conferences, and our online learning platform. O’Reilly’s online learning platform gives you on-demand access to live training courses, in-depth learning paths, interactive coding environments, and a vast collection of text and video from O'Reilly and 200+ other publishers. For more information, please visit <a class="orm:hideurl" href="https://www.oreilly.com"><em>https://oreilly.com</em></a>.</p>
+</section>
+
+<section data-type="sect1" id="_how_to_contact_us">
+<h1>How to Contact Us</h1>
+
+<p>Please address comments and questions concerning this book to the publisher:</p>
+
+<ul class="simplelist">
+	<li>O’Reilly Media, Inc.</li>
+	<li>1005 Gravenstein Highway North</li>
+	<li>Sebastopol, CA 95472</li>
+	<li>800-998-9938 (in the United States or Canada)</li>
+	<li>707-829-0515 (international or local)</li>
+	<li>707-829-0104 (fax)</li>
+</ul>
+
+<p>We have a web page for this book, where we list errata, examples, and any additional information. You can access this page at <a href="https://oreil.ly/buildSecureReliableSystems"><em>https://oreil.ly/buildSecureReliableSystems</em></a>.</p>
+
+<p>Email <a class="email" href="mailto:bookquestions@oreilly.com"><em>bookquestions@oreilly.com</em></a> to comment or ask technical questions about this book.</p>
+
+<p>For more information about our books, courses, conferences, and news, see our website at <a href="https://www.oreilly.com"><em class="hyperlink">https://www.oreilly.com</em></a>.</p>
+
+<p>Find us on Facebook: <a href="https://facebook.com/oreilly"><em class="hyperlink">https://facebook.com/oreilly</em></a></p>
+
+<p>Follow us on Twitter: <a href="https://twitter.com/oreillymedia"><em class="hyperlink">https://twitter.com/oreillymedia</em></a></p>
+
+<p>Watch us on YouTube: <a href="https://www.youtube.com/oreillymedia"><em class="hyperlink">https://www.youtube.com/oreillymedia</em></a></p>
+</section>
+
+<section data-type="sect1" id="acknowledgments">
+<h1>Acknowledgments</h1>
+
+<p>This book is the product of the enthusiastic and generous contributions of about 150 people, including authors, tech writers, chapter managers, and reviewers from engineering, legal, and marketing. The contributors span 18 time zones throughout the Americas, Europe, and Asia-Pacific, and more than 10 offices. We’d like to take a moment to thank everyone who isn’t already listed on a per-chapter basis.</p>
+
+<p>As the leaders of Google Security and SRE, Gordon Chaffee, Royal Hansen, Ben Lutch, Sunil Potti, Dave Rensin, Benjamin Treynor Sloss, and Michael Wildpaner‎ were the executive sponsors within Google. Their belief in a project that focuses on integrating security and reliability directly into the software and system lifecycle was essential to making this book happen.</p>
+
+<p>This book would never have come to be without the drive and dedication of Ana Oprea. She recognized the value a book like this could have, initiated the idea at Google, evangelized it to SRE and Security leaders, and organized the vast amount of work necessary to make it happen.</p>
+
+<p>We’d like to recognize the people who contributed by providing thoughtful input, discussion, and review. In chapter order, they are:</p>
+
+<ul>
+	<li>
+	<p><a data-type="xref" href="#the_intersection_of_security_and_reliab">#the_intersection_of_security_and_reliab</a>, <em>The Intersection of Security and Reliability</em>: Felipe Cabrera, Perry The Cynic, and Amanda Walker</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#understanding_adversaries">#understanding_adversaries</a>, <em>Understanding Adversaries</em>: John Asante, Shane Huntley, and Mike Koivunen</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#case_study_safe_proxies">#case_study_safe_proxies</a>, <em>Case Study: Safe Proxies</em>: Amaya Booker, Michał Czapiński, Scott Dier, and Rainer Wolafka</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>, <em>Design Tradeoffs</em>: Felipe Cabrera, Douglas Colish, Peter Duff, Cory Hardman, Ana Oprea, and Sergey Simakov</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_for_least_privilege">#design_for_least_privilege</a>, <em>Design for Least Privilege</em>: Paul Guglielmino and Matthew Sachs‎</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_for_understandability">#design_for_understandability</a>, <em>Design for Understandability</em>: Douglas Colish, Paul Guglielmino, Cory Hardman, Sergey Simakov, and Peter Valchev</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_for_a_changing_landscape">#design_for_a_changing_landscape</a>, <em>Design for a Changing Landscape</em>: Adam Bacchus, Brandon Baker, Amanda Burridge, Greg Castle, Piotr Lewandowski, Mark Lodato, Dan Lorenc, Damian Menscher, Ankur Rathi, Daniel Rebolledo Samper, Michee Smith, <span class="keep-together">Sampath Srinivas</span>, Kevin Stadmeyer, and Amanda Walker</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_for_resilience">#design_for_resilience</a>, <em>Design for Resilience</em>: Pierre Bourdon, Perry The Cynic, Jim Higgins, August Huber, Piotr Lewandowski, Ana Oprea, Adam Stubblefield, Seth Vargo, and Toby Weingartner</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#design_for_recovery">#design_for_recovery</a>, <em>Design for Recovery</em>: Ana Oprea and JC van Winkel</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#mitigating_denial_of_service_attacks">#mitigating_denial_of_service_attacks</a>, <em>Mitigating Denial-of-Service Attacks</em>: Zoltan Egyed, Piotr Lewandowski, and Ana Oprea</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#case_study_designingcomma_implementi">#case_study_designingcomma_implementi</a>, <em>Case Study: Designing, Implementing, and Maintaining a Publicly Trusted CA</em>: Heather Adkins, Betsy Beyer, Ana Oprea, and Ryan Sleevi</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#writing_code">#writing_code</a>, <em>Writing Code</em>: Douglas Colish, Felix Gröbert, Christoph Kern, Max Luebbe, Sergey Simakov, and Peter Valchev</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#onethree_testing_code">#onethree_testing_code</a>, <em>Testing Code</em>: Douglas Colish, Daniel Fabian, Adrien Kunysz, Sergey Simakov, and JC van Winkel‎</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#onefour_deploying_code">#onefour_deploying_code</a>, <em>Deploying Code</em>: Brandon Baker, Max Luebbe, and Federico Scrinzi</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#onefive_investigating_systems">#onefive_investigating_systems</a>, <em>Investigating Systems</em>: ‎Oliver Barrett‎, Pierre Bourdon, and Sandra Raicevic</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#onesix_disaster_planning">#onesix_disaster_planning</a>, <em>Disaster Planning</em>: Heather Adkins, John Asante, Tim Craig, and Max Luebbe</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#oneseven_crisis_management">#oneseven_crisis_management</a>, <em>Crisis Management</em>: Heather Adkins, Johan Berggren, John Lunney, James Nettesheim, Aaron Peterson, and Sara Smollet</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#oneeight_recovery_and_aftermath">#oneeight_recovery_and_aftermath</a>, <em>Recovery and Aftermath</em>: Johan Berggren, Matt Linton, Michael Sinno, and Sara Smollett</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#onenine_case_study_chrome_security_team">#onenine_case_study_chrome_security_team</a>, <em>Case Study: Chrome Security Team</em>: Abhishek Arya, Will Harris, Chris Palmer, Carlos Pizano, Adrienne Porter Felt, and Justin Schuh</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#twozero_understanding_roles_and_respons">#twozero_understanding_roles_and_respons</a>, <em>Understanding Roles and Responsibilities</em>: Angus Cameron, Daniel Fabian, Vera Haas, Royal Hansen, Jim Higgins, August Huber, Artur Janc, Michael Janosko, Mike Koivunen, Max Luebbe, Ana Oprea, Andrew Pollock, Laura Posey, Sara Smollett, Peter Valchev, and Eduardo Vela Nava</p>
+	</li>
+	<li>
+	<p><a data-type="xref" href="#twoone_building_a_culture_of_security_a">#twoone_building_a_culture_of_security_a</a>, <em>Building a Culture of Security and Reliability</em>: David Challoner, Artur Janc, Christoph Kern, Mike Koivunen, Kostya Serebryany, and Dave Weinstein</p>
+	</li>
+</ul>
+
+<p>We’d also like to especially thank Andrey Silin for his guidance throughout the book.</p>
+
+<p>The following reviewers provided valuable insight and feedback to guide us along the way: Heather Adkins, Kristin Berdan, Shaudy Danaye-Armstrong, Michelle Duffy, Jim Higgins, Rob Mann, Robert Morlino, Lee-Anne Mulholland, Dave O’Connor, Charles Proctor, Olivia Puerta, John Reese, Pankaj Rohatgi, Brittany Stagnaro, Adam Stubblefield, Todd Underwood, and Mia Vu. A special thanks to JC van Winkel for performing a book-level consistency review.</p>
+
+<p>We are also grateful to the following contributors, who supplied significant expertise or resources, or had some otherwise excellent effect on this work: Ava Katushka, Kent Kawahara, Kevin Mould, Jennifer Petoff, Tom Supple, Salim Virji‎, and <span class="keep-together">Merry Yen</span>.</p>
+
+<p>External directional review from Eric Grosse helped us strike a good balance between novelty and practical advice. We very much appreciate his guidance, along with the thoughtful feedback we received from industry reviewers for the whole book: Blake Bisset, David N. Blank-Edelman, Jennifer Davis, and Kelly Shortridge. The in-depth reviews of the following people made each chapter better targeted to an external audience: Kurt Andersen, Andrea Barberio, Akhil Behl, Alex Blewitt, Chris Blow, Josh Branham, Angelo Failla, Tony Godfrey, Marco Guerri, Andrew Hoffman, Steve Huff, Jennifer Janesko, Andrew Kalat, Thomas A. Limoncelli, Allan Liska, John Looney, Niall Richard Murphy, Lukasz Siudut, Jennifer Stevens, Mark van Holsteijn, and Wietse <span class="keep-together">Venema</span>.</p>
+
+<p>We would like to extend a special thanks to Shylaja Nukala and Paul Blankinship, who generously committed the time and skills of the SRE and security technical writing teams.</p>
+
+<p>Finally, we’d like to thank the following contributors who worked on content that doesn’t appear directly in this book: Heather Adkins, Amaya Booker, Pierre <span class="keep-together">Bourdon</span>, Alex Bramley, Angus Cameron, David Challoner, Douglas Colish, Scott Dier, Fanuel Greab, Felix Gröbert, Royal Hansen, Jim Higgins, August Huber, Kris Hunt, Artur Janc, Michael Janosko, Hunter King, Mike Koivunen, Susanne Landers, <span class="keep-together">Roxana</span> Loza, Max Luebbe, Thomas Maufer, Shylaja Nukala‎, Ana Oprea, Massimiliano Poletto, Andrew Pollock, Laura Posey, Sandra Raicevic, Fatima Rivera, Steven <span class="keep-together">Roddis</span>, Julie Saracino, David Seidman, Fermin Serna, Sergey Simakov, Sara Smollett, Johan Strumpfer, Peter Valchev, Cyrus Vesuna, Janet Vong, Jakub Warmuz, Andy Warner, and JC van Winkel.</p>
+
+<p>Thanks also to the O’Reilly Media team—Virginia Wilson, Kristen Brown, John Devins, Colleen Lobner, and Nikki McDonald—for their help and support in making this book a reality. Thanks to Rachel Head for a fantastic copyediting experience!</p>
+
+<p>Finally, the book’s core team would also like to personally thank the following people:</p>
+
+<dl>
+	<dt>From Heather Adkins</dt>
+	<dd>I’m often asked how Google stays secure, and the shortest answer I can give is that the diverse qualities of its people are the linchpin in Google’s ability to defend itself. This book is reflective of that diversity, and I am sure that in my lifetime I shall discover no greater set of defenders of the internet than Googlers working together as a team. I personally owe an especially enormous debt of gratitude to Will, my wonderful husband (+42!!), to my Mom (Libby), Dad (Mike), and brother (Patrick), and to Apollo and Orion for inserting all those typos. Thank you to my team and colleagues at Google for tolerating my absences during the writing of this book and for your fortitude in the face of immense adversaries; to Eric Grosse, Bill Coughran, Urs Hölzle, Royal Hansen, Vitaly Gudanets, and Sergey Brin for their guidance, feedback, and the occasional raised eyebrow over the past 17+ years; and to my dear friends and colleagues (Merry, Max, Sam, Lee, Siobhan, Penny, Mark, Jess, Ben, Renee, Jak, Rich, James, Alex, Liam, Jane, Tomislav, and Natalie), especially r00t++, for your encouragement. Thank you, Dr. John Bernhardt, for teaching me so much; sorry I didn’t finish the degree!</dd>
+	<dt>From Betsy Beyer</dt>
+	<dd>To Grandmother, Elliott, Aunt E, and Joan, who inspire me every single day. Y'all are my heroes! Also, to Duzzie, Hammer, Kiki, Mini, and Salim, whose positivity and sanity checks have kept me sane!</dd>
+	<dt>From Paul Blankinship</dt>
+	<dd>First, I want to thank Erin and Miller, whose support I rely on, and Matt and Noah, who never stop making me laugh. I want to express my gratitude to my friends and colleagues at Google—especially my fellow technical writers, who wrestle with concepts and language, and who need to simultaneously be both experts <em>and</em> advocates for naive users. Immense appreciation goes to the other authors of this book—I admire and respect each of you, and it is a privilege to have my name associated with yours.</dd>
+	<dt>From Susanne Landers</dt>
+	<dd>To all the contributors to this book, I can’t say how honored I feel to have been part of this journey! I wouldn’t be where I am today without a few special folks: Tom for finding the right opportunity; Cyrill for teaching me everything I know today; Hannes, Michael, and Piotr for inviting me to join the most amazing team ever (Semper Tuti!). To you all who take me for coffee (you know who you are!), life would be incredibly boring without you. To Verbena, who probably shaped me more than any other human being ever could, and most importantly, to the love of my life for your unconditional support and our most amazing and wonderful children. I don’t know how I deserve you all, but I’ll do my very best.</dd>
+	<dt>From Piotr Lewandowski</dt>
+	<dd>To everyone who leaves the world a better place than how they found it. To my family for their unconditional love. To my partner for sharing her life with me, for better or worse. To my friends for the joy they bring into my life. To my <span class="keep-together">coworkers</span> for being easily the best part of my job. To my mentors for their ongoing trust; I wouldn’t be part of this book without their support.</dd>
+	<dt>From Ana Oprea</dt>
+	<dd>To the little one who will be born just as the book is going to print. Thank you to my husband, Fabian, who supported me and made it possible to work on this and many more things, while building a family. I’m grateful that my parents, Ica and Ion, have understanding that I am far away. This project is proof that there can be no progress without an open, constructive feedback loop. I was only able to lead the book based on the experience I’ve gained in the past years, which is thanks to my manager, Jan, and the whole developer infrastructure team, who trusted me to focus my work at the intersection of security, reliability, and development. Last but not least, I want to express my gratitude to the supportive community of BSides: Munich and MUC:SEC, which have been a formative place that I learn from continuously.</dd>
+	<dt>From Adam Stubblefield</dt>
+	<dd>Thanks to my wife, my family, and all my colleagues and mentors over the years.</dd>
+</dl>
+</section>
+</section>

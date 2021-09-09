@@ -1,0 +1,118 @@
+@charset "UTF-8";
+
+/*--------Put Your Custom CSS Rules Below--------*/
+
+/* Update Appendix in TOC (STYL-1310) */
+nav[data-type="toc"] li[data-type="appendix"]::marker 
+{ content: "Appendix. "; }
+
+section[data-type="appendix"] > h1:before { content: "Appendix"; }
+
+@page appendix:left {
+@bottom-left {
+content: counter(page)"\2003\007C\2003""Appendix:""\0020"string(ChapterTitle);
+}}
+
+/* table with border */
+table.custom_table td { border: 0.25pt solid cmyk(0%,0%,0%,100%); }
+
+/* Reduce font size (STYL-1219) */
+pre.small { font-size: 0.7em !important; }
+
+/* Add handling for custom icon (STYL-1271) */
+h1.dive:before,
+h2.dive:before,
+aside > h5.dive:before {
+  content: url("../../images/divetip.tif");
+  width: 0.5in;
+  float: left;
+  margin: -4pt 6pt 0 5pt;
+}
+
+aside > h5.dive { text-align: left; }
+
+/*table on copyright page*/
+table.stafflist_table { font-size: 8.5pt; }
+ 
+table.stafflist_table p { font-family: MinionPro, Symbola !important; }
+  
+table.stafflist_table td { padding: 0 0.4em !important; }
+  
+table.stafflist_table { margin-left: -0.4em; }
+
+/* Custom dive icon in Preface (STYL-1271) */
+div[data-type="note"].dive:before {
+  content: url("../../images/divetip.tif");
+  width: 0.5in;
+  float: left;
+  margin: -4pt 6pt 0 19pt;
+}
+
+/*custom readeraid heights*/
+div[data-type="note"].note1 { min-height: 2.1in; }
+
+/*less space for pagebreaks */
+.less_space {margin-top: 0 !important;}
+
+
+/*--- This oneoff overrides the code in https://github.com/oreillymedia/<name_of_theme>/blob/master/pdf/pdf.css---*/
+
+/*----Uncomment to temporarily turn on code-eyballer highlighting (make sure to recomment after you build)
+
+pre {
+ background-color: yellow;
+}
+---*/
+
+/*----Uncomment to turn on automatic code wrapping----*/
+
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/*----Uncomment to change the TOC start page (set 
+the number to one page _after_ the one you want; 
+so 6 to start on v, 8 to start on vii, etc.)
+
+@page toc:first {
+  counter-reset: page 6;
+}
+----*/
+
+/*----Uncomment to fix a bad break in the title 
+      (increase padding value to push down, decrease 
+      value to pull up)
+
+section[data-type="titlepage"] h1 {
+  padding-left: 1.5in;
+}
+----*/
+
+/*----Uncomment to fix a bad break in the subtitle
+      (increase padding value to push down, decrease
+      value to pull up)
+
+section[data-type="titlepage"] h2 {
+  padding-left: 1in;
+}
+----*/
+
+/*----Uncomment to fix a bad break in the author names 
+      (increase padding value to push down, decrease 
+      value to pull up)
+
+section[data-type="titlepage"] p.author {
+  padding-left: 3in;
+}
+----*/
+
+/* ----Uncomment to suppress duplicate page numbers in index entries
+       WARNING: MAY CAUSE PDF BUILDS TO SEGFAULT
+
+div[data-type="index"] {
+  -ah-suppress-duplicate-page-number: true;
+}
+
+----*/

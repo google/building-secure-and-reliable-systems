@@ -1,0 +1,675 @@
+<section data-type="chapter" id="design_for_understandability" xmlns="http://www.w3.org/1999/xhtml">
+<h1>Design for Understandability</h1>
+
+<p class="byline">By Julien Boeuf‎, Christoph Kern‎, and John Reese‎</p>
+
+<p class="byline cont">with Guy Fischman, Paul Blankinship, Aleksandra Culver, <span class="keep-together">Sergey Simakov,</span> Peter Valchev, and Douglas Colish</p>
+
+<aside data-type="sidebar" id="in_order_to_have_confidence_in_your_sys">
+<p><a contenteditable="false" data-primary="understandability" data-type="indexterm" id="ch06.html0">&nbsp;</a>In order to have confidence in your system’s security posture and its ability to reach its service level objectives (SLOs), you need to manage the system’s complexity: you must be able to meaningfully reason about and understand the system, its components, and their interactions. The degree to which a system is understandable can vary drastically across different properties. For example, it may be easy to understand a system’s behavior under high loads, but difficult to understand the system’s behavior when it encounters specially crafted (malicious) inputs.</p>
+
+<p>This chapter discusses system understandability as it pertains to every stage of the system lifecycle. We start by discussing how to analyze and understand your systems according to invariants and mental models. We show that a layered system architecture using standardized frameworks for identity, authorization, and access control can help you design for understandability. After deep diving into the topic of security boundaries, we discuss how software design—especially the use of application frameworks and APIs—can significantly impact your ability to reason about security and reliability properties.</p>
+</aside>
+
+<p>For the purposes of this book, we define a system’s <em>understandability</em> as the extent to which a person with relevant technical background can accurately and confidently reason about both of the following:</p>
+
+<ul class="pagebreak-before">
+	<li>
+	<p>The operational behavior of the system</p>
+	</li>
+	<li>
+	<p>The system’s invariants, including security and availability</p>
+	</li>
+</ul>
+
+<section data-type="sect1" id="why_is_understandability_importantquest">
+<h1>Why Is Understandability Important?</h1>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="benefits of" data-type="indexterm" id="ch06.html1">&nbsp;</a>Designing a system to be understandable, and maintaining that understandability over time, requires effort. Generally, this effort is an investment that’s repaid in the form of sustained project velocity (as discussed in <a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>). More specifically, an understandable system has concrete benefits:</p>
+
+<dl>
+	<dt>Decreases the likelihood of security vulnerabilities or resilience failures</dt>
+	<dd>Whenever you modify a system or software component—for example, when you add a feature, fix a bug, or change configuration—there’s an inherent risk that you might accidentally introduce a new security vulnerability or compromise the system’s operational resilience. The less understandable the system, the more likely it is that the engineer who’s modifying it will make a mistake. That engineer might misunderstand the existing behavior of the system, or may be unaware of a hidden, implicit, or undocumented requirement that conflicts with the change.</dd>
+	<dt>Facilitates effective incident response</dt>
+	<dd>During an incident, it’s vital that responders can quickly and accurately assess damage, contain the incident, and identify and remediate root causes. A complex, difficult-to-understand system significantly hinders that process.</dd>
+	<dt>Increases confidence in assertions about a system’s security posture</dt>
+	<dd><a contenteditable="false" data-primary="invariants" data-secondary="defined" data-type="indexterm">&nbsp;</a>Assertions about a system’s security are typically expressed in terms of <em>invariants</em>: properties that must hold for <em>all possible</em> behaviors of the system. This includes how the system behaves in response to unexpected interactions with its external environment—for example, when the system receives malformed or maliciously crafted inputs. In other words, the system’s behavior in response to a malicious input must not violate a required security property. In a difficult-to-understand system, it is hard or sometimes impossible to verify with a high degree of confidence that such assertions hold. Testing is often insufficient to demonstrate that a “for all possible behaviors” property holds—testing typically exercises the system for only a relatively small fraction of possible behaviors that correspond to typical or expected operation.<span data-type="footnote" id="ch06fn1">Automated fuzz testing, especially if combined with instrumentation and coverage guidance, can in some cases explore a larger fraction of possible behaviors. This is discussed in detail in <a data-type="xref" href="#onethree_testing_code">#onethree_testing_code</a>.</span> You usually need to rely on abstract reasoning about the system to establish such properties as invariants.</dd>
+</dl>
+
+<section data-type="sect2" id="system_invariants">
+<h2>System Invariants</h2>
+
+<p><a contenteditable="false" data-primary="invariants" data-secondary="system invariants" data-type="indexterm" id="ch06.html2">&nbsp;</a><a contenteditable="false" data-primary="system invariants" data-type="indexterm" id="ch06.html3">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="system invariants and" data-type="indexterm" id="ch06.html4">&nbsp;</a><a contenteditable="false" data-primary="invariants" data-seealso="system invariants" data-type="indexterm">&nbsp;</a>A <em>system invariant</em> is a property that is always true, no matter how the system’s environment behaves or misbehaves. The system is <em>fully responsible</em> for ensuring that a desired property is in fact an invariant, even if the system’s environment misbehaves in arbitrarily unexpected or malicious ways. That environment includes everything that you don’t have direct control over, from nefarious users who hit your service frontend with maliciously crafted requests to hardware failures that result in random crashes. One of our main goals in analyzing a system is to determine whether specific desired properties are actually invariants.</p>
+
+<p>Here are some examples of desired security and reliability properties of a system:</p>
+
+<ul>
+	<li>
+	<p>Only authenticated and properly authorized users can access a system’s persistent data store.</p>
+	</li>
+	<li>
+	<p>All operations on sensitive data in a system’s persistent data store are recorded in an audit log in accordance with the system’s auditing policy.</p>
+	</li>
+	<li>
+	<p>All values received from outside a system’s trust boundary are appropriately validated or encoded before being passed to APIs that are prone to injection vulnerabilities (e.g., SQL query APIs or APIs for constructing HTML markup).</p>
+	</li>
+	<li>
+	<p>The number of queries received by a system’s backend scales relative to the number of queries received by the system’s frontend.</p>
+	</li>
+	<li>
+	<p>If a system’s backend fails to respond to a query after a predetermined amount of time, the system’s frontend <a href="https://oreil.ly/bLTJN">gracefully degrades</a>—for example, by responding with an approximate answer.</p>
+	</li>
+	<li>
+	<p>When the load on any component is greater than that component can handle, in order to reduce the risk of cascading failure, that component will serve <a href="https://oreil.ly/7eJtF">overload errors</a> rather than crashing.</p>
+	</li>
+	<li>
+	<p>A system can only receive RPCs from a set of designated systems and can only send RPCs to a set of designated systems.</p>
+	</li>
+</ul>
+
+<p>If your system allows behaviors that violate a desired security property—in other words, if the stated property isn’t actually an invariant—then the system has a security weakness or vulnerability. For example, imagine that property 1 from the list is not true for your system because a request handler is missing access checks, or because those checks were implemented incorrectly. You now have a security vulnerability that could permit an attacker to access your users’ private data.</p>
+
+<p>Similarly, suppose your system does not satisfy the fourth property: under some circumstances, the system generates an excessive number of backend requests for each incoming frontend request. For example, perhaps the frontend generates multiple retries in quick succession (and without an appropriate backoff mechanism) if a backend request fails or takes too long. Your system has a potential availability weakness: once the system reaches this state, its frontend could completely overwhelm the backend and make the service unresponsive, in a kind of self-inflicted denial-of-service scenario.</p>
+</section>
+
+<section data-type="sect2" id="analyzing_invariants">
+<h2>Analyzing Invariants</h2>
+
+<p><a contenteditable="false" data-primary="system invariants" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="analyzing invariants" data-type="indexterm">&nbsp;</a>When analyzing whether a system meets a given invariant, there’s a tradeoff between the potential harm caused by violations of that invariant and the amount of effort you spend in meeting the invariant and verifying that it actually holds. On one end of the spectrum, that effort might involve running a few tests and reading parts of the source code to look for bugs—for example, forgotten access checks—that could lead to violation of the invariant. This approach does not lead to a particularly high degree of confidence. It’s quite possible, and in many cases likely, that behavior not covered by testing or in-depth code review will harbor bugs. It’s telling that well-understood common classes of software vulnerabilities like SQL injection, cross-site scripting (XSS), and buffer overflows have maintained leading positions in “top vulnerability” lists.<span data-type="footnote" id="ch06fn2">Such as those published by <a href="https://oreil.ly/cYTHM">SANS</a>, <a href="https://oreil.ly/-XYhE">MITRE</a>, and <a href="https://oreil.ly/eChGB">OWASP</a>.</span> Absence of evidence is not evidence of absence.</p>
+
+<p>On the other end of the spectrum, you might perform analyses based on provably sound, formal reasoning: the system and the claimed properties are modeled in a formal logic, and you construct a logical proof (typically with the help of an automated proof assistant) that the property holds for the system.<span data-type="footnote" id="ch06fn3">See Murray, Toby, and Paul van Oorschot. 2018. “BP: Formal Proofs, the Fine Print and Side Effects.” <em>Proceedings of the 2018 IEEE Cybersecurity Development Conference</em>: 1–10. doi:10.1109/SecDev.2018.00009.</span> This approach is difficult and involves a lot of work. For example, one of the largest software verification projects to date constructed a <a href="https://oreil.ly/qxVk2">proof</a> of comprehensive correctness and security properties of a microkernel’s implementation at the machine code level; this project took approximately 20 person-years of effort.<span data-type="footnote" id="ch06fn4">See Klein, Gerwin et al. 2014. “Comprehensive Formal Verification of an OS Microkernel.” <em>ACM Transactions on Computer Systems</em> 32(1): 1–70. doi:10.1145/2560537.</span> While formal verification is becoming practically applicable in certain situations, such as microkernels or complex cryptographic library code,<span data-type="footnote" id="ch06fn5">See, for example, Erbsen, Andres et al. 2019. “Simple High-Level Code for Cryptographic Arithmetic—With Proofs, Without Compromises.” <em>Proceedings of the 2019 IEEE Symposium on Security and Privacy</em>: 73–90. doi:10.1109/SP.2019.00005. For another example, see Chudnov, Andrey et al. 2018. “Continuous Formal Verification of Amazon s2n.” <em>Proceedings of the 30th International Conference on Computer Aided Verification</em>: 430–446. doi:10.1007/978-3-319-96142-2_26.</span> it is typically not feasible for large-scale application software development projects.</p>
+
+<p>This chapter aims to present a practical middle ground. By designing a system with an explicit goal of understandability, you can support principled (but still informal) arguments that the system has certain invariants and gain a fairly high degree of confidence in these assertions with a reasonable amount of effort. At Google, we’ve found this approach to be practical for large-scale software development, and highly effective in reducing the occurrence of common classes of vulnerabilities. For more discussion on testing and validation, see <a data-type="xref" href="#onethree_testing_code">#onethree_testing_code</a>.<a contenteditable="false" data-primary="" data-startref="ch06.html4" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html3" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html2" data-type="indexterm">&nbsp;</a></p>
+</section>
+
+<section data-type="sect2" id="mental_models">
+<h2>Mental Models</h2>
+
+<p><a contenteditable="false" data-primary="mental models" data-secondary="understandability and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="mental models and" data-type="indexterm">&nbsp;</a>Highly complex systems are difficult for humans to reason about in a holistic way. In practice, engineers and subject matter experts often construct mental models that explain relevant behaviors of a system while leaving out irrelevant details. For a complex system, you may construct multiple mental models that build on each other. In this way, when thinking about the behavior or invariants of a given system or subsystem, you can abstract away the details of its surrounding and underlying components and instead substitute their respective mental models.</p>
+
+<p>Mental models are useful because they simplify reasoning about a complex system. For that same reason, mental models are also limited. If you form a mental model based on experience with a system performing under typical operating conditions, that model may not predict a system’s behavior in unusual scenarios. To a large extent, security and reliability engineering is concerned with analyzing systems in exactly those unusual conditions—for example, when a system is actively under attack, or in an overload or component-failure scenario.</p>
+
+<p>Consider a system whose throughput normally increases predictably and gradually with the rate of incoming requests. However, beyond a certain load threshold, the system might reach a state where it responds in a dramatically different fashion. For example, memory pressure might lead to thrashing<span data-type="footnote" id="ch06fn6">See Denning, Peter J. 1968. “Thrashing: Its Causes and Prevention.” <em>Proceedings of the 1968 Fall Joint Computer Conference</em>: 915–922. doi:10.1145/1476589.1476705.</span> at the virtual memory or heap/garbage collector level, leaving the system unable to keep up with the additional load. Too much additional load could even lead to <em>decreased</em> throughput. When troubleshooting a system in this state, you could be seriously misled by an overly simplified mental model of the system, unless you explicitly recognize that the model no longer applies.</p>
+
+<p>When designing systems, it’s valuable to consider the mental models that software, security, and reliability engineers will inevitably construct for themselves. When designing a new component to add to a larger system, ideally, its naturally emerging mental model should be consistent with the mental models people have formed for similar existing subsystems.</p>
+
+<p>When possible, you should also design systems so that their mental models remain predictive and useful when the system is operating under extreme or unusual conditions. For example, to avoid thrashing, you can configure production servers to run without on-disk virtual memory swap space. If a production service can’t allocate memory that it needs to respond to a request, it can quickly return an error in a predictable way. Even if a buggy or misbehaving service can’t handle a memory allocation failure and crashes, you can at least clearly attribute the failure to an underlying problem—in this case, memory pressure; that way, the mental models of the people observing the system remain useful.<a contenteditable="false" data-primary="" data-startref="ch06.html1" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
+
+<section data-type="sect1" id="designing_understandable_systems">
+<h1>Designing Understandable Systems</h1>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="designing understandable systems" data-type="indexterm" id="ch06.html5">&nbsp;</a>The remainder of this chapter discusses some concrete measures you can take to make a system more understandable, and to maintain a system’s understandability as it evolves over time. We’ll start by considering the issue of complexity.</p>
+
+<section data-type="sect2" id="complexity_versus_understandabilit">
+<h2>Complexity Versus Understandability</h2>
+
+<p><a contenteditable="false" data-primary="complexity" data-secondary="understandability versus" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="complexity versus" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="unmanaged complexity, understandability versus" data-type="indexterm">&nbsp;</a>The primary enemy of understandability is <em>unmanaged complexity</em>.</p>
+
+<p>Some amount of complexity is often inherent and unavoidable because of the scale of modern software systems—especially distributed systems—and the problems they solve. For example, Google employs tens of thousands of engineers, who work in a source repository that contains over a billion lines of code. Those lines of code collectively implement a large number of user-facing services and the backends and data pipelines that support them. Even smaller organizations with a single product offering may implement hundreds of features and user stories in hundreds of thousands of lines of code, which is edited by tens or hundreds of engineers.</p>
+
+<p><a contenteditable="false" data-primary="Gmail" data-type="indexterm">&nbsp;</a>Let’s take Gmail as an example of a system with significant inherent feature complexity. You could briefly sum up Gmail as a cloud-based email service, but that summary belies its complexity. Among its many features, Gmail offers the following:</p>
+
+<ul>
+	<li>
+	<p>Multiple frontends and UIs (desktop web, mobile web, mobile apps)</p>
+	</li>
+	<li>
+	<p>Several <a href="https://oreil.ly/RaYQx">APIs</a> that permit third-party developers to develop add-ons</p>
+	</li>
+	<li>
+	<p>Inbound and outbound IMAP and POP interfaces</p>
+	</li>
+	<li>
+	<p>Attachment handling that’s integrated with cloud storage services</p>
+	</li>
+	<li>
+	<p>Rendering of attachments in many formats, such as documents and spreadsheets</p>
+	</li>
+	<li>
+	<p>An offline-capable web client and underlying synchronization infrastructure</p>
+	</li>
+	<li>
+	<p>Spam filtering</p>
+	</li>
+	<li>
+	<p>Automatic message categorization</p>
+	</li>
+	<li>
+	<p>Systems for extracting structured information about flights, calendar events, etc.</p>
+	</li>
+	<li>
+	<p>Spelling correction</p>
+	</li>
+	<li>
+	<p>Smart Reply and Smart Compose</p>
+	</li>
+	<li>
+	<p>Reminders to reply to messages</p>
+	</li>
+</ul>
+
+<p>A system with such features is inherently more complex than a system without them, but we can’t very well tell Gmail’s product managers that these features add too much complexity and ask them to remove them for the sake of security and reliability. After all, the features provide value, and are to a large extent what defines Gmail as a product. But if we work diligently to manage this complexity, the system can still be sufficiently secure and reliable.</p>
+
+<p>As mentioned previously, understandability is relevant in the context of specific behaviors and properties of systems and subsystems. Our goal must be to structure a system’s design to compartmentalize and contain this inherent complexity in a way that permits a human to reason with high fidelity about these <em>specific, relevant system properties and behaviors.</em> In other words, we must specifically manage the aspects of complexity that stand in the way of understandability.</p>
+
+<p>Of course, this is easier said than done. The rest of this section investigates common sources of unmanaged complexity and corresponding decreased understandability, and design patterns that can help keep complexity under control and make systems more understandable.</p>
+
+<p>While our primary concerns are security and reliability, the patterns we discuss largely aren’t specific to those two areas—they are very much aligned with general software design techniques aimed at managing complexity and fostering understandability. You might also want to refer to general texts on system and software design, such as John Ousterhout’s <em>A Philosophy of Software Design</em> (Yaknyam Press, 2018).</p>
+</section>
+
+<section data-type="sect2" id="breaking_down_complexity">
+<h2>Breaking Down Complexity</h2>
+
+<p><a contenteditable="false" data-primary="complexity" data-secondary="breaking down" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="breaking down complexity" data-type="indexterm">&nbsp;</a>To understand all the aspects of a complex system’s behavior, you need to internalize and maintain a large mental model. Humans simply aren’t very good at that.</p>
+
+<p>You can make a system more understandable by composing it from smaller components. You should be able to reason about each component in isolation, and combine them in such a way that you can derive the properties of the whole system from the component properties. This approach allows you to establish whole-system invariants <em>without</em> having to think about the entire system in one go.</p>
+
+<p>This approach is not straightforward in practice. Your ability to establish properties of subsystems, and to combine properties of subsystems into system-wide properties, depends on how the whole system is structured into components and the nature of the interfaces and trust relationships between those components. We’ll look at these relationships and related considerations in <a data-type="xref" href="#system_architecture">#system_architecture</a>.</p>
+</section>
+
+<section data-type="sect2" id="centralized_responsibility_for_security">
+<h2>Centralized Responsibility for Security and Reliability Requirements</h2>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="centralized responsibility for security/reliability requirements" data-type="indexterm">&nbsp;</a>As discussed in <a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>, security and reliability requirements often apply horizontally across all components of a system. For example, a security requirement might state that for any operation executed in response to a user request, the system must complete some common task (e.g., audit logging and operational metrics collection) or check some condition (e.g., authentication and authorization).</p>
+
+<p>If each individual component is responsible for independently implementing common tasks and checks, it’s difficult to determine whether the resulting system actually satisfies the requirement. You can improve upon this design by moving responsibility for common functionalities to a centralized component—often a library or framework. For example, an RPC service framework can ensure that the system implements authentication, authorization, and logging for every RPC method according to a policy that’s defined centrally for the entire service. With this design, individual service methods aren’t responsible for these security functions, and application developers can’t forget to implement them or implement them incorrectly. In addition, a security reviewer can understand a service’s authentication and authorization controls without reading each individual service method implementation. Instead, the reviewer just needs to understand the framework and inspect the service-specific configuration.</p>
+
+<p>To provide another example: to prevent cascading failures under load, incoming requests should be subject to time-outs and deadlines. Any logic that retries failures caused by overload should be subject to stringent safety mechanisms. To implement these policies, you might rely on application or service code to configure deadlines for subrequests and appropriately process failures. A mistake or omission in any relevant code in a single application could result in a reliability weakness for the entire system. You can make a system more robust and more understandable with respect to reliability by including mechanisms in the underlying RPC service framework to support automatic deadline propagation and centralized handling of request <span class="keep-together">cancellations</span>.<span data-type="footnote" id="ch06fn8">For more information, see <a class="orm:hideurl" href="https://landing.google.com/sre/workbook/chapters/managing-load/">Chapter 11 in the SRE workbook</a>.</span></p>
+
+<p>These examples highlight two benefits of centralizing responsibility for security and reliability requirements:</p>
+
+<dl>
+	<dt>Improved understandability of the system</dt>
+	<dd>A reviewer needs to look in only one place in order to understand and validate that a security/reliability requirement is implemented correctly.</dd>
+	<dt>Increased likelihood that the resulting system is actually correct</dt>
+	<dd>This approach removes the possibility that an ad hoc implementation of the requirement in application code is incorrect or missing.</dd>
+</dl>
+
+<p>While there’s an up-front cost to building and validating a centralized implementation as part of an application framework or library, this cost is amortized across all applications built based on that framework.</p>
+</section>
+</section>
+
+<section data-type="sect1" id="system_architecture">
+<h1>System Architecture</h1>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="system architecture" data-type="indexterm" id="ch06.html6">&nbsp;</a>Structuring systems into layers and components is a key tool for managing complexity. Using this approach, you can reason about the system in chunks, rather than having to understand every detail of the whole system all at once.</p>
+
+<p>You also need to think carefully about exactly how you break your system into components and layers. Components that are too tightly coupled are just as hard to understand as a monolithic system. To make a system understandable, you have to pay as much attention to the boundaries and interfaces between components as you do to the components themselves.</p>
+
+<p>Experienced software developers are usually aware that a system must consider inputs from (and sequences of interactions with) its external environment untrustworthy, and that a system can’t make assumptions about those inputs. In contrast, it can be tempting to treat callers of internal, lower-layer APIs (such as APIs of in-process service objects, or RPCs exposed by internal backend microservices) as trustworthy, and to rely on those callers to stay within documented constraints on the API’s usage.</p>
+
+<p>Suppose that a security property of the system depends on the correct operation of an internal component. Also, suppose that its correct operation in turn depends on preconditions ensured by the component’s API’s callers, such as correct sequencing of operations, or constraints on values of method parameters. Determining whether the system actually has the desired property requires not only understanding the API’s implementation, but understanding every call site of the API across the entire system, and whether every such call site ensures the required precondition.</p>
+
+<p>The fewer assumptions a component makes about its callers, the easier it is to reason about that component in isolation. Ideally, a component makes no assumptions about its callers.</p>
+
+<p>If a component is forced to make assumptions about its callers, it’s important to capture these assumptions explicitly in the design of interfaces, or in other constraints on the environment—for example, by restricting the set of principals who can interact with the component.</p>
+
+<section data-type="sect2" id="understandable_interface_specifications">
+<h2>Understandable Interface Specifications</h2>
+
+<p><a contenteditable="false" data-primary="interfaces" data-secondary="understandable" data-type="indexterm" id="ch06.html7">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="interface specifications" data-type="indexterm" id="ch06.html8">&nbsp;</a>Structured interfaces, consistent object models, and idempotent operations contribute to a system’s understandability. As described in the following sections, these considerations make it easier to predict output behavior and how the interfaces will interact.</p>
+
+<section data-type="sect3" id="prefer_narrow_interfaces_that_offer_les">
+<h3>Prefer narrow interfaces that offer less room for interpretation</h3>
+
+<p><a contenteditable="false" data-primary="interfaces" data-secondary="narrow" data-type="indexterm">&nbsp;</a>Services can use many different models and frameworks to expose interfaces. To name just a few:</p>
+
+<ul>
+	<li>
+	<p>RESTful HTTP with JSON with OpenAPI</p>
+	</li>
+	<li>
+	<p>gRPC</p>
+	</li>
+	<li>
+	<p>Thrift</p>
+	</li>
+	<li>
+	<p>W3C Web Services (XML/WSDL/SOAP)</p>
+	</li>
+	<li>
+	<p>CORBA</p>
+	</li>
+	<li>
+	<p>DCOM</p>
+	</li>
+</ul>
+
+<p>Some of these models are very flexible, while others provide more structure. For example, a service that uses gRPC or Thrift defines the name of each RPC method it supports, as well as the types of that method’s input and output. By contrast, a free-form RESTful service might accept any HTTP request, while application code validates that the request body is a JSON object with an expected structure.</p>
+
+<p>Frameworks that support user-defined types (such as gRPC, Thrift, and OpenAPI) make it easier to create tooling for features like cross referencing and conformance checks that enhance the discoverability and understandability of an API surface. Such frameworks typically also allow for safer evolution of an API surface over time. For example, OpenAPI has API versioning as a built-in feature. Protocol buffers, used for declaring gRPC interfaces, have <a href="https://oreil.ly/yRUQ3">well-documented guidelines</a> on how to update message definitions to retain backward compatibility.</p>
+
+<p>In contrast, an API built on free-form JSON strings can be hard to understand unless you inspect its implementation code and core business logic. This unconstrained approach may lead to security or reliability incidents. For example, if a client and a server are updated independently, they may interpret an RPC payload differently, which could cause one of them to crash.</p>
+
+<p>The lack of an explicit API specification also makes evaluating the security posture of the service difficult. For instance, unless you had access to the API definition, it would be hard to build an automatic security audit system to correlate the policies described in an authorization framework like <a href="https://oreil.ly/DjOpK">Istio Authorization Policy</a> with the actual surface area exposed by services.</p>
+</section>
+
+<section data-type="sect3" id="prefer_interfaces_that_enforce_a_common">
+<h3>Prefer interfaces that enforce a common object model</h3>
+
+<p><a contenteditable="false" data-primary="common object model" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="interfaces" data-secondary="common object model and" data-type="indexterm">&nbsp;</a>Systems that manage multiple types of resources can benefit from a common object model, such as the model used for <a href="https://oreil.ly/AtXnp">Kubernetes</a>. Rather than handling each resource type separately, a common object model lets engineers use a single mental model to understand large parts of a system. For example:</p>
+
+<ul>
+	<li>
+	<p>Each object in the system can be guaranteed to satisfy a set of predefined base properties (invariants).</p>
+	</li>
+	<li>
+	<p>The system can provide standard ways to scope, annotate, reference, and group objects of all types.</p>
+	</li>
+	<li>
+	<p>Operations can have consistent behavior across all types of objects.</p>
+	</li>
+	<li>
+	<p>Engineers can create custom object types to support their use cases, and can reason about these object types using the same mental model they use for built-in types.</p>
+	</li>
+</ul>
+
+<p>Google provides general <a href="https://oreil.ly/AyMVP">guidelines for designing resource-oriented APIs</a>.</p>
+</section>
+
+<section data-type="sect3" id="pay_attention_to_idempotent_operations">
+<h3>Pay attention to idempotent operations</h3>
+
+<p><a contenteditable="false" data-primary="idempotent operations" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="interfaces" data-secondary="idempotent operations and" data-type="indexterm">&nbsp;</a>An idempotent operation will yield the same result when applied multiple times. For example, if a person pushes a button for floor two in an elevator, the elevator will go to the second floor every time. Pushing the button again, even multiple times, will not change the outcome.</p>
+
+<p>In distributed systems, idempotency is important because operations may arrive out of order, or a server’s response after completing an operation may never reach the client. If an API method is idempotent, a client may retry an operation until it receives a successful result. If a method isn’t idempotent, the system may need to use a secondary approach, such as polling the server to see whether a newly created object already exists.</p>
+
+<p><a contenteditable="false" data-primary="mental models" data-secondary="idempotency and" data-type="indexterm">&nbsp;</a>Idempotency also affects engineers’ mental models. A mismatch between an API’s actual behavior and its expected behavior can lead to unreliable or incorrect results. For example, suppose that a client wants to add a record to a database. Although the request succeeds, the response isn’t delivered because of a connection reset. If the client code’s authors believe the operation to be idempotent, the client will likely retry the request. But if the operation is not actually idempotent, the system will create a duplicate record.</p>
+
+<p>While nonidempotent operations can be necessary, idempotent operations often lead to a simpler mental model. When an operation is idempotent, engineers (including developers and incident responders) don’t need to keep track of when an operation started; they can simply keep trying the operation until they know it succeeds.</p>
+
+<p>Some operations are naturally idempotent, and you can make other operations idempotent by restructuring them. In the preceding example, the database could ask the client to include a unique identifier (e.g., a UUID) with each mutating RPC. If the server receives a second mutation with the same unique identifier, it knows that the operation is a duplicate and can respond accordingly.<a contenteditable="false" data-primary="" data-startref="ch06.html8" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html7" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
+
+<section data-type="sect2" id="understandable_identitiescomma_authenti">
+<h2>Understandable Identities, Authentication, and Access Control</h2>
+
+<p>Any system should be able to identify who has access to which resources, especially if the resources are highly sensitive. For example, a payment system auditor needs to understand which insiders have access to customers’ personally identifiable information. Typically, systems have authorization and access control policies that limit access of a given entity to a given resource in a given context—in this case, a policy would limit employee access to PII data when credit cards are processed. When this specific access occurs, an auditing framework can log the access. Later, you can automatically analyze the access log, either as part of a routine check or as part of an incident investigation.</p>
+
+<section data-type="sect3" id="identities">
+<h3>Identities</h3>
+
+<p><a contenteditable="false" data-primary="identities" data-secondary="understandable" data-type="indexterm" id="ch06.html9">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="identities" data-type="indexterm" id="ch06.html10">&nbsp;</a>An <em>identity</em> is the set of attributes or identifiers that relate to an entity. <a contenteditable="false" data-primary="credentials" data-secondary="defined" data-type="indexterm">&nbsp;</a><em>Credentials</em> assert the identity of a given entity. Credentials can take different forms, such as a simple password, an X.509 certificate, or an OAuth2 token. <a contenteditable="false" data-primary="authentication protocol, defined" data-type="indexterm">&nbsp;</a>Credentials are typically sent using a defined <em>authentication protocol</em>, which access control systems use to identify the entities that access a resource. Identifying entities and choosing a model to identify them can be complex. While it’s relatively easy to reason about how the system recognizes human entities (both customers and administrators), large systems need to be able to identify all entities, not just human ones.</p>
+
+<p>Large systems are often composed of a constellation of microservices that call each other, either with or without human involvement. For example, a database service may want to periodically snapshot to a lower-level disk service. This disk service may want to call a quota service to ensure that the database service has sufficient disk quota for the data that needs to be snapshotted. Or, consider a customer authenticating to a food-ordering frontend service. The frontend service calls a backend service, which in turn calls a database to retrieve the customer’s food preferences. <a contenteditable="false" data-primary="active entities, defined" data-type="indexterm">&nbsp;</a>In general, <em>active entities</em> are the set of humans, software components, and hardware components that interact with one another in the system.</p>
+
+<div data-type="note">
+<p>Traditional network security practices sometimes use IP addresses as the primary identifier for both access control and logging and auditing (for example, firewall rules). <a contenteditable="false" data-primary="IP addresses, microservices and" data-type="indexterm">&nbsp;</a>Unfortunately, IP addresses have a number of disadvantages in modern microservices systems. Because they lack stability and security (and are easily spoofable), IP addresses simply don’t provide a suitable identifier to identify services and model their level of privilege in the system. For starters, microservices are deployed on pools of hosts, with multiple services hosted on the same host. Ports don’t provide a strong identifier, as they can be reused over time or—even worse—arbitrarily chosen by the different services that run on the host. A microservice may also serve different instances running on different hosts, which means you can’t use IP addresses as a stable <span class="keep-together">identifier</span>.</p>
+</div>
+
+<aside data-type="sidebar" id="identifier_properties_that_benefit_both">
+<h5>Identifier Properties that Benefit Both Security and Reliability</h5>
+
+<p><a contenteditable="false" data-primary="identifiers" data-type="indexterm">&nbsp;</a>In general, identity and authentication subsystems<span data-type="footnote" id="ch06fn9">There are multiple identity subsystems in the general case. For example, the system may have one identity subsystem for internal microservices and another identity subsystem for human administrators.</span> are responsible for modeling identities and provisioning credentials that represent these identities. In order to be “meaningful,” an identity must:</p>
+
+<dl>
+	<dt>Have understandable identifiers</dt>
+	<dd>A human must be able to understand who/what an identifier refers to without having to reference an external source. For example, a number like <em>24245223</em> is not very understandable, while a string like <em>widget-store-frontend-prod</em> clearly identifies a particular workload. Mistakes in understandable identifiers are also easier to spot—it’s much more likely you’ll make a mistake when modifying an access control list if the ACL is a string of arbitrary numbers, rather than human-readable names. Malicious intent will be more obvious in human-readable identifiers too, although the administrator controlling the ACL should still be careful to check an identifier when it’s added to guard against attackers who use identifiers that look legitimate.</dd>
+	<dt>Be robust against spoofing</dt>
+	<dd>How you uphold this quality depends on the type of credential (password, token, certificate) and the authentication protocol that backs the identity. For example, a username/password or bearer token used over a clear-text channel is trivially spoofable. It’s much harder to spoof a certificate that uses a private key that’s backed by a hardware module like a <a href="https://oreil.ly/2PWij">TPM</a> and is used in a TLS session.</dd>
+	<dt>Have nonreusable identifiers</dt>
+	<dd>Once an identifier has been used for a given entity, it must not be reused. For example, suppose that a company’s access control systems use email addresses as identifiers. If a privileged administrator leaves the company, and a new hire is assigned the administrator’s old email address, they could inherit many of the administrator’s privileges.</dd>
+</dl>
+</aside>
+
+<p>The quality of access control and auditing mechanisms depends on the relevance of the identities used in the system and their trust relationships. Attaching a meaningful identifier to all active entities in a system is a fundamental step for understandability, in terms of both security and reliability. In terms of security, identifiers help you determine who has access to what. In terms of reliability, identifiers help you plan and enforce the use of shared resources like CPU, memory, and network bandwidth.</p>
+
+<p>An organization-wide identity system reinforces a common mental model and means the entire workforce can speak the same language when referring to entities. Having competing identity systems for the same types of entities—for example, coexisting systems of global and local entities—makes comprehension unnecessarily complex for engineers and auditors.</p>
+
+<p><a contenteditable="false" data-primary="OIDC (OpenID Connect)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="OpenID Connect (OIDC)" data-type="indexterm">&nbsp;</a>Similar to the external payment processing services in the widget ordering example in <a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>, companies can externalize their identity subsystems. <a href="https://openid.net/connect">OpenID Connect (OIDC)</a> provides a framework that allows a given provider to assert identities. Rather than implementing its own identity subsystem, the organization is responsible only for configuring which providers it accepts. As with all dependencies, however, there’s a tradeoff to consider—in this case, between the simplicity of this model versus the perceived security and reliability robustness of the trusted providers.</p>
+
+<section data-type="sect4" id="example_identity_model_for_the_google_p">
+<h4>Example: Identity model for the Google production system</h4>
+
+<p><a contenteditable="false" data-primary="identities" data-secondary="Google production system model" data-type="indexterm">&nbsp;</a>Google models identities by using different types of of active entities:</p>
+
+<dl>
+	<dt>Administrators</dt>
+	<dd>Humans (Google engineers) who can take actions to mutate the state of the system—for example, by pushing a new release or modifying a configuration.</dd>
+	<dt>Machines</dt>
+	<dd>Physical machines in a Google datacenter. These machines run the programs that implement our services (like Gmail), along with the services the system itself needs (for example, an internal time service).</dd>
+	<dt>Workloads</dt>
+	<dd>These are scheduled on machines by the Borg orchestration system, which is similar to Kubernetes.<span data-type="footnote" id="ch06fn10">For more information on Borg, see Verma, Abhishek et al. 2015. “Large-Scale Cluster Management at Google with Borg.” <em>Proceedings of the European Conference on Computer Systems (EuroSys)</em>. <a href="https://oreil.ly/zgKsd"><em class="hyperlink">https://oreil.ly/zgKsd</em></a>.</span> Most of the time, the identity of a workload is different from the identities of the machines it runs on.</dd>
+	<dt>Customers</dt>
+	<dd>The Google customers who access Google-provided services.</dd>
+</dl>
+
+<p><em>Administrators</em> are at the base of all interactions within the production system. In the case of workload-to-workload interactions, administrators may not actively modify the state of the system, but they initiate the action of starting a workload during the bootstrap phase (which may itself start another workload).</p>
+
+<p>As described in <a data-type="xref" href="#design_for_least_privilege">#design_for_least_privilege</a>, you can use auditing to trace all actions back to an administrator (or set of administrators), so you can establish accountability and analyze a given employee’s level of privilege. Meaningful identities for administrators and the entities they manage make auditing possible.</p>
+
+<p>Administrators are managed by a global directory service integrated with single sign-on. A global group management system can group administrators to represent the concept of teams.</p>
+
+<p><em>Machines</em> are cataloged in a global inventory service/machine database. On the Google production network, machines are addressable using a DNS name. We also need to tie the machine identity to administrators in order to represent who can modify the software running on the machine. In practice, we usually unite the group that releases the machine’s software image with the group that can log on to the machine as root.</p>
+
+<p>Every production machine in Google’s datacenters has an identity. The <em>identity</em> refers to the typical purpose of the machine. For example, lab machines dedicated to testing have different identities than those running production workloads. Programs like machine management daemons that run core applications on a machine reference this identity.</p>
+
+<p><em>Workloads</em> are scheduled on machines using an orchestration framework. Each workload has an identity chosen by the requester. The orchestration system is responsible for ensuring that the entity that makes a request has the right to make the request, and specifically that the requestor has the right to schedule a workload running as the requested identity. The orchestration system also enforces constraints on which machines a workload can be scheduled on. Workloads themselves can perform administrative tasks like group management, but should not have root or admin rights on the underlying machine.</p>
+
+<p><em>Customer</em> identities also have a specialized identity subsystem. Internally, these identities are used each time a service performs an action on a customer’s behalf. <em>Access control</em> explains how customer identities work in coordination with workload identities. <a contenteditable="false" data-primary="OIDC (OpenID Connect)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="OpenID Connect (OIDC)" data-type="indexterm">&nbsp;</a>Externally, Google provides <a href="https://oreil.ly/vxJAP">OpenID Connect workflows</a> to allow customers to use their Google identity to authenticate to endpoints not controlled by Google (such as <em>zoom.us</em>).<a contenteditable="false" data-primary="" data-startref="ch06.html10" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html9" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
+
+<section data-type="sect3" id="authentication_and_transport_security">
+<h3>Authentication and transport security</h3>
+
+<p><a contenteditable="false" data-primary="authentication" data-secondary="understandability and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="transport security" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="authentication and transport security" data-type="indexterm">&nbsp;</a>Authentication and transport security are complicated disciplines that require specialized knowledge of areas like cryptography, protocol design, and operating systems. It’s not reasonable to expect every engineer to understand all of these topics in depth.</p>
+
+<p>Instead, engineers should be able to understand abstractions and APIs. A system like <a contenteditable="false" data-primary="ALTS (Application Layer Transport Security)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="Application Layer Transport Security (ALTS)" data-type="indexterm">&nbsp;</a>Google’s <a href="https://oreil.ly/EsBfd">Application Layer Transport Security (ALTS)</a> provides automatic service-to-service authentication and transport security to applications. That way, application developers don’t need to worry about how credentials are provisioned or which specific cryptographic algorithm is used to secure data on the connection.</p>
+
+<p>The mental model for the application developer is simple:</p>
+
+<ul>
+	<li>
+	<p>An application is run as a meaningful identity:</p>
+
+	<ul>
+		<li>
+		<p>A tool on an administrator’s workstation to access production typically runs as that administrator’s identity.</p>
+		</li>
+		<li>
+		<p>A privileged process on a machine typically runs as that machine’s identity.</p>
+		</li>
+		<li>
+		<p>An application deployed as a workload using an orchestration framework typically runs as a workload identity specific to the environment and service provided (such as <em>myservice-frontend-prod</em>).</p>
+		</li>
+	</ul>
+	</li>
+	<li>
+	<p>ALTS provides zero-config transport security on the wire.</p>
+	</li>
+	<li>
+	<p>An API for common access control frameworks retrieves authenticated peer information.</p>
+	</li>
+</ul>
+
+<p>ALTS and similar systems—for example, <a href="https://oreil.ly/17Jm6">Istio’s security model</a>—provide authentication and transport security in an understandable way.</p>
+
+<p>Unless an infrastructure’s application-to-application security posture uses a systematic approach, it is difficult or impossible to reason about. For example, suppose that application developers have to make individual choices about the type of credentials to use, and the workload identity these credentials will assert. To verify that the application performs authentication correctly, an auditor would need to manually read all of the application’s code. This approach is bad for security—it doesn’t scale, and some portion of the code will likely be either unaudited or incorrect.</p>
+</section>
+
+<section data-type="sect3" id="access_control">
+<h3>Access control</h3>
+
+<p><a contenteditable="false" data-primary="access controls" data-secondary="understandability and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="frameworks, software development" data-secondary="access control policies" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="access control and" data-type="indexterm">&nbsp;</a>Using frameworks to codify and enforce access control policies for incoming service requests is a net benefit for the understandability of the global system. Frameworks reinforce common knowledge and provide a unified way to describe policies, and are thus an important part of an engineer’s toolkit.</p>
+
+<p>Frameworks can handle inherently complex interactions, such as the multiple identities involved in transferring data between workloads. For example, <a data-type="xref" href="#interactions_involved_in_transferring_d">#interactions_involved_in_transferring_d</a> shows the following:</p>
+
+<ul>
+	<li>
+	<p>A chain of workloads running as three identities: <em>Ingress</em>, <em>Frontend</em>, and <em>Backend</em></p>
+	</li>
+	<li>
+	<p>An authenticated customer making a request</p>
+	</li>
+</ul>
+
+<figure id="interactions_involved_in_transferring_d"><img alt="Interactions involved in transferring data between workloads" src="images/bsrs_0601.png" />
+<figcaption>Interactions involved in transferring data between workloads</figcaption>
+</figure>
+
+<p>For each link in the chain, the framework must be able to determine whether the workload or the customer is the authority for the request. Policies must also be expressive enough for it to decide which workload identity is allowed to retrieve data on behalf of the customer.</p>
+
+<p>Equipped with one unified way to capture this inherent complexity, the majority of engineers can understand these controls. If each service team had its own ad hoc system for dealing with the same complex use case, understandability would be a <span class="keep-together">challenge</span>.</p>
+
+<p>Frameworks dictate consistency in specifying and applying declarative access control policies. This declarative and unified nature allows engineers to develop tools to evaluate the security exposure of services and user data within the infrastructure. If the access control logic were implemented in an ad hoc fashion at the application code level, developing that tooling would be essentially impossible.</p>
+</section>
+</section>
+
+<section data-type="sect2" id="security_boundaries">
+<h2 class="dive">Security Boundaries</h2>
+
+<p><a contenteditable="false" data-primary="security boundaries" data-secondary="understandability and" data-type="indexterm" id="ch06.html11">&nbsp;</a><a contenteditable="false" data-primary="trusted computing base (TCB)" data-type="indexterm" id="ch06.html12">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="security boundaries" data-type="indexterm" id="ch06.html13">&nbsp;</a>The <em>trusted computing base</em> (TCB) of a system is “the set of components (hardware, software, human, …) whose correct functioning is sufficient to ensure that the security policy is enforced, or more vividly, whose failure could cause a breach of the security policy.”<span data-type="footnote" id="ch06fn11">Anderson, Ross J. 2008. <em>Security Engineering: A Guide to Building Dependable Distributed Systems</em>. Hoboken, NJ: Wiley.</span> As such, the TCB must uphold the security policy even if any entity <em>outside</em> of the TCB misbehaves in arbitrary and possibly malicious ways. Of course, the area outside of the TCB includes your system’s external environment (such as malicious actors somewhere across the internet), but this area <em>also</em> includes parts of <em>your own system</em> that are not within the TCB.</p>
+
+<p><a contenteditable="false" data-primary="security boundaries" data-secondary="defined" data-type="indexterm">&nbsp;</a>The interface between the TCB and “everything else” is referred to as a <em>security boundary</em>. “Everything else”—other parts of the system, the external environment, clients of the system that interact with it via a network, and so on—interacts with the TCB by communicating across this boundary. This communication might be in the form of an interprocess communication channel, network packets, and higher-level protocols built on those foundations (like gRPC). The TCB must treat anything that crosses the security boundary with suspicion—both the data itself and other aspects, like message ordering.</p>
+
+<p>The parts of a system that form a TCB depend upon the security policy you have in mind. It can be useful to think about security policies and the corresponding TCBs necessary to uphold them in layers. For example, the security model of an operating system typically has a notion of “user identity,” and provides security policies that stipulate separation between processes running under different users. In Unix-like systems, a process running under user A should not be able to view or modify memory or network traffic associated with a process owned by a different user B.<span data-type="footnote" id="ch06fn12">This is true unless user A is the root user, as well as under a number of other specific conditions—for example, if shared memory is involved, or if mechanisms such as Linux capabilities confer specific aspects of root’s privileges.</span> At the software level, the TCB that ensures this property essentially consists of the operating system kernel and all privileged processes and system daemons. In turn, the operating system typically relies on mechanisms provided by the underlying hardware, such as virtual memory. These mechanisms are included in the TCB that pertains to security policies regarding separation between OS-level users.</p>
+
+<p>The software of a network application server (for example, the server exposing a web application or API) is <em>not</em> part of the TCB of this OS-level security policy, since it runs under a nonprivileged OS-level role (such as the <em>httpd</em> user). However, that application may enforce its own security policy. For example, suppose that a multiuser application has a security policy that makes user data accessible only through explicit document-sharing controls. In that case, the application’s code (or portions of it) <em>is</em> within the TCB with respect to this application-level security policy.</p>
+
+<p>To ensure that a system enforces a desired security policy, you have to understand and reason about the entire TCB relevant to that security policy. By definition, a failure or bug in any part of the TCB could result in a breach of the security policy.</p>
+
+<p>Reasoning about a TCB becomes more difficult as the TCB broadens to include more code and complexity. For this reason, it’s valuable to keep TCBs as small as possible, and to exclude any components that aren’t actually involved in upholding the security policy. In addition to impairing understandability, including these unrelated components in the TCB adds risk: a bug or failure in any of these components could result in a security breach.</p>
+
+<p>Let’s revisit our example from <a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>: a web application that allows users to buy widgets online. The checkout flow of the application’s UI allows users to enter credit card and shipping address information. The system stores some of that information and passes other parts (such as credit card data) to a third-party payment service.</p>
+
+<p>We want to guarantee that only the users themselves can access their own sensitive user data, such as shipping addresses. We’ll use TCB<sub>AddressData</sub> to denote the trusted computing base for this security property.</p>
+
+<p>Using one of the many popular application frameworks, we might end up with an architecture like <a data-type="xref" href="#example_architecture_of_an_application">#example_architecture_of_an_application</a>.<span data-type="footnote" id="ch06fn13">To keep the example simple, <a data-type="xref" href="#example_architecture_of_an_application">#example_architecture_of_an_application</a> doesn’t show connections to external service providers.</span></p>
+
+<figure id="example_architecture_of_an_application"><img alt="Example architecture of an application that sells widgets" src="images/bsrs_0602.png" />
+<figcaption>Example architecture of an application that sells widgets</figcaption>
+</figure>
+
+<p>In this design, our system consists of a monolithic web application and an associated database. The application might use several modules to implement different features, but they are all part of the same codebase, and the entire application runs as a single server process. Likewise, the application stores all its data in a single database, and all parts of the server have read and write access to the whole database.</p>
+
+<p>One part of the application handles shopping cart checkout and purchasing, and some parts of the database store information related to purchases. Other parts of the application handle features that are related to purchasing, but that don’t themselves depend on purchasing functionality (for example, managing the contents of a shopping cart). Still other parts of the application have nothing to do with purchasing at all (they handle features such as browsing the widget catalog or reading and writing product reviews). Since all of these features are part of a single server, and all of this data is stored in a single database, the entire application and its dependencies—for example, the database server and the OS kernel—are part of the TCB for the security property we want to provide: enforcement of the user data access policy.</p>
+
+<p>Risks include a SQL injection vulnerability in the catalog search code allowing an attacker to obtain sensitive user data, like names or shipping addresses, or a remote code execution vulnerability in the web application server, such as <a href="https://oreil.ly/y0xRl">CVE-2010-1870</a>, permitting an attacker to read or modify any part of the application’s database.</p>
+
+<section data-type="sect3" id="small_tcbs_and_strong_security_boundari">
+<h3>Small TCBs and strong security boundaries</h3>
+
+<p><a contenteditable="false" data-primary="security boundaries" data-secondary="small TCBs and strong security boundaries" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="trusted computing base (TCB)" data-secondary="small TCBs and strong security boundaries" data-type="indexterm">&nbsp;</a>We can improve the security of our design by splitting the application into microservices. In this architecture, each microservice handles a self-contained part of the application’s functionality and stores data in its own separate database. These microservices communicate with each other via RPCs and treat all incoming requests as not necessarily trustworthy, even if the caller is another internal microservice.</p>
+
+<p>Using microservices, we might restructure the application as shown in <a data-type="xref" href="#example_microservices_architecture_for">#example_microservices_architecture_for</a>.</p>
+
+<p>Instead of a monolithic server, we now have a web application frontend and separate backends for the product catalog and purchasing-related functionality. Each backend has its own separate database.<span data-type="footnote" id="ch06fn14">In a real-world design, you would likely use a single database with separate groups of tables to which workload identities have been granted appropriate access. This achieves separation of access to data while still allowing the database to ensure data consistency properties across all tables, such as foreign-key constraints between shopping cart contents and catalog items.</span> The web frontend never directly queries a database; instead, it sends RPCs to the appropriate backend. For example, the frontend queries the catalog backend to search for items in the catalog or to retrieve the details of a particular item. Likewise, the frontend sends RPCs to the purchasing backend to handle the shopping cart checkout process. As discussed earlier in this chapter, the backend microservice and the database server can rely on workload identity and infrastructure-level authentication protocols like ALTS to authenticate callers and limit requests to authorized workloads.</p>
+
+<figure id="example_microservices_architecture_for"><img alt="Example microservices architecture for widget-selling application" src="images/bsrs_0603.png" />
+<figcaption>Example microservices architecture for widget-selling application</figcaption>
+</figure>
+
+<p>In this new architecture, the trusted computing base for the address data security policy is much smaller: it consists only of the purchasing backend and its database, along with their associated dependencies. An attacker can no longer use a vulnerability in the catalog backend to obtain payment data, since the catalog backend can’t access that data in the first place. As a result, this design limits the impact of vulnerabilities in a major system component (a topic discussed further in <a data-type="xref" href="#design_for_resilience">#design_for_resilience</a>).</p>
+</section>
+
+<section data-type="sect3" id="security_boundaries_and_threat_models">
+<h3>Security boundaries and threat models</h3>
+
+<p><a contenteditable="false" data-primary="security boundaries" data-secondary="threat models and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="threat modeling" data-secondary="security boundaries and" data-type="indexterm">&nbsp;</a>A trusted computing base’s size and shape will depend on the security property you want to guarantee and the architecture of your system. You can’t just draw a dashed line around a component of your system and call it a TCB. You have to think about the component’s interface, and the ways in which it might implicitly trust the rest of the system.</p>
+
+<p>Suppose our application allows users to view and update their shipping addresses. Since the purchasing backend handles shipping addresses, that backend needs to expose an RPC method that allows the web frontend to retrieve and update a user’s shipping address.</p>
+
+<p>If the purchasing backend allows the frontend to obtain <em>any</em> user’s shipping address, an attacker who compromises the web frontend can use this RPC method to access or modify sensitive data for any and all users. In other words, if the purchasing backend trusts the web frontend more than it trusts a random third party, then the web frontend is part of the TCB.</p>
+
+<p>Alternatively, the purchasing backend could require the frontend to provide a so-called <a href="https://oreil.ly/0WkhS"><em>end-user context ticket</em> (EUC)</a> that authenticates a request in the context of a specific external user request. The EUC is an internal short-term ticket that’s minted by a central authentication service in exchange for an external-facing credential, such as an authentication cookie or a token (for example, OAuth2) associated with a given request. If the backend provides data only in response to requests with a valid EUC, an attacker who compromises the frontend does <em>not</em> have complete access to the purchasing backend, because they can’t get EUCs for any arbitrary user. At the worst, they could obtain sensitive data about users who are actively using the application during the attack.</p>
+
+<p>To provide another example that illustrates how TCBs are relative to the threat model under consideration, let’s think about how this architecture relates to the security model of the web platform.<span data-type="footnote" id="ch06fn15">Zalewski, Michał. 2012. <em>The Tangled Web: A Guide to Securing Modern Web Applications</em>. San Francisco, CA: No Starch Press.</span> <a contenteditable="false" data-primary="web origin, defined" data-type="indexterm">&nbsp;</a>In this security model, a <em>web origin</em> (the fully qualified hostname of the server, plus the protocol and optional port) represents a trust domain: JavaScript running in the context of a given origin can observe or modify any information present in or available to that context. <a contenteditable="false" data-primary="same-origin policy" data-type="indexterm">&nbsp;</a>In contrast, browsers restrict access between content and code across different origins based on rules referred to as the <em>same-origin policy</em>.</p>
+
+<p>Our web frontend might serve its entire UI from a single web origin, such as <span class="keep-together"><em>https://widgets.example.com</em></span>. This means that, for example, a malicious script injected into our origin via an XSS vulnerability<span data-type="footnote" id="ch06fn16">See Zalewski, <em>The Tangled Web</em>.</span> in the catalog display UI can access a user’s profile information, and might even be able to “purchase” items in the name of that user. Thus, in a web security threat model, TCB<sub>AddressData</sub> again includes the entire web frontend.</p>
+
+<p>We can remedy this situation by decomposing the system further and erecting additional security boundaries—in this case, based on web origins. As shown in <a data-type="xref" href="#decomposing_the_web_frontend">#decomposing_the_web_frontend</a>, we can operate two separate web frontends: one that implements <span class="keep-together">catalog search</span> and browsing and which serves at <em>https://widgets.example.com</em>, and a <span class="keep-together">separate frontend</span> responsible for purchasing profiles and checkout serving at <span class="keep-together"><em>https://checkout.example.com</em></span>.<span data-type="footnote" id="ch06fn17">It’s important that we configure our web servers so that the payments frontend is <em>not</em> also accessible at, for example, <em>https://widgets.example.com/checkout</em>.</span> Now, web vulnerabilities such as XSS in the catalog UI cannot compromise the payment functionality, because that functionality is segregated into its own web origin.</p>
+
+<figure id="decomposing_the_web_frontend"><img alt="Decomposing the web frontend" src="images/bsrs_0604.png" />
+<figcaption>Decomposing the web frontend</figcaption>
+</figure>
+</section>
+
+<section data-type="sect3" id="tcbs_and_understandability">
+<h3>TCBs and understandability</h3>
+
+<p><a contenteditable="false" data-primary="trusted computing base (TCB)" data-secondary="understandability and" data-type="indexterm">&nbsp;</a>Aside from their security benefits, TCBs and security boundaries also make systems easier to understand. In order to qualify as a TCB, a component must be isolated from the rest of the system. The component must have a well-defined, clean interface, and you must be able to reason about the correctness of the TCB’s implementation in isolation. If the correctness of a component depends on assumptions outside of that component’s control, then it’s by definition not a TCB.</p>
+
+<p>A TCB is often its own failure domain, which makes understanding how an application might behave in the face of bugs, DoS attacks, or other operational impacts easier. <a data-type="xref" href="#design_for_resilience">#design_for_resilience</a> discusses the benefits of compartmentalizing a system in more depth<a contenteditable="false" data-primary="" data-startref="ch06.html13" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html12" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html11" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch06.html6" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
+</section>
+
+<section data-type="sect1" id="software_design">
+<h1>Software Design</h1>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="software design" data-type="indexterm" id="ch06.html14">&nbsp;</a><a contenteditable="false" data-primary="writing code" data-secondary="understandability" data-type="indexterm" id="ch06.html15">&nbsp;</a>Once you’ve structured a large system into components that are separated by security boundaries, you’ll still need to reason about all the code and subcomponents inside a given security boundary, which is often still a rather large and complex piece of software. This section discusses techniques for structuring software to further enable reasoning about invariants at the level of smaller software components, such as modules, libraries, and APIs.</p>
+
+<section data-type="sect2" id="using_application_frameworks_for_servic">
+<h2>Using Application Frameworks for Service-Wide Requirements</h2>
+
+<p><a contenteditable="false" data-primary="application frameworks" data-secondary="for service-wide requirements" data-type="indexterm" id="ch06.html16">&nbsp;</a><a contenteditable="false" data-primary="frameworks, software development" data-secondary="understandability and" data-type="indexterm" id="ch06.html17">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="application frameworks for service-wide requirements" data-type="indexterm" id="ch06.html18">&nbsp;</a>As previously discussed, frameworks can provide pieces of reusable functionality. A given system might have an authentication framework, authorization framework, RPC framework, orchestration framework, monitoring framework, software release framework, and so on. These frameworks can provide a lot of flexibility—often, <em>too much</em> flexibility. All the possible combinations of frameworks, and the ways they can be configured, can be overwhelming for the engineers who interact with the service—application and service developers, service owners, SREs, and DevOps engineers alike.</p>
+
+<p><a contenteditable="false" data-primary="application frameworks" data-secondary="defined" data-type="indexterm">&nbsp;</a>At Google, we’ve found it useful to create higher-level frameworks to manage this complexity, which we call <em>application frameworks</em>. <a contenteditable="false" data-primary="batteries-included frameworks" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="full-stack frameworks" data-type="indexterm">&nbsp;</a>Sometimes these are called <em>full-stack</em> or <em>batteries-included frameworks</em>. Application frameworks provide a canonical set of subframeworks for individual pieces of functionality, with reasonable default configurations and the assurance that all subframeworks work together. The application framework saves users from having to choose and configure a set of <span class="keep-together">subframeworks</span>.</p>
+
+<p>For example, suppose that an application developer exposes a new service with their favorite RPC framework. They set up authentication using their preferred authentication framework, but forget to configure authorization and/or access control. Functionally, their new service seems to be working fine. But without an authorization policy, their application is dangerously insecure. Any authenticated client (for example, every application in their system) can call this new service at will, violating the principle of least privilege (see <a data-type="xref" href="#design_for_least_privilege">#design_for_least_privilege</a>). This situation might result in severe security issues—for example, imagine that one method exposed by the service allows the caller to reconfigure all the network switches in a datacenter!</p>
+
+<p>An application framework can avoid this problem by ensuring that every application has a valid authorization policy, and by providing safe defaults by disallowing all clients that aren’t explicitly permitted.</p>
+
+<p>In general, application frameworks must provide an opinionated way to enable and configure all the features application developers and service owners need, including (but not limited to) these:</p>
+
+<ul>
+	<li>
+	<p>Request dispatching, request forwarding, and deadline propagation</p>
+	</li>
+	<li>
+	<p>User input sanitization and locale detection</p>
+	</li>
+	<li>
+	<p>Authentication, authorization, and data access auditing</p>
+	</li>
+	<li>
+	<p>Logging and error reporting</p>
+	</li>
+	<li>
+	<p>Health management, monitoring, and diagnostics</p>
+	</li>
+	<li>
+	<p>Quota enforcement</p>
+	</li>
+	<li>
+	<p>Load balancing and traffic management</p>
+	</li>
+	<li>
+	<p>Binary and configuration deployments</p>
+	</li>
+	<li>
+	<p>Integration, prerelease, and load testing</p>
+	</li>
+	<li>
+	<p>Dashboards and alerting</p>
+	</li>
+	<li>
+	<p>Capacity planning and provisioning</p>
+	</li>
+	<li>
+	<p>Handling of planned infrastructure outages</p>
+	</li>
+</ul>
+
+<p>An application framework addresses reliability-related concerns like monitoring, alerting, load balancing, and capacity planning (see <a data-type="xref" href="#writing_code">#writing_code</a>). As such, the application framework allows engineers across multiple departments to speak the same language, thereby increasing understandability and empathy between teams.<a contenteditable="false" data-primary="" data-startref="ch06.html18" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html17" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html16" data-type="indexterm">&nbsp;</a></p>
+</section>
+
+<section data-type="sect2" id="understanding_complex_data_flows">
+<h2>Understanding Complex Data Flows</h2>
+
+<p><a contenteditable="false" data-primary="understandability" data-secondary="complex data flows" data-type="indexterm" id="ch06.html19">&nbsp;</a>Many security properties rely on assertions about <em>values</em> as they flow through a <span class="keep-together">system</span>.</p>
+
+<p><a contenteditable="false" data-primary="URLs" data-type="indexterm">&nbsp;</a>For example, many web services use URLs for various purposes. At first, representing URLs as strings throughout the system seems simple and straightforward. However, an application’s code and libraries might make the implicit assumption that URLs are well formed, or that a URL has a specific scheme, such as <code>https</code>. Such code is incorrect (and might harbor security bugs) if it can be invoked with a URL that violates the assumption. In other words, there’s an implicit assumption that upstream code that receives inputs from untrustworthy external callers applies correct and appropriate validation.</p>
+
+<p>However, a string-typed value does not carry any explicit assertion as to whether or not it represents a well-formed URL. The “string” type itself confers only that the value is a sequence of characters or code points of a certain length (details depend on the implementation language). Any other assumptions about properties of the value are implicit. Thus, reasoning about the correctness of the downstream code requires understanding of all upstream code, and whether that code actually performs the required validation.</p>
+
+<p>You can make reasoning about properties of data that flows through large, complex systems more tractable by representing the value as a specific data type, whose type contract stipulates the desired property. In a more understandable design, <span class="keep-together">your downstream code</span> consumes the URL not in the form of a basic string type, but rather as a type (implemented, for instance, as a Java class) representing a <em>well-formed</em> URL.<span data-type="footnote" id="ch06fn18">Or more generally, a URL that satisfies specific relevant properties, such as having a particular scheme.</span> This type’s contract can be enforced by the type’s constructors or <span class="keep-together">factory</span> functions. For example, a <code>Url.parse(String)</code> factory function would perform runtime validation and either return an instance of <code>Url</code> (representing a well-formed URL) or signal an error or throw an exception for a malformed value.</p>
+
+<p>With this design, understanding code that consumes a URL, and whose correctness relies on its well-formedness, no longer requires understanding all its callers and whether they perform appropriate validation. Instead, you can understand URL handling by understanding two smaller parts. First, you can inspect the <code>Url</code> type’s implementation <em>in isolation</em>. You can observe that all of the type’s constructors ensure well-formedness, and that they guarantee that all instances of the type conform to the type’s documented contract. Then, you can <em>separately</em> reason about the correctness of the code that consumes the <code>Url</code>-typed value, using the type’s contract (i.e., well-formedness) as an assumption in your reasoning.</p>
+
+<p>Using types in this way aids understandability because it can dramatically shrink the amount of code that you have to read and verify. Without types, you have to understand all code that uses URLs, as well as all code that transitively passes URLs to that code in plain string form. By representing URLs as a type, you only have to understand the implementation of data validation inside <code>Url.parse()</code> (and similar constructors and factory functions) and the ultimate uses of <code>Url</code>. You don’t need to understand the rest of the application code that merely passes around instances of the type.</p>
+
+<p>In a sense, the type’s implementation behaves like a TCB—it’s solely responsible for the “all URLs are well-formed” property. However, in commonly used implementation languages, encapsulation mechanisms for interfaces, types, or modules typically do not represent security boundaries. Therefore, you can’t treat the internals of a module as a TCB that can stand up to malicious behavior of code outside the module. This is because in most languages, code on the “outside” of a module boundary can nevertheless modify the internal state of the module (for example, by using reflection features or via type casts). Type encapsulation permits you to understand the module’s behavior in isolation, but <em>only under the assumption</em> that surrounding code was written by nonmalicious developers and that code executes in an environment that hasn’t been compromised. This is actually a reasonable assumption in practice; it’s normally ensured by organization- and infrastructure-level controls, such as repository access controls, code review processes, server hardening, and the like. But if the assumption doesn't hold true, your security team will need to address the resulting worst-case scenario (see <a data-type="xref" href="#maintaining_systems">#maintaining_systems</a>).</p>
+
+<p>You can use types to reason about more complex properties, too. For example, preventing injection vulnerabilities (such as XSS or SQL injection) depends on appropriately validating or encoding any external and potentially malicious inputs, at some point between when the inputs are received and when they’re passed to an injection-prone API.</p>
+
+<p><a contenteditable="false" data-primary="injection sinks" data-type="indexterm">&nbsp;</a>Asserting that an application is free of injection vulnerabilities requires understanding all code and components involved in passing data from external inputs to so-called <em>injection sinks</em> (i.e., APIs that are prone to security vulnerabilities if presented with insufficiently validated or encoded inputs). Such data flows can be very complex in typical applications. It’s common to find data flows where values are received by a frontend, passed through one or more layers of microservice backends, persisted in a database, and then later read back and used in the context of an injection sink. <a contenteditable="false" data-primary="stored XSS bugs" data-type="indexterm">&nbsp;</a>A common class of vulnerabilities in such a scenario are so-called <em>stored XSS</em> bugs, where untrusted inputs reach an HTML injection sink (such as an HTML template or a browser-side DOM API) via persistent storage, without appropriate validation or escaping. Reviewing and understanding the union of all relevant flows across a large application within a reasonable amount of time is typically well beyond a human’s capacity, even if they’re equipped with tooling.</p>
+
+<p>One effective way of preventing such injection vulnerabilities to a high degree of confidence is to use types to distinguish values that are known to be safe for use in a specific injection sink context, such as SQL queries or HTML markup:<span data-type="footnote" id="ch06fn19">See Kern, Christoph. 2014. “Securing the Tangled Web.” <em>Communications of the ACM</em> 57(9): 38–47. doi:10.1145/2643134.</span></p>
+
+<ul>
+	<li>
+	<p><a contenteditable="false" data-primary="SafeHtml" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="SafeSql" data-type="indexterm">&nbsp;</a>Constructors and builder APIs for types such as <code>SafeSql</code> or <code>SafeHtml</code> are responsible for ensuring that all instances of such types are indeed safe to use in the corresponding sink context (for example, a SQL query API or HTML rendering context). These APIs ensure type contracts through a combination of runtime validation of potentially untrusted values and correct-by-construction API design. Constructors might also rely on more complex libraries, such as fully fledged HTML validators/sanitizers or HTML template systems that apply context-sensitive escaping or validation to data that is interpolated into the <span class="keep-together">template</span>.<span data-type="footnote" id="ch06fn20">See Samuel, Mike, Prateek Saxena, and Dawn Song. 2011. “Context-Sensitive Auto-Sanitization in Web Templating Languages Using Type Qualifiers.” <em>Proceedings of the 18th ACM Conference on Computer and Communications Security</em>: 587–600. doi:10.1145/2046707.2046775.</span></p>
+	</li>
+	<li>
+	<p>Sinks are modified to accept values of appropriate types. The type contract states that its values are safe to use in the corresponding context, which makes the typed API safe by construction. For example, when using a SQL query API that accepts only values of type <code>SafeSql</code> (instead of <code>String</code>), you don’t have to worry about SQL injection vulnerabilities, since all values of type <code>SafeSql</code> are safe to use as a SQL query.</p>
+	</li>
+	<li class="pagebreak-before">
+	<p>Sinks may also accept values of basic types (such as strings), but in this case must not make any assumptions about the value’s safety in the sink’s injection context. Instead, the sink API is itself responsible for validating or encoding data, as appropriate, to ensure at runtime that the value is safe.</p>
+	</li>
+</ul>
+
+<p>With this design, you can support an assertion that an <em>entire application</em> is free of SQL injection or XSS vulnerabilities based <em>solely</em> on understanding the implementations of the types and the type-safe sink APIs. You don’t need to understand or read any application code that forwards values of these types, since type encapsulation ensures that application code cannot invalidate security-relevant type invariants.<span data-type="footnote" id="ch06fn21">As noted previously, this assertion holds only under the assumption that the entire codebase of the application is nonmalicious. In other words, the type system is relied upon to uphold invariants in the face of nonmalicious mistakes elsewhere in the codebase, but not against actively malicious code that might, for example, use a language’s reflection APIs to modify a type’s private fields. You can address the latter through additional security mechanisms like code reviews, access controls, and audit trails at the source repository level.</span> You also don’t need to understand and review application code that uses the types’ safe-by-construction builders to create instances of the types, since those builders were designed to ensure their types’ contracts without any assumptions about the behavior of their callers. <a data-type="xref" href="#writing_code">#writing_code</a> discusses this approach in detail.<a contenteditable="false" data-primary="" data-startref="ch06.html19" data-type="indexterm">&nbsp;</a></p>
+</section>
+
+<section data-type="sect2" id="considering_api_usability">
+<h2>Considering API Usability</h2>
+
+<p><a contenteditable="false" data-primary="APIs (application programming interfaces)" data-secondary="usability and understandability" data-type="indexterm" id="ch06.html20">&nbsp;</a><a contenteditable="false" data-primary="understandability" data-secondary="API usability and" data-type="indexterm" id="ch06.html21">&nbsp;</a>It’s a good idea to consider the impact of API adoption and usage on your organization’s developers and their productivity. If APIs are cumbersome to use, developers will be slow or reluctant to adopt them. Secure-by-construction APIs have the double benefit of making your code more understandable and allowing developers to focus on the logic of your application, while also automatically building secure approaches into your organization’s culture.</p>
+
+<p>Fortunately, it is often possible to design libraries and frameworks such that secure-by-construction APIs are a net benefit for developers, while also promoting a culture of security and reliability (<a data-type="xref" href="#twoone_building_a_culture_of_security_a">#twoone_building_a_culture_of_security_a</a>). In return for adopting your secure API, which ideally follows established patterns and idioms that they’re already familiar with, your developers gain the benefit of not being responsible for ensuring security invariants related to the API’s use.</p>
+
+<p>For example, a contextually autoescaping HTML template system takes full responsibility for correct validation and escaping of all data interpolated into the template. This is a powerful security invariant for the entire application, since it ensures that rendering of any such template cannot result in XSS vulnerabilities, no matter what (potentially malicious) data the template is being fed.</p>
+
+<p>At the same time, from a developer’s perspective, using a contextually autoescaping HTML template system is just like using a regular HTML template—you provide data, and the template system interpolates it into placeholders within HTML markup—except you no longer have to worry about adding appropriate escaping or validation directives.</p>
+
+<section data-type="sect3" id="example_secure_cryptographic_apis_and_t">
+<h3>Example: Secure cryptographic APIs and the Tink crypto framework</h3>
+
+<p><a contenteditable="false" data-primary="APIs (application programming interfaces)" data-secondary="secure cryptographic APIs and Tink crypto framework" data-type="indexterm" id="ch06.html22">&nbsp;</a><a contenteditable="false" data-primary="cryptographic code" data-type="indexterm" id="ch06.html23">&nbsp;</a>Cryptographic code is particularly prone to subtle mistakes. Many cryptographic primitives (such as cipher and hash algorithms) have catastrophic failure modes that are difficult for nonexperts to recognize. For example, in certain situations where encryption is combined improperly with authentication (or used without authentication at all), an attacker who can only observe whether a request to a service fails or is accepted can nevertheless use the service as a so-called “decryption oracle” and recover the clear text of encrypted messages.<span data-type="footnote" id="ch06fn22">See Rizzo, Juliano, and Thai Duong. 2010. “Practical Padding Oracle Attacks.” <em>Proceedings of the 4th USENIX Conference on Offensive Technologies</em>: 1–8. <a href="https://oreil.ly/y-OYm"><em class="hyperlink">https://oreil.ly/y-OYm</em></a>.</span> A nonexpert who is not aware of the underlying attack technique has little chance of noticing the flaw: the encrypted data looks perfectly unreadable, and the code is using a standard, recommended, and secure cipher like AES. Nevertheless, because of subtly incorrect usage of the nominally secure cipher, the cryptographic scheme is insecure.</p>
+
+<p>In our experience, code involving cryptographic primitives that was not developed and reviewed by experienced cryptographers commonly has serious flaws. Using crypto correctly is just really, really hard.</p>
+
+<p><a contenteditable="false" data-primary="Tink library" data-type="indexterm" id="ch06.html24">&nbsp;</a>Our experience from many security review engagements led Google to develop Tink: a library that enables engineers to <a href="https://oreil.ly/7G0mD">use cryptography safely</a> in their applications. Tink was born out of our extensive experience working with Google product teams, fixing vulnerabilities in cryptography implementations, and providing simple APIs that engineers without a cryptographic background can use safely.</p>
+
+<p>Tink reduces the potential for common crypto pitfalls, and provides secure APIs that are easy to use correctly and hard(er) to misuse. The following principles guided Tink’s design and development:</p>
+
+<dl>
+	<dt>Secure by default</dt>
+	<dd>The library provides an API that’s hard to misuse. For example, the API does not permit reuse of nonces in Galois Counter Mode—a fairly common but subtle mistake that was specifically called out in <a href="https://oreil.ly/3z4CT">RFC 5288</a>, as it allows authentication key recovery that leads to a complete failure of the <span class="keep-together">AES-GCM</span> mode’s authenticity. Thanks to <a href="https://oreil.ly/7UhA7">Project Wycheproof</a>, Tink reuses proven and well-tested libraries.</dd>
+	<dt>Usability</dt>
+	<dd>The library has a simple and easy-to-use API, so a software engineer can focus on the desired functionality—for example, implementing block and streaming Authenticated Encryption with Associated Data (AEAD) primitives.</dd>
+	<dt>Readability and auditability</dt>
+	<dd>Functionality is clearly readable in code, and Tink maintains control over employed cryptographic schemes.</dd>
+	<dt>Extensibility</dt>
+	<dd>It’s easy to add new functionality, schemes, and formats—for example, via the registry for key managers.</dd>
+	<dt>Agility</dt>
+	<dd>Tink has built-in key rotation and supports deprecation of obsolete/broken schemes.</dd>
+	<dt>Interoperability</dt>
+	<dd>Tink is available in many languages and on many platforms.</dd>
+</dl>
+
+<p><a contenteditable="false" data-primary="Android Keystore" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="AWS Key Management Service" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="Cloud Key Management Service (KMS)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="Key Management Service (KMS)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="KMS (Key Management Service)" data-type="indexterm">&nbsp;</a>Tink also provides a solution for key management, integrating with <a href="https://oreil.ly/k5A3c">Cloud Key Management Service (KMS)</a>, <a href="https://oreil.ly/nzkF9">AWS Key Management Service</a>, and <a href="https://oreil.ly/PUkYz">Android Keystore</a>. Many cryptographic libraries make it easy to store private keys on disk, and make adding private keys to your source code—a practice that’s strongly discouraged—even easier. Even if you run “keyhunt” and “password hunt” activities to find and scrub secrets from your codebase and storage systems, it’s difficult to eliminate key management–related incidents completely. In contrast, Tink’s API does not accept raw key material. Instead, the API encourages use of a key management service.</p>
+
+<p>Google uses Tink to secure the data of many products, and it is now the recommended library for protecting data within Google and when communicating with third parties. By providing abstractions with well-understood properties (such as “authenticated encryption”) backed by well-engineered implementations, it allows security engineers to focus on higher-level aspects of cryptographic code without having to be concerned with lower-level attacks on the underlying cryptographic primitives.</p>
+
+<p>It is important to note, however, that Tink cannot prevent higher-level design mistakes in cryptographic code. For example, a software developer without sufficient cryptography background might choose to protect sensitive data by hashing it. This is unsafe if the data in question is from a set that is (in cryptographic terms) relatively modest in size, such as credit card or Social Security numbers. Using a cryptographic hash in such a scenario, instead of authenticated encryption, is a design-level mistake that exhibits itself at a level of granularity above Tink’s API. A security reviewer cannot conclude that such mistakes are absent from an application just because the code uses Tink instead of a different crypto library.</p>
+
+<p>Software developers and reviewers must take care to understand what security and reliability properties a library or framework does and does not guarantee. Tink prevents many mistakes that could result in low-level cryptographic vulnerabilities, but does not prevent mistakes based on using the wrong crypto API (or not using crypto at all).<a contenteditable="false" data-primary="" data-startref="ch06.html24" data-type="indexterm">&nbsp;</a> Similarly, a secure-by-construction web framework prevents XSS vulnerabilities, but does not prevent security bugs in an application’s business<a contenteditable="false" data-primary="" data-startref="ch06.html23" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html22" data-type="indexterm">&nbsp;</a> logic<a contenteditable="false" data-primary="" data-startref="ch06.html21" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html20" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch06.html15" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch06.html14" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
+</section>
+
+<section data-type="sect1" id="conclusion-id00005">
+<h1>Conclusion</h1>
+
+<p>Reliability and security benefit, in a deep and intertwined way, from understandable systems.</p>
+
+<p>Although “reliability” is sometimes treated as synonymous with “availability,” this attribute really means upholding all of a system’s critical design guarantees—availability, durability, and security invariants, to name a few.</p>
+
+<p>Our primary guidance for building an understandable system is to construct it with components that have clear and constrained purposes. Some of those components may make up its trusted computing base, and therefore concentrate responsibility for addressing security risk.</p>
+
+<p>We also discussed strategies for enforcing desirable properties—such as security invariants, architectural resilience, and data durability—in and between those components. Those strategies include the following:</p>
+
+<ul>
+	<li>
+	<p>Narrow, consistent, typed interfaces</p>
+	</li>
+	<li>
+	<p>Consistent and carefully implemented authentication, authorization, and accounting strategies</p>
+	</li>
+	<li>
+	<p>Clear assignment of identities to active entities, whether they are software components or human administrators</p>
+	</li>
+	<li>
+	<p>Application framework libraries and data types that encapsulate security invariants to ensure that components follow best practices consistently</p>
+	</li>
+</ul>
+
+<p>When your most critical system behaviors are malfunctioning, the understandability of your system can make the difference between a brief incident and a protracted disaster. SREs must be aware of the security invariants of the system in order to do their job. In extreme cases, they may have to take a service offline during a security incident, sacrificing availability for security<a contenteditable="false" data-primary="" data-startref="ch06.html5" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch06.html0" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>

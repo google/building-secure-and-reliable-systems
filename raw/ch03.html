@@ -1,0 +1,90 @@
+<section xmlns="http://www.w3.org/1999/xhtml" data-type="chapter" id="case_study_safe_proxies">
+<h1>Case Study: Safe Proxies</h1>
+
+<p class="byline">By Jakub Warmuz and Ana Oprea</p>
+<p class="byline cont">with Thomas Maufer, Susanne Landers, Roxana Loza, <span class="keep-together">Paul Blankinship, and Betsy Beyer</span></p>
+
+<aside data-type="sidebar" id="imagine_that_an_adversary_wants_to_deli">
+<p><a contenteditable="false" data-primary="Google" data-secondary="safe proxies case study" data-type="indexterm" id="ch03.html0">&nbsp;</a><a contenteditable="false" data-primary="safe proxies (case study)" data-type="indexterm" id="ch03.html1">&nbsp;</a>Imagine that an adversary wants to deliberately disrupt your systems. Or perhaps a well-intentioned engineer with a privileged account makes a far-reaching change by mistake. Since you understand your systems well, and they’re designed for least privilege and recovery, the impact to your environment is limited. When investigating and performing incident response, you can identify the root cause of the issues and take appropriate action.</p>
+<p>Does this scenario seem representative of your organization? It’s possible that not all your systems fit this picture, and that you need a way to make a running system safer and less prone to outages. Safe proxies are one method to do just that.</p>
+</aside>
+<section data-type="sect1" id="safe_proxies_in_production_environments">
+<h1>Safe Proxies in Production Environments</h1>
+<p><a contenteditable="false" data-primary="production" data-secondary="safe proxies in production environments" data-type="indexterm" id="ch03.html2">&nbsp;</a><a contenteditable="false" data-primary="safe proxies (case study)" data-secondary="in production environments" data-type="indexterm" id="ch03.html3">&nbsp;</a>In general, proxies provide a way to address new reliability and security requirements without requiring substantial changes to deployed systems. Rather than modifying an existing system, you can simply use a proxy to route connections that would have otherwise gone directly to the system. The proxy can also include controls to meet your new security and reliability requirements. In this case study, we examine a set of <em>safe proxies</em> we use at Google to limit the ability of privileged administrators to accidentally or maliciously cause issues in our production environment.</p>
+<p>Safe proxies are a framework that allows authorized persons to access or modify the state of physical servers, virtual machines, or particular applications. At Google, we use safe proxies to review, approve, and run risky commands without establishing an SSH connection to systems. Using these proxies, we can grant fine-grained access to debug issues or can rate limit machine restarts. Safe proxies represent a single entry point between networks and are key instruments that enable us to do the following:</p>
+<ul>
+<li><p>Audit every operation in the fleet</p></li>
+<li><p>Control access to resources</p></li>
+<li><p>Protect production from human mistakes at scale</p></li>
+</ul>
+<p><a contenteditable="false" data-primary="Zero Touch Prod (ZTP)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="ZTP (Zero Touch Prod)" data-type="indexterm">&nbsp;</a><a href="https://oreil.ly/_4rAo">Zero Touch Prod</a> is a project at Google that requires every change in production to be made by automation (instead of humans), prevalidated by software, or triggered through an audited breakglass mechanism.<span data-type="footnote" id="ch03fn1">A breakglass mechanism is one that can bypass policies to allow engineers to quickly resolve outages. See <a data-type="xref" href='#breakglass'>#breakglass</a>.</span> Safe proxies are among the set of tools we use to achieve these principles. We estimate that ~13% of all Google-evaluated outages could have been prevented or mitigated with Zero Touch Prod.</p>
+<p>In the safe proxy model, displayed in <a data-type="xref" href="#safe_proxy">#safe_proxy</a>, instead of talking to the target system directly, clients talk to the proxy. At Google, we enforce this behavior by restricting the target system to accept only calls from the proxy through a configuration. <a contenteditable="false" data-primary="access control lists (ACLs)" data-secondary="safe proxies and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="remote procedure calls (RPCs)" data-secondary="safe proxies and" data-type="indexterm">&nbsp;</a>This configuration specifies which application-layer remote procedure calls (RPCs) can be executed by which client roles through access control lists (ACLs). After checking the access permissions, the proxy sends the request to be executed via the RPC to the target systems. Typically, each target system has an application-layer program that receives the request and executes it directly on the system. The proxy logs all requests and commands issued by the systems it interacts with.</p>
+
+<p><a contenteditable="false" data-primary="proxies" data-secondary="benefits of" data-type="indexterm">&nbsp;</a>We’ve found multiple benefits to using proxies to manage systems, whether the client is a human, automation, or both. Proxies provide the following:</p>
+
+<ul>
+<li><p>A central point to enforce multi-party authorization (MPA),<span data-type="footnote" id="ch03fn2">MPA requires that an additional user approve an action before it is allowed to take place. See <a data-type="xref" href='#multi_party_authorization_left_parenthe'>#multi_party_authorization_left_parenthe</a>.</span> where we make the access decisions for requests that interact with sensitive data</p></li>
+<li><p>Administrative usage auditing, where we can track when a given request was performed and by whom</p></li>
+<li><p>Rate limiting, where changes like a system restart take effect gradually, and we can potentially restrict the blast radius of a mistake</p></li>
+<li><p>Compatibility with closed-source third-party target systems, where we control the behavior of components (that we cannot modify) through additional functionality in the proxy</p></li>
+<li><p>Continuous improvement integration, where we add security and reliability enhancements to the central proxy point</p></li>
+</ul>
+
+<figure id="safe_proxy">
+<img src="images/bsrs_0301.png" alt="Safe proxy model"/>
+<figcaption>Safe proxy model</figcaption>
+</figure>
+<p><a contenteditable="false" data-primary="proxies" data-secondary="downsides of" data-type="indexterm">&nbsp;</a>Proxies also have some downsides and potential pitfalls:</p>
+<ul>
+<li><p>Increased cost, in terms of maintenance and operational overhead.</p></li>
+<li><p>A single point of failure, if either the system itself or one of its dependencies is unavailable. We mitigate this situation by running multiple instances to increase redundancy. We make sure that all of our system’s dependencies have an <span class="keep-together">acceptable</span> service level agreement (SLA), and that the team operating each of the dependencies has a documented emergency contact.</p></li>
+<li><p>A policy configuration for access control, which can be a source of errors itself. We guide users to make the right choices by providing templates or automatically generating settings that are secure by default. When creating such templates or automation, we follow the design strategies presented throughout <a data-type="xref" href="#designing_systems">#designing_systems</a>.</p></li>
+<li><p>A central machine that an adversary could take control of. The aforementioned policy configuration requires the system to forward the identity of the client and executes any actions on behalf of the client. The proxy itself doesn’t give high privileges because no request is executed under a proxy role.</p></li>
+<li><p>Resistance to change, as users may wish to connect directly to production systems. To reduce friction imposed by the proxy, we work closely with engineers to make sure they can access the systems through a breakglass mechanism during emergencies. We discuss such topics in more detail in <a data-type="xref" href="#twoone_building_a_culture_of_security_a">#twoone_building_a_culture_of_security_a</a>.</p></li>
+</ul>
+<p>Since the main use case for the safe proxy is to add security and reliability capabilities related to access control, the interfaces exposed by the proxy should use the same external APIs as the target system. As a result, the proxy doesn’t affect the overall user experience. Assuming the safe proxy is transparent, it can simply forward traffic after performing some pre- and postprocessing for validation and logging. The next section discusses one specific instantiation of a safe proxy that we use at Google.<a contenteditable="false" data-primary="" data-startref="ch03.html3" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html2" data-type="indexterm">&nbsp;</a></p>
+</section>
+<section data-type="sect1" id="google_tool_proxy">
+<h1>Google Tool Proxy</h1>
+<p><a contenteditable="false" data-primary="CLI (command-line interface)" data-type="indexterm" id="ch03.html4">&nbsp;</a><a contenteditable="false" data-primary="command-line interface (CLI)" data-type="indexterm" id="ch03.html5">&nbsp;</a><a contenteditable="false" data-primary="Google" data-secondary="Tool Proxy" data-type="indexterm" id="ch03.html6">&nbsp;</a><a contenteditable="false" data-primary="safe proxies (case study)" data-secondary="Google Tool Proxy" data-type="indexterm" id="ch03.html7">&nbsp;</a><a contenteditable="false" data-primary="Tool Proxy (Google binary)" data-type="indexterm" id="ch03.html8">&nbsp;</a>Googlers perform the majority of administrative operations using <a href="https://oreil.ly/7qk8Q">command-line interface (CLI)</a> tools. Some of these tools are potentially dangerous—for example, certain tools can turn off a server. If such a tool specifies an incorrect scope selector, a command-line invocation can accidentally stop several service frontends, resulting in an outage. It would be difficult and expensive to track every CLI tool, ensure that it performs centralized logging, and make certain that sensitive actions have further protections. To address this issue, Google created a <em>Tool Proxy</em>: a binary that exposes a generic RPC method that internally executes the specified command line through a fork and exec. All invocations are controlled through a policy, logged for auditing, and have the ability to require MPA.</p>
+<p><a contenteditable="false" data-primary="Zero Touch Prod (ZTP)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="ZTP (Zero Touch Prod)" data-type="indexterm">&nbsp;</a>Using the Tool Proxy achieves one of the main goals of Zero Touch Prod: making production safer by not allowing humans to directly access production. Engineers are not able to run arbitrary commands directly on servers; they need to contact the Tool Proxy instead.</p>
+<p><a contenteditable="false" data-primary="remote procedure calls (RPCs)" data-secondary="tool proxies and" data-type="indexterm">&nbsp;</a>We configure who is allowed to take which actions by using a fine-grained set of policies that carry out the authorization for the RPC method. The policy in <a data-type="xref" href="#example_three_onedot_google_tool_proxy">example_three_onedot_google_tool_proxy</a> allows a member of <code>group:admin</code> to run the latest version of the <code>borg</code> CLI with any parameter after someone from <code>group:admin-leads</code> approves the command. The Tool Proxy instances are <a href="https://oreil.ly/ks1HD">typically deployed as Borg jobs</a>.</p>
+<div data-type="example" id="example_three_onedot_google_tool_proxy">
+<h5>Google Tool Proxy Borg policy</h5>
+<pre data-type="programlisting">config <span>=</span> <span>{</span>
+  proxy_role <span>=</span> <span>'admin-proxy'</span>
+  tools <span>=</span> <span>{</span>
+    borg <span>=</span> <span>{</span>
+      mpm <span>=</span> <span>'client@live'</span>
+      binary_in_mpm <span>=</span> <span>'borg'</span>
+      any_command <span>=</span> <span>true</span>
+      allow <span>=</span> <span>[</span><span>'group:admin'</span><span>]</span>
+      require_mpa_approval_from <span>=</span> <span>[</span><span>'group:admin-leads'</span><span>]</span>
+      unit_tests <span>=</span> <span>[{</span>
+        expected <span>=</span> <span>'ALLOW'</span>
+        command <span>=</span> <span>'file.borgcfg up'</span>
+      <span>}]</span>
+    <span>}</span>
+  }
+}</pre>
+</div>
+<p>The policy in <a data-type="xref" href="#example_three_onedot_google_tool_proxy">example_three_onedot_google_tool_proxy</a> allows an engineer to run a command to stop a Borg job in production from their workstation by using a command like the following:</p>
+<pre data-type="programlisting">$ <strong><span>tool-proxy-cli --proxy_address admin-proxy borg kill ...</span></strong></pre>
+<p>This command sends an RPC to the proxy at the specified address, which initiates the following chain of events, as shown in <a data-type="xref" href="#tool_proxy_usage_workflow">#tool_proxy_usage_workflow</a>:</p>
+<ol>
+<li><p>The proxy logs all RPCs and checks performed, providing an easy way to audit previously run administrative actions.</p></li>
+<li><p>The proxy checks the policy to ensure the caller is in <code>group:admin</code>.</p></li>
+<li><p>Since this is a sensitive command, MPA is triggered and the proxy waits for an authorization from a person in <code>group:admin-leads</code>.</p></li>
+<li><p>If granted approval, the proxy executes the command, waits for the result, and attaches the return code, stdout, and stderr to the RPC response.</p></li>
+</ol>
+<figure id="tool_proxy_usage_workflow">
+<img src="images/bsrs_0302.png" alt="Tool Proxy usage workflow"/>
+<figcaption>Tool Proxy usage workflow</figcaption>
+</figure>
+<p>The Tool Proxy requires a small change to the development workflow: engineers need to prepend their commands with <code>tool-proxy-cli --proxy_address</code>. To ensure privileged users don’t circumvent the proxy, we modified the server to allow only administrative actions to <code>admin-proxy</code> and to deny any direct connections outside of breakglass situations.<a contenteditable="false" data-primary="" data-startref="ch03.html8" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html7" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html6" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html5" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html4" data-type="indexterm">&nbsp;</a></p>
+</section>
+<section data-type="sect1" id="conclusion-id00080">
+<h1>Conclusion</h1>
+<p>Using safe proxies is one way to add logging and multi-party authorization to a system. Proxies can thus help make your systems more secure and more reliable. This approach can be a cost-effective option for an existing system, but will be much more resilient if paired with other design principles described in <a data-type="xref" href="#designing_systems">#designing_systems</a>. As we discuss in <a data-type="xref" href="#design_tradeoffs">#design_tradeoffs</a>, if you’re starting a new project, you should ideally build your system architecture using frameworks that integrate with logging and access control <span class="keep-together">modules</span>.<a contenteditable="false" data-primary="" data-startref="ch03.html1" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html0" data-type="indexterm">&nbsp;</a></p>
+</section>
+</section>
