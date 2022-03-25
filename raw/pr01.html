@@ -5,7 +5,7 @@
 
 <p>Successfully designing, implementing, and maintaining systems requires a commitment to the full system lifecycle. This commitment is possible only when security and reliability are central elements in the architecture of systems. Yet both are often afterthoughts, considered only after an incident occurs, resulting in expensive and sometimes difficult improvements.</p>
 
-<p><a contenteditable="false" data-primary="security by design" data-type="indexterm">&nbsp;</a><a href="https://oreil.ly/-46BV">Security by design</a> is increasingly important in a world where many products are connected to the internet, and where cloud technologies are becoming more prevalent. The more we come to rely on those systems, the more reliable they need to be; the more trust we place in their security, the more secure they need to be.</p>
+<p><a contenteditable="false" data-primary="security by design" data-type="indexterm">&nbsp;</a><a href="https://www.owasp.org/index.php/Security_by_Design_Principles">Security by design</a> is increasingly important in a world where many products are connected to the internet, and where cloud technologies are becoming more prevalent. The more we come to rely on those systems, the more reliable they need to be; the more trust we place in their security, the more secure they need to be.</p>
 
 <aside data-type="sidebar" id="systems">
 <h5>Systems</h5>
@@ -24,9 +24,9 @@
 <section data-type="sect1" id="who_this_book_is_for">
 <h1>Who This Book Is For</h1>
 
-<p>Because security and reliability are everyone’s responsibility, we’re targeting a broad audience: people who design, implement, and maintain systems. We’re challenging the dividing lines between the traditional professional roles of developers, architects, <a href="https://oreil.ly/EVa7K">Site Reliability Engineers (SREs)</a>, systems administrators, and security engineers. While we’ll dive deeply into some subjects that might be more relevant to experienced engineers, we invite you—the reader—to try on different hats as you move through the chapters, imagining yourself in roles you (currently) don’t have and thinking about how you could improve your systems.</p>
+<p>Because security and reliability are everyone’s responsibility, we’re targeting a broad audience: people who design, implement, and maintain systems. We’re challenging the dividing lines between the traditional professional roles of developers, architects, <a href="https://landing.google.com/sre/sre-book/chapters/introduction/">Site Reliability Engineers (SREs)</a>, systems administrators, and security engineers. While we’ll dive deeply into some subjects that might be more relevant to experienced engineers, we invite you—the reader—to try on different hats as you move through the chapters, imagining yourself in roles you (currently) don’t have and thinking about how you could improve your systems.</p>
 
-<p>We argue that everyone should be thinking about the fundamentals of reliability and security from the very beginning of the development process, and integrating those principles early in the system lifecycle. This is a crucial concept that shapes this entire book. There are many lively active discussions in the industry about security engineers becoming more like software developers, and SREs and software developers becoming more like security engineers.<span data-type="footnote" id="ch01fn1">See, for example, Dino Dai Zovi’s <a href="https://oreil.ly/Wap7b">“Every Security Team Is a Software Team Now” talk</a> at Black Hat USA 2019, Open Security Summit’s <a href="https://oreil.ly/_PAzE">DevSecOps track</a>, and Dave Shackleford’s <a href="https://oreil.ly/_Wmcx">“A DevSecOps Playbook” SANS Analyst paper</a>.</span> We invite you to join in the conversation.</p>
+<p>We argue that everyone should be thinking about the fundamentals of reliability and security from the very beginning of the development process, and integrating those principles early in the system lifecycle. This is a crucial concept that shapes this entire book. There are many lively active discussions in the industry about security engineers becoming more like software developers, and SREs and software developers becoming more like security engineers.<span data-type="footnote" id="ch01fn1">See, for example, Dino Dai Zovi’s <a href="https://www.blackhat.com/us-19/briefings/schedule/index.html#every-security-team-is-a-software-team-now-17280">“Every Security Team Is a Software Team Now” talk</a> at Black Hat USA 2019, Open Security Summit’s <a href="https://open-security-summit.org/tracks/devsecops/">DevSecOps track</a>, and Dave Shackleford’s <a href="https://www.sans.org/reading-room/whitepapers/analyst/membership/36792">“A DevSecOps Playbook” SANS Analyst paper</a>.</span> We invite you to join in the conversation.</p>
 
 <p>When we say “you” in the book, we mean the reader, independent of a particular job or experience level. This book challenges the traditional expectations of engineering roles and aims to empower you to be responsible for security and reliability throughout the whole product lifecycle. You shouldn’t worry about using all of the practices described here in your specific circumstances. Instead, we encourage you to return to this book at different stages of your career or throughout the evolution of your <span class="keep-together">organization</span>, considering whether ideas that didn’t seem valuable at first might be newly meaningful.</p>
 </section>
@@ -63,7 +63,7 @@
 
 <p>This book recommends many tools or techniques considered to be good practice in the industry. Not every idea will be suitable for your particular use case, so you should evaluate the requirements of your project and design solutions adapted to your particular risk landscape.</p>
 
-<p>While this book aims to be self-contained, you will find references to <a href="https://oreil.ly/SRE-book-toc"><em>Site Reliability Engineering</em></a> and <a href="https://oreil.ly/SRE-workbook-TOC"><em>The Site Reliability Workbook</em></a>, where experts from Google describe how reliability is fundamental to service design. Reading these books may give you a deeper understanding of certain concepts but is not a prerequisite.</p>
+<p>While this book aims to be self-contained, you will find references to <a href="https://landing.google.com/sre/sre-book/toc/index.html"><em>Site Reliability Engineering</em></a> and <a href="https://landing.google.com/sre/workbook/toc/"><em>The Site Reliability Workbook</em></a>, where experts from Google describe how reliability is fundamental to service design. Reading these books may give you a deeper understanding of certain concepts but is not a prerequisite.</p>
 
 <p>We hope you enjoy this book, and that some of the information in these pages can help you improve the reliability and security of your systems.</p>
 </section>
@@ -118,7 +118,7 @@
 	<li>707-829-0104 (fax)</li>
 </ul>
 
-<p>We have a web page for this book, where we list errata, examples, and any additional information. You can access this page at <a href="https://oreil.ly/buildSecureReliableSystems"><em>https://oreil.ly/buildSecureReliableSystems</em></a>.</p>
+<p>We have a web page for this book, where we list errata, examples, and any additional information. You can access this page at <a href="http://shop.oreilly.com/product/0636920297550.do"><em>http://shop.oreilly.com/product/0636920297550.do</em></a>.</p>
 
 <p>Email <a class="email" href="mailto:bookquestions@oreilly.com"><em>bookquestions@oreilly.com</em></a> to comment or ask technical questions about this book.</p>
 
