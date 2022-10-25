@@ -1,8 +1,8 @@
-# The SRS Book by Google
+# Building Secure and Reliable Systems - a book by Google
 
 Google wrote a book aiming to share knowledge about our experience in building
-secure systems at scale. This highlights technologies and practices that protect
-user data and reliability. It also offers insights into collaboration between
+secure systems at scale. This book highlights technologies and practices that protect
+user data and reliability; it also offers insights into collaboration between
 teams on these topics.
 
 This repository contains the content of the book "Building Secure and Reliable
