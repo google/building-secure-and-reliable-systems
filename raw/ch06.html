@@ -407,7 +407,8 @@
 	</li>
 </ul>
 
-<figure id="interactions_involved_in_transferring_d"><img alt="Interactions involved in transferring data between workloads" src="images/bsrs_0601.png" />
+<figure id="interactions_involved_in_transferring_d">
+<img alt="Interactions involved in transferring data between workloads" src="images/bsrs_0601.png" />
 <figcaption>Interactions involved in transferring data between workloads</figcaption>
 </figure>
 
@@ -440,7 +441,8 @@
 
 <p>Using one of the many popular application frameworks, we might end up with an architecture like <a data-type="xref" href="#example_architecture_of_an_application">#example_architecture_of_an_application</a>.<span data-type="footnote" id="ch06fn13">To keep the example simple, <a data-type="xref" href="#example_architecture_of_an_application">#example_architecture_of_an_application</a> doesn’t show connections to external service providers.</span></p>
 
-<figure id="example_architecture_of_an_application"><img alt="Example architecture of an application that sells widgets" src="images/bsrs_0602.png" />
+<figure id="example_architecture_of_an_application">
+<img alt="Example architecture of an application that sells widgets" src="images/bsrs_0602.png" />
 <figcaption>Example architecture of an application that sells widgets</figcaption>
 </figure>
 
@@ -459,7 +461,8 @@
 
 <p>Instead of a monolithic server, we now have a web application frontend and separate backends for the product catalog and purchasing-related functionality. Each backend has its own separate database.<span data-type="footnote" id="ch06fn14">In a real-world design, you would likely use a single database with separate groups of tables to which workload identities have been granted appropriate access. This achieves separation of access to data while still allowing the database to ensure data consistency properties across all tables, such as foreign-key constraints between shopping cart contents and catalog items.</span> The web frontend never directly queries a database; instead, it sends RPCs to the appropriate backend. For example, the frontend queries the catalog backend to search for items in the catalog or to retrieve the details of a particular item. Likewise, the frontend sends RPCs to the purchasing backend to handle the shopping cart checkout process. As discussed earlier in this chapter, the backend microservice and the database server can rely on workload identity and infrastructure-level authentication protocols like ALTS to authenticate callers and limit requests to authorized workloads.</p>
 
-<figure id="example_microservices_architecture_for"><img alt="Example microservices architecture for widget-selling application" src="images/bsrs_0603.png" />
+<figure id="example_microservices_architecture_for">
+<img alt="Example microservices architecture for widget-selling application" src="images/bsrs_0603.png" />
 <figcaption>Example microservices architecture for widget-selling application</figcaption>
 </figure>
 
@@ -483,7 +486,8 @@
 
 <p>We can remedy this situation by decomposing the system further and erecting additional security boundaries—in this case, based on web origins. As shown in <a data-type="xref" href="#decomposing_the_web_frontend">#decomposing_the_web_frontend</a>, we can operate two separate web frontends: one that implements <span class="keep-together">catalog search</span> and browsing and which serves at <em>https://widgets.example.com</em>, and a <span class="keep-together">separate frontend</span> responsible for purchasing profiles and checkout serving at <span class="keep-together"><em>https://checkout.example.com</em></span>.<span data-type="footnote" id="ch06fn17">It’s important that we configure our web servers so that the payments frontend is <em>not</em> also accessible at, for example, <em>https://widgets.example.com/checkout</em>.</span> Now, web vulnerabilities such as XSS in the catalog UI cannot compromise the payment functionality, because that functionality is segregated into its own web origin.</p>
 
-<figure id="decomposing_the_web_frontend"><img alt="Decomposing the web frontend" src="images/bsrs_0604.png" />
+<figure id="decomposing_the_web_frontend">
+<img alt="Decomposing the web frontend" src="images/bsrs_0604.png" />
 <figcaption>Decomposing the web frontend</figcaption>
 </figure>
 </section>
