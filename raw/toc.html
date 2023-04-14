@@ -1,2 +1,1413 @@
-<!-- This is a placeholder element for use with the automatic TOC generation option in Atlas -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Building Secure and Reliable Systems</title>
+</head>
+<body data-type="book">
 <nav xmlns="http://www.w3.org/1999/xhtml" data-type="toc"/>
+<ul>
+  <li data-type="foreword">
+    <a href="foreword01.html#foreword">Foreword by Royal Hansen</a>
+  </li>
+  <li data-type="foreword">
+    <a href="foreword02.html#foreword-id00001">Foreword by Michael Wildpaner</a>
+  </li>
+  <li data-type="preface">
+    <a href="pr01.html#preface">Preface</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="pr01.html#why_we_wrote_this_book">Why We Wrote This Book</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#who_this_book_is_for">Who This Book Is For</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#a_note_about_culture">A Note About Culture</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#how_to_read_this_book">How to Read This Book</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#conventions_used_in_this_book">Conventions Used in This Book</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#_safari_books_online">O'Reilly Online Learning</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#_how_to_contact_us">How to Contact Us</a>
+  </li>
+  <li data-type="sect1">
+    <a href="pr01.html#acknowledgments">Acknowledgments</a>
+  </li>
+  </ul>
+  <li data-type="part">
+    <a href="part1.html#introductory_material">Part I. Introductory Material</a>
+  </li>
+  <li data-type="chapter">
+    <a href="ch01.html#the_intersection_of_security_and_reliab">1. The Intersection of Security and Reliability</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch01.html#on_passwords_and_power_drills">On Passwords and Power Drills</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch01.html#reliability_versus_security_design_cons">Reliability Versus Security: Design Considerations</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch01.html#confidentialitycomma_integritycomma_ava">Confidentiality, Integrity, Availability</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch01.html#confidentiality">Confidentiality</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#integrity">Integrity</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#availability">Availability</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch01.html#reliability_and_security_commonalities">Reliability and Security: Commonalities</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch01.html#invisibility">Invisibility</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#assessment">Assessment</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#simplicity">Simplicity</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#evolution">Evolution</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#resilience">Resilience</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#from_design_to_production">From Design to Production</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#investigating_systems_and_logging">Investigating Systems and Logging</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#crisis_response">Crisis Response</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch01.html#recovery">Recovery</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch01.html#conclusion">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch02.html#understanding_adversaries">2. Understanding Adversaries</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch02.html#attacker_motivations">Attacker Motivations</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch02.html#attacker_profiles">Attacker Profiles</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch02.html#hobbyists">Hobbyists</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#vulnerability_researchers">Vulnerability Researchers</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#governments_and_law_enforcement">Governments and Law Enforcement</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#activists">Activists</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#criminal_actors">Criminal Actors</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#automation_and_artificial_intelligence">Automation and Artificial Intelligence</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#insiders">Insiders</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch02.html#attacker_methods">Attacker Methods</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch02.html#threat_intelligence">Threat Intelligence</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#cyber_kill_chains">Cyber Kill Chains™</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch02.html#tacticscomma_techniquescomma_and_proced">Tactics, Techniques, and Procedures</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch02.html#risk_assessment_considerations">Risk Assessment Considerations</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch02.html#conclusion-id00002">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="part">
+    <a href="part2.html#designing_systems">Part II. Designing Systems</a>
+  </li>
+  <li data-type="chapter">
+    <a href="ch03.html#case_study_safe_proxies">3. Case Study: Safe Proxies</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch03.html#safe_proxies_in_production_environments">Safe Proxies in Production Environments</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch03.html#google_tool_proxy">Google Tool Proxy</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch03.html#conclusion-id00080">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch04.html#design_tradeoffs">4. Design Tradeoffs</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch04.html#design_objectives_and_requirements">Design Objectives and Requirements</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch04.html#feature_requirements">Feature Requirements</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch04.html#nonfunctional_requirements">Nonfunctional Requirements</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch04.html#features_versus_emergent_properties">Features Versus Emergent Properties</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch04.html#example_google_design_document">Example: Google Design Document</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch04.html#balancing_requirements">Balancing Requirements</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch04.html#example_payment_processing">Example: Payment Processing</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch04.html#managing_tensions_and_aligning_goals">Managing Tensions and Aligning Goals</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch04.html#example_microservices_and_the_google_we">Example: Microservices and the Google Web Application Framework</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch04.html#aligning_emergent_property_requirements">Aligning Emergent-Property Requirements</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch04.html#initial_velocity_versus_sustained_veloc">Initial Velocity Versus Sustained Velocity</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch04.html#conclusion-id00003">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch05.html#design_for_least_privilege">5. Design for Least Privilege</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch05.html#concepts_and_terminolog">Concepts and Terminology</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#least_privilege">Least Privilege</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#zero_trust_networking">Zero Trust Networking</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#zero_touch">Zero Touch</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#classifying_access_based_on_risk">Classifying Access Based on Risk</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch05.html#best_practices">Best Practices</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#small_functional_apis">Small Functional APIs</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#breakglass">Breakglass</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#auditing">Auditing</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#testing_and_least_privilege">Testing and Least Privilege</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#diagnosing_access_denials">Diagnosing Access Denials</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#graceful_failure_and_breakglass_mechani">Graceful Failure and Breakglass Mechanisms</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#worked_example_configuration_distributi">Worked Example: Configuration Distribution</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#posix_api_via_openssh">POSIX API via OpenSSH</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#software_update_api">Software Update API</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#custom_openssh_forcecommand">Custom OpenSSH ForceCommand</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#custom_http_receiver_left_parenthesissi">Custom HTTP Receiver (Sidecar)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#custom_http_receiver_left_parenthesisin">Custom HTTP Receiver (In-Process)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#tradeoffs">Tradeoffs</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#a_policy_framework_for_authentication_a">Authorization Decisions</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#using_advanced_authorization_controls">Using Advanced Authorization Controls</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#investing_in_a_widely_used_authorizatio">Investing in a Widely Used Authorization Framework</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#avoiding_potential_pitfalls">Avoiding Potential Pitfalls</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#advanced_controls">Advanced Controls</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#multi_party_authorization_left_parenthe">Multi-Party Authorization (MPA)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#third_factor_authorization_left_parenth">Three-Factor Authorization (3FA)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#business_justifications">Business Justifications</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#temporary_access">Temporary Access</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#proxies">Proxies</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#tradeoffs_and_tensions">Tradeoffs and Tensions</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch05.html#increased_security_complexity">Increased Security Complexity</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#impact_on_collaboration_and_company_cul">Impact on Collaboration and Company Culture</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#quality_data_and_systems_that_impact_se">Quality Data and Systems That Impact Security</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#impact_on_user_productivity">Impact on User Productivity</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch05.html#impact_on_developer_complexity">Impact on Developer Complexity</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch05.html#conclusion-id00004">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch06.html#design_for_understandability">6. Design for Understandability</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch06.html#why_is_understandability_importantquest">Why Is Understandability Important?</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch06.html#system_invariants">System Invariants</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#analyzing_invariants">Analyzing Invariants</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#mental_models">Mental Models</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch06.html#designing_understandable_systems">Designing Understandable Systems</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch06.html#complexity_versus_understandabilit">Complexity Versus Understandability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#breaking_down_complexity">Breaking Down Complexity</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#centralized_responsibility_for_security">Centralized Responsibility for Security and Reliability Requirements</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch06.html#system_architecture">System Architecture</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch06.html#understandable_interface_specifications">Understandable Interface Specifications</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#understandable_identitiescomma_authenti">Understandable Identities, Authentication, and Access Control</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#security_boundaries">Security Boundaries</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch06.html#software_design">Software Design</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch06.html#using_application_frameworks_for_servic">Using Application Frameworks for Service-Wide Requirements</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#understanding_complex_data_flows">Understanding Complex Data Flows</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch06.html#considering_api_usability">Considering API Usability</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch06.html#conclusion-id00005">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch07.html#design_for_a_changing_landscape">7. Design for a Changing Landscape</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch07.html#types_of_security_changes">Types of Security Changes</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch07.html#designing_your_change">Designing Your Change</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch07.html#architecture_decisions_to_make_changes">Architecture Decisions to Make Changes Easier</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch07.html#keep_dependencies_up_to_date_and_rebuil">Keep Dependencies Up to Date and Rebuild Frequently</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch07.html#release_frequently_using_automated_test">Release Frequently Using Automated Testing</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch07.html#use_containers">Use Containers</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch07.html#use_microservices">Use Microservices</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch07.html#different_changes_different_speedscomma">Different Changes: Different Speeds, Different Timelines</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch07.html#short_term_change_zero_day_vulnerabilit">Short-Term Change: Zero-Day Vulnerability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch07.html#medium_term_change_improvement_to_secur">Medium-Term Change: Improvement to Security Posture</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch07.html#long_term_change_external_demand">Long-Term Change: External Demand</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch07.html#complications_when_plans_change">Complications: When Plans Change</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch07.html#example_growing_scopeem_dashheartbleed">Example: Growing Scope—Heartbleed</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch07.html#conclusion-id00006">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch08.html#design_for_resilience">8. Design for Resilience</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch08.html#design_principles_for_resilience">Design Principles for Resilience</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch08.html#defense_in_depth">Defense in Depth</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch08.html#the_trojan_horse">The Trojan Horse</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#google_app_engine_analysis">Google App Engine Analysis</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch08.html#controlling_degradation">Controlling Degradation</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch08.html#differentiate_costs_of_failures">Differentiate Costs of Failures</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#deploy_response_mechanisms">Deploy Response Mechanisms</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#automate_responsibly">Automate Responsibly</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch08.html#controlling_the_blast_radius">Controlling the Blast Radius</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch08.html#role_separation">Role Separation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#location_separation">Location Separation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#time_separation">Time Separation</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch08.html#failure_domains_and_redundancies">Failure Domains and Redundancies</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch08.html#failure_domains">Failure Domains</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#component_types">Component Types</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#controlling_redundancies">Controlling Redundancies</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch08.html#continuous_validation">Continuous Validation</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch08.html#validation_focus_areas">Validation Focus Areas</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch08.html#validation_in_practice">Validation in Practice</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch08.html#practical_advice_where_to_begin">Practical Advice: Where to Begin</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch08.html#conclusion-id00007">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch09.html#design_for_recovery">9. Design for Recovery</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch09.html#what_are_we_recovering_fromquestion_mar">What Are We Recovering From?</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch09.html#random_errors">Random Errors</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#accidental_errors">Accidental Errors</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#software_errors">Software Errors</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#malicious_actions">Malicious Actions</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch09.html#design_principles_for_recovery">Design Principles for Recovery</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch09.html#design_to_go_as_quickly_as_possible_lef">Design to Go as Quickly as Possible (Guarded by Policy)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#limit_your_dependencies_on_external_not">Limit Your Dependencies on External Notions of Time</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#rollbacks_represent_a_tradeoff_between">and Reliability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#use_an_explicit_revocation_mechanism">Use an Explicit Revocation Mechanism</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#know_your_intended_statecomma_down_to_t">Know Your Intended State, Down to the Bytes</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#design_for_testing_and_continuous_valid">Design for Testing and Continuous Validation</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch09.html#emergency_access">Emergency Access</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch09.html#access_controls">Access Controls</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#communications">Communications</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch09.html#responder_habits">Responder Habits</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch09.html#unexpected_benefits">Unexpected Benefits</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch09.html#conclusion-id00008">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch10.html#mitigating_denial_of_service_attacks">10. Mitigating Denial-of-Service Attacks</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch10.html#strategies_for_attack_and_defense">Strategies for Attack and Defense</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch10.html#attackerapostrophes_strategy">Attacker’s Strategy</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#defenderapostrophes_strategy">Defender’s Strategy</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch10.html#designing_for_defense">Designing for Defense</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch10.html#defendable_architecture">Defendable Architecture</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#defendable_services">Defendable Services</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch10.html#mitigating_attacks">Mitigating Attacks</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch10.html#monitoring_and_alerting">Monitoring and Alerting</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#graceful_degradation">Graceful Degradation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#a_dos_mitigation_system">A DoS Mitigation System</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#strategic_response">Strategic Response</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch10.html#dealing_with_self_inflicted_attacks">Dealing with Self-Inflicted Attacks</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch10.html#user_behavior">User Behavior</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch10.html#client_retry_behavior">Client Retry Behavior</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch10.html#conclusion-id00009">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="part">
+    <a href="part3.html#implementing_systems">Part III. Implementing Systems</a>
+  </li>
+  <li data-type="chapter">
+    <a href="ch11.html#case_study_designingcomma_implementi">11. Case Study: Designing, Implementing, and Maintaining a Publicly Trusted CA</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch11.html#background_on_publicly_trusted_certific">Background on Publicly Trusted Certificate Authorities</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch11.html#why_did_we_need_a_publicly_trusted_caqu">Why Did We Need a Publicly Trusted CA?</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch11.html#the_build_or_buy_decision">The Build or Buy Decision</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch11.html#designcomma_implementationcomma_and_mai">Design, Implementation, and Maintenance Considerations</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch11.html#programming_language_choice">Programming Language Choice</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch11.html#complexity_versus_understandability">Complexity Versus Understandability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch11.html#securing_third_party_and_open_source_co">Securing Third-Party and Open Source Components</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch11.html#testing">Testing</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch11.html#resiliency_for_the_ca_key_material">Resiliency for the CA Key Material</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch11.html#data_validation">Data Validation</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch11.html#conclusion-id00010">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch12.html#writing_code">12. Writing Code</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch12.html#frameworks_to_enforce_security_and_reli">Frameworks to Enforce Security and Reliability</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch12.html#benefits_of_using_frameworks">Benefits of Using Frameworks</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#example_framework_for_rpc_backends">Example: Framework for RPC Backends</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch12.html#common_security_vulnerabilities">Common Security Vulnerabilities</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch12.html#sql_injection_vulnerabilities_trustedsq">SQL Injection Vulnerabilities: TrustedSqlString</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#preventing_xss_safehtml">Preventing XSS: SafeHtml</a>
+  </li>
+  </ul>
+  </ul>
+  <li data-type="indexterm">
+    <a href="ch12.html#ch12fn4"></a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch12.html#lessons_for_evaluating_and_building_fra">Lessons for Evaluating and Building Frameworks</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch12.html#simplecomma_safecomma_reliable_librarie">Simple, Safe, Reliable Libraries for Common Tasks</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#rollout_strategy">Rollout Strategy</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch12.html#simplicity_leads_to_secure_and_reliable">Simplicity Leads to Secure and Reliable Code</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch12.html#avoid_multilevel_nesting">Avoid Multilevel Nesting</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#eliminate_yagni_smells">Eliminate YAGNI Smells</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#repay_technical_debt">Repay Technical Debt</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#refactoring">Refactoring</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch12.html#security_and_reliability_by_default">Security and Reliability by Default</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch12.html#choose_the_right_tools">Choose the Right Tools</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#use_strong_types">Use Strong Types</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch12.html#sanitize_your_code">Sanitize Your Code</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch12.html#conclusion-id00011">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch13.html#onethree_testing_code">13. Testing Code</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch13.html#unit_testing">Unit Testing</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch13.html#writing_effective_unit_tests">Writing Effective Unit Tests</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#when_to_write_unit_tests">When to Write Unit Tests</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#how_unit_testing_affects_code">How Unit Testing Affects Code</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch13.html#integration_testing">Integration Testing</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch13.html#writing_effective_integration_tests">Writing Effective Integration Tests</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch13.html#dynamic_program_analysis">Dynamic Program Analysis</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch13.html#fuzz_testing">Fuzz Testing</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch13.html#how_fuzz_engines_work">How Fuzz Engines Work</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#writing_effective_fuzz_drivers">Writing Effective Fuzz Drivers</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#an_example_fuzzer">An Example Fuzzer</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#continuous_fuzzing">Continuous Fuzzing</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch13.html#static_program_analysis">Static Program Analysis</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch13.html#automated_code_inspection_tools">Automated Code Inspection Tools</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#integration_of_static_analysis_in_the_d">Integration of Static Analysis in the Developer Workflow</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#abstract_interpretation">Abstract Interpretation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch13.html#formal_methods">Formal Methods</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch13.html#conclusion-id00012">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch14.html#onefour_deploying_code">14. Deploying Code</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch14.html#concepts_and_terminology">Concepts and Terminology</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch14.html#threat_model">Threat Model</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch14.html#best_practice">Best Practices</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch14.html#require_code_reviews">Require Code Reviews</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#rely_on_automation">Rely on Automation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#verify_artifactscomma_not_just_people">Verify Artifacts, Not Just People</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#treat_configuration_as_code">Treat Configuration as Code</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch14.html#securing_against_the_threat_model">Securing Against the Threat Model</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch14.html#advanced_mitigation_strategies">Advanced Mitigation Strategies</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch14.html#binary_provenance">Binary Provenance</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#provenance_based_deployment_policies">Provenance-Based Deployment Policies</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#verifiable_builds">Verifiable Builds</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#deployment_choke_points">Deployment Choke Points</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#post_deployment_verification">Post-Deployment Verification</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch14.html#practical_advice">Practical Advice</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch14.html#take_it_one_step_at_a_time">Take It One Step at a Time</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#provide_actionable_error_messages">Provide Actionable Error Messages</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#ensure_unambiguous_provenance">Ensure Unambiguous Provenance</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#create_unambiguous_policies">Create Unambiguous Policies</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch14.html#include_a_deployment_breakglass">Include a Deployment Breakglass</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch14.html#securing_against_the_threat_modelcomma">Securing Against the Threat Model, Revisited</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch14.html#conclusion-id00013">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch15.html#onefive_investigating_systems">15. Investigating Systems</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch15.html#from_debugging_to_investigation">From Debugging to Investigation</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch15.html#example_temporary_files">Example: Temporary Files</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#debugging_techniques">Debugging Techniques</a>
+  </li>
+  </ul>
+  </ul>
+  <li data-type="indexterm">
+    <a href="ch15.html#ch15.html4"></a>
+  </li>
+  <ul>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch15.html#what_to_do_when_youapostrophere_stuck">What to Do When You’re Stuck</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#collaborative_debugging_a_way_to_teach">Collaborative Debugging: A Way to Teach</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#how_security_investigations_and_debuggi">How Security Investigations and Debugging Differ</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch15.html#collect_appropriate_and_useful_logs">Collect Appropriate and Useful Logs</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch15.html#design_your_logging_to_be_immutable">Design Your Logging to Be Immutable</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#take_privacy_into_consideration">Take Privacy into Consideration</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#determine_which_security_logs_to_retain">Determine Which Security Logs to Retain</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#budget_for_logging">Budget for Logging</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch15.html#robustcomma_secure_debugging_access">Robust, Secure Debugging Access</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch15.html#reliability">Reliability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch15.html#security">Security</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch15.html#conclusion-id00014">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="part">
+    <a href="part4.html#maintaining_systems">Part IV. Maintaining Systems</a>
+  </li>
+  <li data-type="chapter">
+    <a href="ch16.html#onesix_disaster_planning">16. Disaster Planning</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch16.html#defining_quotation_markdisasterquotatio">Defining “Disaster”</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch16.html#dynamic_disaster_response_strategies">Dynamic Disaster Response Strategies</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch16.html#disaster_risk_analysis">Disaster Risk Analysis</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch16.html#setting_up_an_incident_response_team">Setting Up an Incident Response Team</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch16.html#identify_team_members_and_roles">Identify Team Members and Roles</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#establish_a_team_charter">Establish a Team Charter</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#establish_severity_and_priority_models">Establish Severity and Priority Models</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#define_operating_parameters_for_engagin">Define Operating Parameters for Engaging the IR Team</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#develop_response_plans">Develop Response Plans</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#create_detailed_playbooks">Create Detailed Playbooks</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#ensure_access_and_update_mechanisms_are">Ensure Access and Update Mechanisms Are in Place</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch16.html#prestaging_systems_and_people_before_an">Prestaging Systems and People Before an Incident</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch16.html#configuring_systems">Configuring Systems</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#training">Training</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#processes_and_procedures">Processes and Procedures</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch16.html#testing_systems_and_response_plans">Testing Systems and Response Plans</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch16.html#auditing_automated_systems">Auditing Automated Systems</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#conducting_nonintrusive_tabletops">Conducting Nonintrusive Tabletops</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#testing_response_in_production_environm">Testing Response in Production Environments</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#red_team_testing">Red Team Testing</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#evaluating_responses">Evaluating Responses</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch16.html#google_examples">Google Examples</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch16.html#test_with_global_impact">Test with Global Impact</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#dirt_exercise_testing_emergency_access">DiRT Exercise Testing Emergency Access</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch16.html#industry_wide_vulnerabilities">Industry-Wide Vulnerabilities</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch16.html#conclusion-id00015">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch17.html#oneseven_crisis_management">17. Crisis Management</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch17.html#is_it_a_crisis_or_notquestion_mark">Is It a Crisis or Not?</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch17.html#triaging_the_incident">Triaging the Incident</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#compromises_versus_bugs">Compromises Versus Bugs</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch17.html#taking_command_of_your_incident">Taking Command of Your Incident</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch17.html#the_first_step_donapostrophet_panicexcl">The First Step: Don’t Panic!</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#beginning_your_response">Beginning Your Response</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#establishing_your_incident_team">Establishing Your Incident Team</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#operational_security">Operational Security</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#trading_good_opsec_for_the_greater_good">Trading Good OpSec for the Greater Good</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#the_investigative_process">The Investigative Process</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch17.html#keeping_control_of_the_incident">Keeping Control of the Incident</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch17.html#parallelizing_the_incident">Parallelizing the Incident</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#handovers">Handovers</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#morale">Morale</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch17.html#communication">Communications</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch17.html#misunderstandings">Misunderstandings</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#hedging">Hedging</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#meetings">Meetings</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#keeping_the_right_people_informed_with">Keeping the Right People Informed with the Right Levels of Detail</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch17.html#putting_it_all_together">Putting It All Together</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch17.html#triage">Triage</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#declaring_an_incident">Declaring an Incident</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#communications_and_operational_security">Communications and Operational Security</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#beginning_the_incident">Beginning the Incident</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#handover">Handover</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#handing_back_the_incident">Handing Back the Incident</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#preparing_communications_and_remediatio">Preparing Communications and Remediation</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch17.html#closure">Closure</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch17.html#conclusion-id00016">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch18.html#oneeight_recovery_and_aftermath">18. Recovery and Aftermath</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch18.html#recovery_logistics">Recovery Logistics</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch18.html#recovery_timeline">Recovery Timeline</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch18.html#planning_the_recovery">Planning the Recovery</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch18.html#scoping_the_recovery">Scoping the Recovery</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#recovery_considerations">Recovery Considerations</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#recovery_checklists">Recovery Checklists</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch18.html#initiating_the_recovery">Initiating the Recovery</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch18.html#isolating_assets_left_parenthesisquaran">Isolating Assets (Quarantine)</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#system_rebuilds_and_software_upgrades">System Rebuilds and Software Upgrades</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#data_sanitization">Data Sanitization</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#recovery_data">Recovery Data</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#credential_and_secret_rotation">Credential and Secret Rotation</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch18.html#after_the_recovery">After the Recovery</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch18.html#postmortems">Postmortems</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch18.html#examples">Examples</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch18.html#compromised_cloud_instances">Compromised Cloud Instances</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#large_scale_phishing_attack">Large-Scale Phishing Attack</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch18.html#targeted_attack_requiring_complex_recov">Targeted Attack Requiring Complex Recovery</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch18.html#conclusion-id00017">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="part">
+    <a href="part5.html#organization_and_culture">Part V. Organization and Culture</a>
+  </li>
+  <li data-type="chapter">
+    <a href="ch19.html#onenine_case_study_chrome_security_team">19. Case Study: Chrome Security Team</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch19.html#background_and_team_evolution">Background and Team Evolution</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#security_is_a_team_responsibility">Security Is a Team Responsibility</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#help_users_safely_navigate_the_web">Help Users Safely Navigate the Web</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#speed_matters">Speed Matters</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#design_for_defense_in_depth">Design for Defense in Depth</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#be_transparent_and_engage_the_community">Be Transparent and Engage the Community</a>
+  </li>
+  <li data-type="sect1">
+    <a href="ch19.html#conclusion-id00018">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch20.html#twozero_understanding_roles_and_respons">20. Understanding Roles and Responsibilities</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch20.html#who_is_responsible_for_security_and_rel">Who Is Responsible for Security and Reliability?</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch20.html#the_roles_of_specialists">The Roles of Specialists</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch20.html#understanding_security_expertise">Understanding Security Expertise</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch20.html#certifications_and_academia">Certifications and Academia</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch20.html#integrating_security_into_the_organizat">Integrating Security into the Organization</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch20.html#embedding_security_specialists_and_secu">Embedding Security Specialists and Security Teams</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch20.html#example_embedding_security_at_google">Example: Embedding Security at Google</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch20.html#special_teams_blue_and_red_teams">Special Teams: Blue and Red Teams</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch20.html#external_researchers">External Researchers</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch20.html#conclusion-id00019">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="chapter">
+    <a href="ch21.html#twoone_building_a_culture_of_security_a">21. and Reliability</a>
+  </li>
+  <ul>
+  <li data-type="sect1">
+    <a href="ch21.html#defining_a_healthy_security_and_reliabi">Defining a Healthy Security and Reliability Culture</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_security_and_reliability_by">Culture of Security and Reliability by Default</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_review">Culture of Review</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_awareness">Culture of Awareness</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_yes">Culture of Yes</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_inevitably">Culture of Inevitably</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#culture_of_sustainability">Culture of Sustainability</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch21.html#changing_culture_through_good_practice">Changing Culture Through Good Practice</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch21.html#align_project_goals_and_participant_inc">Align Project Goals and Participant Incentives</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#reduce_fear_with_risk_reduction_mechani">Reduce Fear with Risk-Reduction Mechanisms</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#make_safety_nets_the_norm">Make Safety Nets the Norm</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#increase_productivity_and_usability">Increase Productivity and Usability</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#overcommunicate_and_be_transparent">Overcommunicate and Be Transparent</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#build_empathy">Build Empathy</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch21.html#convincing_leadership">Convincing Leadership</a>
+  </li>
+  <ul>
+  <li data-type="sect2">
+    <a href="ch21.html#understand_the_decision_making_process">Understand the Decision-Making Process</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#build_a_case_for_change">Build a Case for Change</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#pick_your_battles">Pick Your Battles</a>
+  </li>
+  <li data-type="sect2">
+    <a href="ch21.html#escalations_and_problem_resolution">Escalations and Problem Resolution</a>
+  </li>
+  </ul>
+  <li data-type="sect1">
+    <a href="ch21.html#conclusion-id00020">Conclusion</a>
+  </li>
+  </ul>
+  <li data-type="afterword">
+    <a href="ch22.html#conclusion-id00021">Conclusion</a>
+  </li>
+  <li data-type="appendix">
+    <a href="appa.html#a_disaster_risk_assessment_matrix">A Disaster Risk Assessment Matrix</a>
+  </li>
+  <li data-type="index">
+    <a href="ix.html#index">Index</a>
+  </li>
+  <li data-type="colophon">
+    <a href="raw/author_bio.html#about_the_editors">About the Editors</a>
+  </li>
+</ul>
+</body>
+</html>
