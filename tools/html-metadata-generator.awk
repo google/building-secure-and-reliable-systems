@@ -95,7 +95,7 @@ END {
 	}
     }
     # In the filename, omit any leading path since the HTML uses local directory references.
-    metadata[section_id]["filename"] = gensub(/(.*\/)([a-z]+[0-9]*\.html)/, "\\2", "g", FILENAME);
+    metadata[section_id]["filename"] = gensub(/(.*\/)([a-z_]+[0-9]*\.html)/, "\\2", "g", FILENAME);
 
     order_id = order_id + 1;
     metadata[section_id]["order"] = order_id;
