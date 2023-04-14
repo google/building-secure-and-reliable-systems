@@ -1,0 +1,68 @@
+#!/usr/bin/awk -f
+#
+# This script updates <a> href values and HTML text to replace #anchor
+# raw values with the text matching what's in the publinhed PDF.  
+#
+# Usage:
+# $ awk -f tools/href-updater.awk -- raw/ch08.html
+# $ tools/find-html.sh | while read f; do awk -f tools/href-updater.awk $f > $f.upd; done
+# $ tools/find-html.sh | while read f; do awk -f tools/href-updater.awk $f > $f.upd; mv $f.upd $f; done
+
+# Expecting metadata to be in the local directory.
+@include "html-metadata.awk"
+
+BEGIN {
+    RS = "</a>"  # Iterate over links rathar than lines of text.
+    d = 0;  # debug
+}
+END { }
+
+# Lines end with the <a> whose closing </a> is stored in RT.
+{
+    source = $0 RT  # We'll printf this verbatim when not updating the block. 
+
+    # Get just the <a>...</a>, for simplicity.
+    match(source, /<a.+<\/a>/, matches);
+    a = matches[0]
+    if (d > 1) print "<a>: " a
+
+    # Get just the href= that point at #anchor (rather than anything else).
+    match(a, /href=['"]#([^']+)['"]/, matches);
+    href = matches[1];
+    if (!href) {
+	if (d > 1) { print "  skipping href isn't an #anchor: '" href "'"; }
+	printf("%s", source); next;
+    }
+    # Confirm that we can proceed.
+    match(a, />#([^\<]+)/, matches);
+    text = matches[1];
+    if (text != href) {
+	if (d > 1) { print "  skipping href #" href " != text #" text; }
+	printf("%s", source); next;
+    }
+    # Confirm we have the metadata.
+    if (!(href in metadata)) {
+	if (d) { print "  skipping href #" href " not in metadata"; }
+	printf("%s", source); next;
+    }
+
+    id = href  # A "rename", for convinience.
+    if (d) print "  found #" id " for updating " a
+
+    updated = source
+
+    # First, an #anchor not to the local file needs to insert that file's name.
+    # In the filename, omit any leading path since the HTML uses local directory references.
+    filename_local = gensub(/(.*\/)([a-z]+[0-9]*\.html)/, "\\2", "g", FILENAME);
+    if (metadata[id]["filename"] != filename_local) {
+        regexp = "href='#" id "'";
+	href_updated = "href='" metadata[id]["filename"] "#" id "'";
+	updated = gensub(regexp,  href_updated, "g", updated);
+    }
+    # Second, replace the HTML text for the <a>; this happens unconditionally. 
+    regexp    = ">#" id "<";
+    text_updated = ">" metadata[id]["text"] "<"
+    updated = gensub(regexp, text_updated, "g", updated);
+
+    printf("%s", updated);
+}
