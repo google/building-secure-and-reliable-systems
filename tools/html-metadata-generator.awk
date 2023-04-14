@@ -9,7 +9,7 @@
 BEGIN {
     figure_id = "";
     section_id = "";
-    order_id = 0;
+    order_id = 0;  # Combined with find-html.sh, tracks the ordering for TOC.
 
     # The book uses roman numerals for part numbers, and it has 5 parts.
     romans[1] = "I";
@@ -31,20 +31,13 @@ END {
     print "BEGIN {";
     for (i in ordered) {
 	id = ordered[i];  # asorti() above ordered metadata's indexes (id values).
-	if (d) {
-	    attr = "filename"; printf("%s=%s, ", attr, metadata[id][attr]);
-	    attr = "type"; printf("%s=%s, ", attr, metadata[id][attr]);
-	    attr = "text"; printf("%s=%s, ", attr, metadata[id][attr]);
-	    printf("id=%s,", id);
-	    print "";
-	} else {
-	    attr = "filename"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
-	    attr = "type"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
-	    attr = "text"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
-	    attr = "toc"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
-	    attr = "order"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
-	    attr = "id"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, id);  # Helps pivot the array. 
-	}
+	# The order of attrs is arbitrary.
+	attr = "filename"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
+	attr = "type"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
+	attr = "text"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
+	attr = "toc"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
+	attr = "order"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, metadata[id][attr]);
+	attr = "id"; printf("metadata[\"%s\"][\"%s\"] = \"%s\";\n", id, attr, id);  # Helps pivot the array.
     }
     print "}"
 }
@@ -56,15 +49,19 @@ END {
     }
     if (d) print "  figure_id=" figure_id
 }
+
 /\<\/figure>/ {
     figure_id = "";
 }
 
 /\<img / {
-    if (figure_id == "") { next; } else { if (d) print "  figure img found: " $0 }
+    if (figure_id == "") {
+	next;  # Ignore <img> that aren't inside a <figure> block.
+    } else { if (d) print "  figure img found: " $0 }
+
     match($0, /src="([^"]+)"/, matches)
-    file = matches[1];
-    metadata[figure_id]["filename"] = file;
+    filename = matches[1];
+    metadata[figure_id]["filename"] = filename;
     match($0, /images\/bsrs_([0-9]{2})([0-9]{2})\.png/, matches);
     metadata[figure_id]["text"] = "Figure " (matches[1] + 0) "-" (matches[2] + 0);
     metadata[figure_id]["type"] = "figure";
@@ -83,11 +80,13 @@ END {
         type = matches[1];
 	if (type != "part" && type != "chapter") { 
             metadata[section_id]["type"] = type;
-	    metadata[section_id]["text"] = "[heading not seen]";
+	    metadata[section_id]["text"] = "FIXME";  # In case a matching <h?> won't exist.
 	} else {
             metadata[section_id]["type"] = type;
             match(FILENAME, /([a-z]+)([0-9]{1,2})\.html/, matches);
-	    if (matches[1] == "ch") { metadata[section_id]["text"] = "Chapter " (matches[2] + 0); }
+	    if (matches[1] == "ch") {
+		metadata[section_id]["text"] = "Chapter " (matches[2] + 0);
+	    }
 	    if (matches[1] == "part") {
 		n = (matches[2] + 0);
 		if (n in romans) { n = romans[n]; }
@@ -101,16 +100,20 @@ END {
     order_id = order_id + 1;
     metadata[section_id]["order"] = order_id;
 }
+
 /\<[hH][1-9].*>.+/ {  # <h1>Defense in Depth</h1>
-    if (section_id == "") { next; } else { if (d) print "  section heading found for " section_id ": " $0 }
+    if (section_id == "") {
+	next;  # Ignore headings not inside a <content> block.
+    } else { if (d) print "  section heading found for " section_id ": " $0 }
     match($0, /\<[hH][1-9].*>([^\<]+)/, matches);
-    if (metadata[section_id]["type"] == "part") {  # "Part II. Designing Systems".
+    if (metadata[section_id]["type"] == "part") {
+        # Want e.g. "Part II. Designing Systems".
 	metadata[section_id]["toc"] = metadata[section_id]["text"] ". " matches[1]
-    } else if (metadata[section_id]["type"] == "chapter") {  # "8. Design for Resilience".
+    } else if (metadata[section_id]["type"] == "chapter") {
+        # Want e.g. "8. Design for Resilience".
 	match(metadata[section_id]["text"], /Chapter ([0-9]+)/, matches_chapter);
 	metadata[section_id]["toc"] = matches_chapter[1] ". " matches[1];
     } else {
-	#if (metadata[section_id]["type"] ~ "sect") {}
 	metadata[section_id]["text"] = matches[1];
 	metadata[section_id]["toc"] = matches[1];
     }
