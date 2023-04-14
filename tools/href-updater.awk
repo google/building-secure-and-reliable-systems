@@ -12,19 +12,19 @@
 @include "html-metadata.awk"
 
 BEGIN {
-    RS = "</a>"  # Iterate over links rathar than lines of text.
+    RS = "</a>";  # Iterate over links rathar than lines of text.
     d = 0;  # debug
 }
 END { }
 
 # Lines end with the <a> whose closing </a> is stored in RT.
 {
-    source = $0 RT  # We'll printf this verbatim when not updating the block. 
+    source = $0 RT;  # We'll printf this verbatim when not updating the block.
 
     # Get just the <a>...</a>, for simplicity.
     match(source, /<a.+<\/a>/, matches);
-    a = matches[0]
-    if (d > 1) print "<a>: " a
+    a = matches[0];
+    if (d > 1) { print "<a>: " a; }
 
     # Get just the href= that point at #anchor (rather than anything else).
     match(a, /href=['"]#([^']+)['"]/, matches);
@@ -46,10 +46,10 @@ END { }
 	printf("%s", source); next;
     }
 
-    id = href  # A "rename", for convinience.
-    if (d) print "  found #" id " for updating " a
+    id = href;  # A "rename", for convinience.
+    if (d) { print "  found #" id " for updating " a; }
 
-    updated = source
+    updated = source;
 
     # First, an #anchor not to the local file needs to insert that file's name.
     # In the filename, omit any leading path since the HTML uses local directory references.

@@ -11,19 +11,19 @@
 # This script doen't rely on @include "html-metadata.awk".
 
 BEGIN {
-    RS = "</span>"  # Iterate over footnote <span>.
+    RS = "</span>";  # Iterate over footnote <span>.
     d = 0;  # debug
 }
 
 BEGINFILE {
     # Footnote counters reset for each HTML file.
-    footnote_next = 1
+    footnote_next = 1;
     if (isarray(footnotes)) { delete footnotes; }
 }
 
 # Match blocks ending with the </span>, so we can be sure to find <figcaption>.
 {
-    source = $0 RT  # We'll printf this verbatim when not updating the block. 
+    source = $0 RT;  # We'll printf this verbatim when not updating the block.
 
     # Get the id of the footnote, otherwise skip this <span>.
     if (!match(source, /\<span data-type="footnote" id="([^"]+)"/, matches)) {
@@ -46,7 +46,7 @@ BEGINFILE {
 
     footnotes[footnote_next] = footnote;
     
-    updated = source
+    updated = source;
 
     # Replace the footnote HTML with the noteref HTML. 
     text_updated = regexp metadata[id]["text"] ": ";

@@ -10,6 +10,9 @@
 
 BEGIN {
     d = 0;  # debug
+
+    asort(metadata, ordered, "compare_by_order");
+
     print "<!DOCTYPE html>"
     print "<html lang=\"en\">"
     print "<head>"
@@ -20,26 +23,26 @@ BEGIN {
     print "<body data-type=\"book\">"
     print "<nav xmlns=\"http://www.w3.org/1999/xhtml\" data-type=\"toc\"/>";
 
-    asort(metadata, ordered, "compare_by_order");
-
+    # The loop below creates <li> within the global <ul>, and indents section
+    # headers within each file with additional levels of <ul>.
     print "<ul>"
     level = 0;
     for (i in ordered) {
-	if (d) print " ** level=" level
+	if (d) { print " ** level=" level ", order=" ordered[i]["order"]; }
 	type = ordered[i]["type"];
 	if (type ~ "sect") {
 	    if (type ~ "sect[12]") {
 		match(type, /[0-9]+/, matches);
 		level_new = (matches[0] + 0);
 	    } else {  # TOC omits sect3 and sect4, matching what's published.
-		continue
+		continue;
 	    }
 	} else if ("figure" == type) {
-	    continue
+	    continue;
 	} else {
-	    level_new = 0
+	    level_new = 0;
 	}
-	if (d) print " ** level_new=" level_new
+	if (d) { print " ** level_new=" level_new; }
 	while (level > level_new) {  # e.g. when level_new chapter follows level sect2.
 	    print "  </ul>";
 	    level = level - 1;
@@ -48,18 +51,15 @@ BEGIN {
 	    print "  <ul>";
 	    level = level + 1;
 	}
-	print "  <li data-type=\"" ordered[i]["type"] "\">"
-	print "    <a href=\"" ordered[i]["filename"] "#" ordered[i]["id"] "\">" ordered[i]["toc"] "</a>"
-	if (d) print "Order=" ordered[i]["order"]
-	print "  </li>"
+	print "  <li data-type=\"" ordered[i]["type"] "\">";
+	print "    <a href=\"" ordered[i]["filename"] "#" ordered[i]["id"] "\">" ordered[i]["toc"] "</a>";
+	print "  </li>";
     }
-    print "</ul>"
+    print "</ul>";
 
-    print "</body>"
-    print "</html>"
+    print "</body>";
+    print "</html>";
 }
-
-END { }
 
 function compare_by_order(i1, v1, i2, v2, l, r)
 {

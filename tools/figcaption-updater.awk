@@ -12,7 +12,7 @@
 @include "html-metadata.awk"
 
 BEGIN {
-    RS = "</figure>"  # Iterate over links rathar than lines of text.
+    RS = "</figure>";  # Iterate over links rathar than lines of text.
     d = 0;  # debug
 }
 END { }
@@ -31,7 +31,7 @@ END { }
 	printf("%s", source); next;
     }
 
-    updated = source
+    updated = source;
 
     # Replace the HTML text in the <figcaption>; this happens unconditionally. 
     regexp    = "<figcaption>";
