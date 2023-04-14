@@ -36,7 +36,7 @@ BEGIN {
 	    } else {  # TOC omits sect3 and sect4, matching what's published.
 		continue;
 	    }
-	} else if ("figure" == type) {
+	} else if ("figure" == type || "indexterm" == type) {
 	    continue;
 	} else {
 	    level_new = 0;
