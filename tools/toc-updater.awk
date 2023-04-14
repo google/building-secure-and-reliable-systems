@@ -18,6 +18,7 @@ BEGIN {
     print "<head>"
     print "  <meta charset=\"utf-8\">"
     print "  <title>Building Secure and Reliable Systems</title>"
+    print "  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme/html/html.css\">"
     print "</head>"
     print "<body data-type=\"book\">"
     print "<nav xmlns=\"http://www.w3.org/1999/xhtml\" data-type=\"toc\"/>";
