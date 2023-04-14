@@ -65,8 +65,10 @@ BEGINFILE {
 }
 
 ENDFILE {
-    print "<div data-type=\"footnotes\">";
-    for (i in footnotes) { print footnotes[i]; }
-    print "</div>";
+    if (length(footnotes)) {
+	print "<div data-type=\"footnotes\">";
+	for (i in footnotes) { print footnotes[i]; }
+	print "</div>";
+    }
 }
 
