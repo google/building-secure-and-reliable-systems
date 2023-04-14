@@ -351,8 +351,8 @@ if (s.find("Hello World") == 0) { /* do something */ }</pre>
 if (absl::StartsWith(s, "Hello World")) { /* do something */ }</pre>
 <p>In order to suggest a fix, Clang-Tidy (conceptually speaking) provides the capability to transform an AST subtree, given a pattern. The left side of <a data-type="xref" href="#ast_pattern_match_and_replacement_sugge">Figure 13-1</a> shows an AST pattern match. (The AST subtree is simplified for the sake of clarity.) If the tool finds a matching AST subtree in the parse AST tree of the source code, it notifies the developer. AST nodes also contain line and column information, which allows the AST pattern-matcher to report a specific warning to the developer.</p>
 <figure id="ast_pattern_match_and_replacement_sugge">
-<img src="images/bsrs_1301.png" alt="AST pattern-match and replacement suggestion"/>
-<figcaption>AST pattern-match and replacement suggestion</figcaption>
+<img src="images/bsrs_1301.png" alt="Figure 13-1: AST pattern-match and replacement suggestion"/>
+<figcaption>Figure 13-1: AST pattern-match and replacement suggestion</figcaption>
 </figure>
 <p>In addition to performance and readability checks, Clang-Tidy also provides many common bug pattern checks. Consider running Clang-Tidy on the following input files:<span data-type="footnote" id="ch13fn7">You can install Clang-Tidy using standard package managers. It is generally called clang-tidy.</span></p>
 <pre data-type="programlisting">$ <strong><span>cat -n sizeof.c</span></strong>
@@ -488,13 +488,13 @@ its type int is not compatible with its collection's type argument Short
 <p>Tricorder is designed to allow users to run many different program analysis tools. As of early 2018, the platform included 146 analyzers covering over 30 source languages. Most of these analyzers were contributed by Google developers. Generally speaking, commonly available static analysis tools are not very complex. Most checkers run by Tricorder are automated code inspection tools. These tools target a variety of languages, check for conformance to coding style guidelines, and find bugs. As previously mentioned, Error Prone and Clang-Tidy can produce suggested fixes in certain scenarios. The code author can then apply the fixes with the click of a button.</p>
 <p><a data-type="xref" href="#screenshot_of_static_analysis_results_d">Figure 13-2</a> shows a screenshot of Tricorder analysis results for a given Java input file, as presented to a code reviewer. The results show two warnings, one from the Java linter and one from Error Prone. Tricorder measures the user-perceived false-positive rate by allowing code reviewers to provide feedback on surfaced warnings via a “Not useful” link. The Tricorder team uses these signals to disable individual checks. The code reviewer can also send a request to the code author to “Please fix” an individual warning.</p>
 <figure id="screenshot_of_static_analysis_results_d">
-<img src="images/bsrs_1302.png" alt="Screenshot of static analysis results during code review provided via Tricorder"/>
-<figcaption>Screenshot of static analysis results during code review provided via <span class="keep-together">Tricorder</span></figcaption>
+<img src="images/bsrs_1302.png" alt="Figure 13-2: Screenshot of static analysis results during code review provided via Tricorder"/>
+<figcaption>Figure 13-2: Screenshot of static analysis results during code review provided via <span class="keep-together">Tricorder</span></figcaption>
 </figure>
 <p><a data-type="xref" href="#screenshot_of_the_preview_fix_view_for">Figure 13-3</a> shows the automatically applied code changes suggested by Error Prone during code review.</p>
 <figure id="screenshot_of_the_preview_fix_view_for">
-<img src="images/bsrs_1303.png" alt="Screenshot of the preview fix view for the Error Prone warning from"/>
-<figcaption>Screenshot of the preview fix view for the Error Prone warning from <a data-type="xref" href="#screenshot_of_static_analysis_results_d">Figure 13-2</a></figcaption>
+<img src="images/bsrs_1303.png" alt="Figure 13-3: Screenshot of the preview fix view for the Error Prone warning from"/>
+<figcaption>Figure 13-3: Screenshot of the preview fix view for the Error Prone warning from <a data-type="xref" href="#screenshot_of_static_analysis_results_d">Figure 13-2</a></figcaption>
 </figure>
 <aside data-type="sidebar" id="reverse_engineering_and_test_input_gene">
 <h5>Reverse Engineering and Test Input Generation</h5>
@@ -510,8 +510,8 @@ its type int is not compatible with its collection's type argument Short
 <p>Abstract interpretation–based tools perform a semantic analysis that reasons about data flow and control flow in programs, often across function calls. For that reason, they take much longer to run than the previously discussed automated code inspection tools. While you can integrate automated code inspection tools into interactive development environments such as code editors, abstract interpretation is generally not similarly integrated. Instead, developers might run abstract interpretation–based tools on committed code occasionally (nightly, for example), or during code review in differential settings, analyzing only the changed code while reusing analysis facts for unchanged code.</p>
 <p>A number of tools rely on abstract interpretation for a variety of languages and properties. <a contenteditable="false" data-primary="Frama-C" data-type="indexterm">&nbsp;</a>For example, the <a href="https://frama-c.com">Frama-C tool</a> allows you to find common runtime errors and assertion violations including buffer overflows, segmentation faults due to dangling or null pointers, and division by zero in programs written in C. As previously discussed, these types of bugs—especially memory-related bugs—can have security implications. <a contenteditable="false" data-primary="Infer" data-type="indexterm">&nbsp;</a>The <a href="https://fbinfer.com">Infer tool</a> reasons about memory and pointer changes performed by programs and can find bugs like dangling pointers in Java, C, and other languages. <a contenteditable="false" data-primary="AbsInt" data-type="indexterm">&nbsp;</a>The <a href="https://www.absint.com">AbsInt tool</a> can perform worst-case execution time analysis of tasks in real-time systems. <a contenteditable="false" data-primary="App Security Improvement (ASI)" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="ASI (App Security Improvement)" data-type="indexterm">&nbsp;</a>The <a href="https://developer.android.com/google/play/asi">App Security Improvement (ASI) program</a> performs a sophisticated interprocedural analysis on every Android app that’s uploaded to the Google Play Store, for safety and security. If it finds a vulnerability, ASI flags the vulnerability and presents suggestions for addressing the issue. <a data-type="xref" href="#an_app_security_improvement_alert">Figure 13-4</a> shows a sample security alert. As of early 2019, this program had led to over <a href="https://android-developers.googleblog.com/2019/02/android-security-improvement-update.html?linkId=64187521">one million app fixes</a> in the Play Store by over 300,000 app developers.</p>
 <figure id="an_app_security_improvement_alert">
-<img src="images/bsrs_1304.png" alt="An App Security Improvement alert"/>
-<figcaption>An App Security Improvement alert</figcaption>
+<img src="images/bsrs_1304.png" alt="Figure 13-4: An App Security Improvement alert"/>
+<figcaption>Figure 13-4: An App Security Improvement alert</figcaption>
 </figure>
 </section>
 <section data-type="sect2" id="formal_methods">

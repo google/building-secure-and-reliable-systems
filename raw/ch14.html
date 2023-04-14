@@ -20,8 +20,8 @@
 <li><p>Code is then deployed to some environment where it is configured and executed.</p></li>
 </ol>
 <figure id="a_high_level_view_of_a_typical_software">
-<img src="images/bsrs_1401.png" alt="A high-level view of a typical software supply chain"/>
-<figcaption>A high-level view of a typical software supply chain</figcaption>
+<img src="images/bsrs_1401.png" alt="Figure 14-1: A high-level view of a typical software supply chain"/>
+<figcaption>Figure 14-1: A high-level view of a typical software supply chain</figcaption>
 </figure>
 <p>Even if your supply chain is more complicated than this model, you can usually break it into these basic building blocks. <a data-type="xref" href="#typical_cloud_hosted_container_based_se">Figure 14-2</a> shows a concrete example of how a typical deployment pipeline executes these steps.</p>
 
@@ -32,8 +32,8 @@
 <p><a contenteditable="false" data-primary="artifact, defined" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="builds" data-secondary="defined" data-type="indexterm">&nbsp;</a>A <em>build</em> is any transformation of input artifacts to output artifacts, where an <em>artifact</em> is any piece of data—for example, a file, a package, a Git commit, or a virtual machine (VM) image. <a contenteditable="false" data-primary="test, defined" data-type="indexterm">&nbsp;</a>A <em>test</em> is a special case of a build, where the output artifact is some logical result—usually “pass” or “fail”—rather than a file or executable.</p>
 
 <figure id="typical_cloud_hosted_container_based_se">
-<img src="images/bsrs_1402.png" alt="Typical cloud-hosted container-based service deployment"/>
-<figcaption>Typical cloud-hosted container-based service deployment</figcaption>
+<img src="images/bsrs_1402.png" alt="Figure 14-2: Typical cloud-hosted container-based service deployment"/>
+<figcaption>Figure 14-2: Typical cloud-hosted container-based service deployment</figcaption>
 </figure>
 <p>Builds can be chained together, and an artifact can be subject to multiple tests. For example, a release process might first “build” binaries from source code, then “build” a Docker image from the binaries, and then “test” the Docker image by running it in a development environment.</p>
 <p><a contenteditable="false" data-primary="deployment (generally)" data-secondary="definition" data-type="indexterm">&nbsp;</a>A <em>deployment</em> is any assignment of some artifact to some environment. You can consider each of the following to be a deployment:</p>
@@ -187,8 +187,8 @@
 </table>
 <p><a data-type="xref" href="#a_typical_software_supply_chainem_dasha">Figure 14-3</a> shows an updated software supply chain that includes the threats and mitigations listed in the preceding table.</p>
 <figure id="a_typical_software_supply_chainem_dasha">
-<img src="images/bsrs_1403.png" alt="A typical software supply chain—adversaries should not be able to bypass the process"/>
-<figcaption>A typical software supply chain—adversaries should not be able to bypass the process</figcaption>
+<img src="images/bsrs_1403.png" alt="Figure 14-3: A typical software supply chain—adversaries should not be able to bypass the process"/>
+<figcaption>Figure 14-3: A typical software supply chain—adversaries should not be able to bypass the process</figcaption>
 </figure>
 <p>We have yet to match several threats with mitigations from best practices:</p>
 <ul>
@@ -358,13 +358,13 @@
 <p><a contenteditable="false" data-primary="continuous integration/continuous deployment (CI/CD)" data-secondary="implementing verifiable builds" data-type="indexterm" id="ch14.html18">&nbsp;</a><a contenteditable="false" data-primary="verifiable builds" data-secondary="implementation" data-type="indexterm" id="ch14.html19">&nbsp;</a>Regardless of whether a verifiable build service is a “trusted build service” or a “rebuilding service,” you should keep several important design considerations in mind.</p>
 <p>At a basic level, almost all CI/CD systems function according to the steps in <a data-type="xref" href="#a_basic_cisoliduscd_system">Figure 14-4</a>: the service takes in requests, fetches any necessary inputs, performs the build, and writes the output to a storage system.</p>
 <figure id="a_basic_cisoliduscd_system">
-<img src="images/bsrs_1404.png" alt="A basic CI/CD system"/>
-<figcaption>A basic CI/CD system</figcaption>
+<img src="images/bsrs_1404.png" alt="Figure 14-4: A basic CI/CD system"/>
+<figcaption>Figure 14-4: A basic CI/CD system</figcaption>
 </figure>
 <p>Given such a system, you can add signed provenance to the output relatively easily, as shown in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">Figure 14-5</a>. For a small organization with a “central build service” model, this additional signing step may be sufficient to address security concerns.</p>
 <figure id="the_addition_of_signing_to_an_existing">
-<img src="images/bsrs_1405.png" alt="The addition of signing to an existing CI/CD system"/>
-<figcaption>The addition of signing to an existing CI/CD system</figcaption>
+<img src="images/bsrs_1405.png" alt="Figure 14-5: The addition of signing to an existing CI/CD system"/>
+<figcaption>Figure 14-5: The addition of signing to an existing CI/CD system</figcaption>
 </figure>
 <p>As the size of your organization grows and you have more resources to invest in security, you will likely want to address two more security risks: untrusted inputs and unauthenticated inputs.</p>
 <section data-type="sect4" id="untrusted_inputs">
@@ -385,8 +385,8 @@
 <p>For this reason, we recommend hermetic builds (see <a data-type="xref" href='#hermeticcomma_reproduciblecomma_or_veri'>#hermeticcomma_reproduciblecomma_or_veri</a>). The build process should declare all inputs up front, and only the orchestrator should fetch those inputs. Hermetic builds give much higher confidence that the inputs listed in the provenance are correct.</p>
 <p>Once you’ve accounted for untrusted and unauthenticated inputs, your system resembles <a data-type="xref" href="#an_quotation_markidealquotation_mark_ci">Figure 14-6</a>. Such a model is much more resistant to attack than the simple model in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">Figure 14-5</a><a contenteditable="false" data-primary="" data-startref="ch14.html19" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html18" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch14.html17" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html16" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html15" data-type="indexterm">&nbsp;</a></p>
 <figure id="an_quotation_markidealquotation_mark_ci">
-<img src="images/bsrs_1406.png" alt="An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs"/>
-<figcaption>An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs</figcaption>
+<img src="images/bsrs_1406.png" alt="Figure 14-6: An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs"/>
+<figcaption>Figure 14-6: An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs</figcaption>
 </figure>
 </section>
 </section>
@@ -396,14 +396,14 @@
 <p><a contenteditable="false" data-primary="advanced mitigation strategies" data-secondary="deployment choke points" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="choke points" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="deployment choke points" data-type="indexterm">&nbsp;</a>To “verify artifacts, not just people,” deployment decisions must occur at proper choke points within the deployment environment. In this context, a <em>choke point</em> is a point through which all deployment requests must flow. Adversaries can bypass deployment decisions that don’t occur at choke points.</p>
 <p><a contenteditable="false" data-primary="Kubernetes" data-type="indexterm">&nbsp;</a>Consider Kubernetes as an example for setting up deployment choke points, as shown in <a data-type="xref" href="#kubernetes_architectureem_dashall_deplo">Figure 14-7</a>. Suppose you want to verify all deployments to the pods in a specific Kubernetes cluster. The control plane ("master") node would make a good choke point because all deployments are supposed to flow through it. To make this a proper choke point, configure the worker nodes to accept requests only from the control plane node. This way, adversaries cannot deploy directly to worker nodes.<span data-type="footnote" id="ch14fn20">In reality, there must be some way to deploy software to the node itself—the bootloader, the operating system, the Kubernetes software, and so on—and that deployment mechanism must have its own policy enforcement, which is likely a completely different implementation than the one used for pods.</span></p>
 <figure id="kubernetes_architectureem_dashall_deplo">
-<img src="images/bsrs_1407.png" alt="Kubernetes architecture—all deployments must flow through the control plane (&quot;master&quot;) node"/>
-<figcaption>Kubernetes architecture—all deployments must flow through the control plane ("master" in this figure) node</figcaption>
+<img src="images/bsrs_1407.png" alt="Figure 14-7: Kubernetes architecture—all deployments must flow through the control plane (&quot;master&quot;) node"/>
+<figcaption>Figure 14-7: Kubernetes architecture—all deployments must flow through the control plane ("master" in this figure) node</figcaption>
 </figure>
 <p>Ideally, the choke point performs the policy decision, either directly or via an RPC. Kubernetes offers an <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Admission Controller</a> webhook for this exact purpose. If you use Google Kubernetes Engine, <a href="https://cloud.google.com/binary-authorization/">Binary Authorization</a> offers a hosted admission controller and many additional features. And even if you don’t use Kubernetes, you may be able to modify your “admission” point to perform the deployment decision.</p>
 <p>Alternatively, you can place a “proxy” in front of the choke point and perform the policy decision in the proxy, as shown in <a data-type="xref" href="#alternative_architecture_using_a_proxy">Figure 14-8</a>. This approach requires configuring your “admission” point to allow access only via the proxy. Otherwise, an adversary can bypass the proxy by talking directly to the admission point.</p>
 <figure id="alternative_architecture_using_a_proxy">
-<img src="images/bsrs_1408.png" alt="Alternative architecture using a proxy to make policy decisions"/>
-<figcaption>Alternative architecture using a proxy to make policy decisions</figcaption>
+<img src="images/bsrs_1408.png" alt="Figure 14-8: Alternative architecture using a proxy to make policy decisions"/>
+<figcaption>Figure 14-8: Alternative architecture using a proxy to make policy decisions</figcaption>
 </figure>
 </section>
 <section data-type="sect2" id="post_deployment_verification">

@@ -268,8 +268,8 @@
 <p><a contenteditable="false" data-primary="immutability, logging design for" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="logging" data-secondary="designing for immutability" data-type="indexterm">&nbsp;</a>The system you build to collect logs should be immutable. When log entries are written, it should be difficult to alter them (but not impossible; see <a data-type="xref" href='#take_privacy_into_consideration'>Take Privacy into Consideration</a>), and alterations should have an immutable audit trail. Attackers commonly erase traces of their activity on a system from all log sources as soon as they establish a solid foothold. A common best practice to counter this tactic is to write your logs remotely to a centralized and distributed log server. This increases the attacker’s workload: in addition to compromising the original system, they also have to compromise the remote log server. Be sure to harden the log system carefully.</p>
 <p>Before the age of modern computing, extra-critical servers logged directly to an attached line printer, like the one in <a data-type="xref" href="#a_line_printer">Figure 15-1</a>, which printed log records to paper as they were generated. In order to erase their traces, a remote attacker would have needed someone to physically remove paper from the printer and burn it!</p>
 <figure id="a_line_printer">
-<img src="images/bsrs_1501.png" alt="A line printer"/>
-<figcaption>A line printer</figcaption>
+<img src="images/bsrs_1501.png" alt="Figure 15-1: A line printer"/>
+<figcaption>Figure 15-1: A line printer</figcaption>
 </figure>
 </section>
 <section data-type="sect2" id="take_privacy_into_consideration">

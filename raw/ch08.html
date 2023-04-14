@@ -72,8 +72,8 @@
 <h2>Google App Engine Analysis</h2>
 <p><a contenteditable="false" data-primary="defense in depth" data-secondary="Google App Engine analysis" data-type="indexterm" id="ch08.html5">&nbsp;</a><a contenteditable="false" data-primary="Google App Engine" data-secondary="defense in depth and" data-type="indexterm" id="ch08.html6">&nbsp;</a>Let’s consider defense in depth as applied to a more modern case: Google App Engine. Google App Engine allows users to host application code, and to scale as load increases without managing networks, machines, and operating systems. <a data-type="xref" href="#a_simplified_view_of_google_app_engine">Figure 8-1</a> shows a simplified architecture diagram of App Engine in its early days. Securing the application code is a developer’s responsibility, while securing the Python/Java runtime and the base OS is Google’s responsibility.</p>
 <figure id="a_simplified_view_of_google_app_engine">
-<img src="images/bsrs_0801.png" alt="A simplified view of Google App Engine architecture"/>
-<figcaption>A simplified view of Google App Engine architecture</figcaption>
+<img src="images/bsrs_0801.png" alt="Figure 8-1: A simplified view of Google App Engine architecture"/>
+<figcaption>Figure 8-1: A simplified view of Google App Engine architecture</figcaption>
 </figure>
 <p>The original implementation of Google App Engine required special process isolation considerations. At that time Google used traditional POSIX user isolation as its default strategy (through distinct user processes), but we decided that running each user’s code in an independent virtual machine was too inefficient for the level of planned adoption. We needed to figure out how to run third-party, untrusted code in the same way as any other job within Google’s infrastructure.</p>
 <section data-type="sect3" id="risky_apis">
@@ -95,8 +95,8 @@
 <p>Over the next five years, the team caught a few cases of anomalous activity resulting from exploitable conditions in one of the runtimes. In each case, our sandbox layer gave us a significant advantage over attackers (whom we confirmed to be security researchers), and our multiple layers of sandboxing contained their activities within the design parameters.</p>
 <p>Functionally, the Python implementation in App Engine featured the sandboxing layers shown in <a data-type="xref" href="#python_implementation_in_app_engine">Figure 8-2</a>.</p>
 <figure id="python_implementation_in_app_engine">
-<img src="images/bsrs_0802.png" alt="Sandboxing layers of Python implementation in App Engine"/>
-<figcaption>Sandboxing layers of Python implementation in App Engine</figcaption>
+<img src="images/bsrs_0802.png" alt="Figure 8-2: Sandboxing layers of Python implementation in App Engine"/>
+<figcaption>Figure 8-2: Sandboxing layers of Python implementation in App Engine</figcaption>
 </figure>
 <p>App Engine’s layers are complementary, with each layer anticipating the weak points or likely failures of the previous one. As defense activations move through the layers, signals of a compromise become stronger, allowing us to focus efforts on probable attacks.</p>
 <p>Although we took a thorough and layered approach to security for Google App Engine, we still benefited from external help in securing the environment.<span data-type="footnote" id="ch08fn2">Google runs bug bounty <a href="https://www.google.com/about/appsecurity/reward-program/">reward programs</a>.</span> In addition to our team finding anomalous activity, external researchers discovered several cases of exploitable vectors. We’re grateful to the researchers who found and disclosed the gaps<a contenteditable="false" data-primary="" data-startref="ch08.html6" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch08.html5" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch08.html2" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch08.html1" data-type="indexterm">&nbsp;</a></p>
@@ -167,12 +167,12 @@
 </ul>
 <p><a data-type="xref" href="#complete_outage_and_a_possible_cascadin">Figure 8-3</a> shows how the system might actually crash, leading to a greater impact in terms of both volume (number of requests lost) and time (duration of the outage extends past the traffic spike). <a data-type="xref" href="#complete_outage_and_a_possible_cascadin">Figure 8-3</a> also distinguishes the uncontrolled nature of degraded traffic (the backward-slashed area) prior to system crash. <a data-type="xref" href="#using_load_shedding_and_throttling_to_m">Figure 8-4</a> shows that the system with load shedding rejects significantly less traffic than in <a data-type="xref" href="#complete_outage_and_a_possible_cascadin">Figure 8-3</a> (the crosshatched area), with the rest of the traffic either processed without failure (whitespace area) or rejected if lower priority (forward-slashed area).</p>
 <figure id="complete_outage_and_a_possible_cascadin">
-<img src="images/bsrs_0803.png" alt="Complete outage and a possible cascading failure from a load spike"/>
-<figcaption>Complete outage and a possible cascading failure from a load spike</figcaption>
+<img src="images/bsrs_0803.png" alt="Figure 8-3: Complete outage and a possible cascading failure from a load spike"/>
+<figcaption>Figure 8-3: Complete outage and a possible cascading failure from a load spike</figcaption>
 </figure>
 <figure id="using_load_shedding_and_throttling_to_m">
-<img src="images/bsrs_0804.png" alt="Using load shedding and throttling to manage a load spike"/>
-<figcaption>Using load shedding and throttling to manage a load spike</figcaption>
+<img src="images/bsrs_0804.png" alt="Figure 8-4: Using load shedding and throttling to manage a load spike"/>
+<figcaption>Figure 8-4: Using load shedding and throttling to manage a load spike</figcaption>
 </figure>
 <section data-type="sect3" id="load_shedding">
 <h3>Load shedding</h3>

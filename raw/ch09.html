@@ -106,8 +106,8 @@
 </ul>
 
 <figure id="the_evolution_of_our_workflow_for_deplo">
-<img alt="The evolution of our workflow for deploying packages to machines" src="images/bsrs_0901.png" />
-<figcaption>The evolution of our workflow for deploying packages to machines</figcaption>
+<img alt="Figure 9-1: The evolution of our workflow for deploying packages to machines" src="images/bsrs_0901.png" />
+<figcaption>Figure 9-1: The evolution of our workflow for deploying packages to machines</figcaption>
 </figure>
 
 <p>As a result, we could develop each aspect independently. We then repurposed an existing config store to specify the configuration of all the packages applied to each machine, and built a rollout system to track and update the independent rollouts of each package.</p>
@@ -277,8 +277,8 @@ ComponentState[MASVN] = max(self[MASVN], ComponentState[MASVN])</pre>
 <p>In practice, <code>Release[MASVN]</code> is often raised in release <em>i</em>+1, following a release that mitigates a security issue. This ensures that <em>i</em>–1 or older versions are never executed again. Since <code>ComponentState[MASVN]</code> is external to the release itself, version <em>i</em> no longer allows downgrade to <em>i</em>–1 after <em>i</em>+1 has been installed, even though it did allow such downgrades when it was initially deployed. <a data-type="xref" href="#a_sequence_of_three_releases_and_their">Figure 9-2</a> illustrates sample values for a sequence of three releases and their impact on <code>ComponentState[MASVN]</code>.</p>
 
 <figure id="a_sequence_of_three_releases_and_their">
-<img alt="A sequence of three releases and their impact on ComponentState[MASVN]" src="images/bsrs_0902.png" />
-<figcaption>A sequence of three releases and their impact on ComponentState[MASVN]</figcaption>
+<img alt="Figure 9-2: A sequence of three releases and their impact on ComponentState[MASVN]" src="images/bsrs_0902.png" />
+<figcaption>Figure 9-2: A sequence of three releases and their impact on ComponentState[MASVN]</figcaption>
 </figure>
 
 <p>To mitigate a security vulnerability in release <em>i</em>–1, release <em>i</em> includes the security patch and an incremented <code>Release[SVN]</code>. <code>Release[MASVN]</code> doesn’t change in release <em>i</em>, because even security patches can have bugs. Once release <em>i</em> is proven to be stable in production, the next release, <em>i</em>+1, increments the MASVN. This indicates that the security patch is now mandatory, and releases without it are disallowed.</p>

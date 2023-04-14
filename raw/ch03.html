@@ -31,8 +31,8 @@
 </ul>
 
 <figure id="safe_proxy">
-<img src="images/bsrs_0301.png" alt="Safe proxy model"/>
-<figcaption>Safe proxy model</figcaption>
+<img src="images/bsrs_0301.png" alt="Figure 3-1: Safe proxy model"/>
+<figcaption>Figure 3-1: Safe proxy model</figcaption>
 </figure>
 <p><a contenteditable="false" data-primary="proxies" data-secondary="downsides of" data-type="indexterm">&nbsp;</a>Proxies also have some downsides and potential pitfalls:</p>
 <ul>
@@ -78,8 +78,8 @@
 <li><p>If granted approval, the proxy executes the command, waits for the result, and attaches the return code, stdout, and stderr to the RPC response.</p></li>
 </ol>
 <figure id="tool_proxy_usage_workflow">
-<img src="images/bsrs_0302.png" alt="Tool Proxy usage workflow"/>
-<figcaption>Tool Proxy usage workflow</figcaption>
+<img src="images/bsrs_0302.png" alt="Figure 3-2: Tool Proxy usage workflow"/>
+<figcaption>Figure 3-2: Tool Proxy usage workflow</figcaption>
 </figure>
 <p>The Tool Proxy requires a small change to the development workflow: engineers need to prepend their commands with <code>tool-proxy-cli --proxy_address</code>. To ensure privileged users don’t circumvent the proxy, we modified the server to allow only administrative actions to <code>admin-proxy</code> and to deny any direct connections outside of breakglass situations.<a contenteditable="false" data-primary="" data-startref="ch03.html8" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html7" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html6" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html5" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch03.html4" data-type="indexterm">&nbsp;</a></p>
 </section>
