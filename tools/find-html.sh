@@ -11,7 +11,6 @@
     # "titlepage.html" \
     # "copyright.html" \
     # "toc.html" \
-    # "author_bio.html" \
     # "colo.html" \
 
 for f in \
@@ -48,9 +47,10 @@ for f in \
     "ch21.html" \
     "ch22.html" \
     "appa.html" \
-    "ix.html"; do
+    "ix.html" \
+    "author_bio.html"; do
     echo "raw/$f";
 done
-    
+
 # To see files missing in the above list, run:
 #   $ find raw/ -type f -name '*.html' | sort | wc -l
