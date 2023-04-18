@@ -12,7 +12,7 @@
 <section data-type="sect1" id="concepts_and_terminology">
 <h1>Concepts and Terminology</h1>
 <p><a contenteditable="false" data-primary="deploying code" data-secondary="concepts and terminology" data-type="indexterm" id="ch14.html1">&nbsp;</a><a contenteditable="false" data-primary="software supply chain" data-type="indexterm" id="ch14.html2">&nbsp;</a>We use the term <em>software supply chain</em> to describe the process of writing, building, testing, and deploying a software system. These steps include the typical responsibilities of a version control system (VCS), a continuous integration (CI) pipeline, and a continuous delivery (CD) pipeline.</p>
-<p>While implementation details vary across companies and teams, most organizations have a process that looks something like <a data-type="xref" href="#a_high_level_view_of_a_typical_software">#a_high_level_view_of_a_typical_software</a>:</p>
+<p>While implementation details vary across companies and teams, most organizations have a process that looks something like <a data-type="xref" href="#a_high_level_view_of_a_typical_software">Figure 14-1</a>:</p>
 <ol>
 <li><p>Code must be checked into a version control system.</p></li>
 <li><p>Code is then built from a checked-in version.</p></li>
@@ -20,20 +20,20 @@
 <li><p>Code is then deployed to some environment where it is configured and executed.</p></li>
 </ol>
 <figure id="a_high_level_view_of_a_typical_software">
-<img src="images/bsrs_1401.png" alt="A high-level view of a typical software supply chain"/>
-<figcaption>A high-level view of a typical software supply chain</figcaption>
+<img src="images/bsrs_1401.png" alt="Figure 14-1: A high-level view of a typical software supply chain"/>
+<figcaption>Figure 14-1: A high-level view of a typical software supply chain</figcaption>
 </figure>
-<p>Even if your supply chain is more complicated than this model, you can usually break it into these basic building blocks. <a data-type="xref" href="#typical_cloud_hosted_container_based_se">#typical_cloud_hosted_container_based_se</a> shows a concrete example of how a typical deployment pipeline executes these steps.</p>
+<p>Even if your supply chain is more complicated than this model, you can usually break it into these basic building blocks. <a data-type="xref" href="#typical_cloud_hosted_container_based_se">Figure 14-2</a> shows a concrete example of how a typical deployment pipeline executes these steps.</p>
 
-<p>You should design the software supply chain to mitigate threats to your system. This chapter focuses on mitigating threats presented by insiders (or malicious attackers impersonating insiders), as defined in <a data-type="xref" href="#understanding_adversaries">#understanding_adversaries</a>, without regard to whether the insider is acting with malicious intent. For example, a well-meaning engineer might unintentionally build from code that includes unreviewed and unsubmitted changes, or an external attacker might attempt to deploy a backdoored binary using the privileges of a compromised engineer’s account. We consider both scenarios equally.</p>
+<p>You should design the software supply chain to mitigate threats to your system. This chapter focuses on mitigating threats presented by insiders (or malicious attackers impersonating insiders), as defined in <a data-type="xref" href="#understanding_adversaries">Chapter 2</a>, without regard to whether the insider is acting with malicious intent. For example, a well-meaning engineer might unintentionally build from code that includes unreviewed and unsubmitted changes, or an external attacker might attempt to deploy a backdoored binary using the privileges of a compromised engineer’s account. We consider both scenarios equally.</p>
 
 
 <p>In this chapter, we define the steps of the software supply chain rather broadly.</p>
 <p><a contenteditable="false" data-primary="artifact, defined" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="builds" data-secondary="defined" data-type="indexterm">&nbsp;</a>A <em>build</em> is any transformation of input artifacts to output artifacts, where an <em>artifact</em> is any piece of data—for example, a file, a package, a Git commit, or a virtual machine (VM) image. <a contenteditable="false" data-primary="test, defined" data-type="indexterm">&nbsp;</a>A <em>test</em> is a special case of a build, where the output artifact is some logical result—usually “pass” or “fail”—rather than a file or executable.</p>
 
 <figure id="typical_cloud_hosted_container_based_se">
-<img src="images/bsrs_1402.png" alt="Typical cloud-hosted container-based service deployment"/>
-<figcaption>Typical cloud-hosted container-based service deployment</figcaption>
+<img src="images/bsrs_1402.png" alt="Figure 14-2: Typical cloud-hosted container-based service deployment"/>
+<figcaption>Figure 14-2: Typical cloud-hosted container-based service deployment</figcaption>
 </figure>
 <p>Builds can be chained together, and an artifact can be subject to multiple tests. For example, a release process might first “build” binaries from source code, then “build” a Docker image from the binaries, and then “test” the Docker image by running it in a development environment.</p>
 <p><a contenteditable="false" data-primary="deployment (generally)" data-secondary="definition" data-type="indexterm">&nbsp;</a>A <em>deployment</em> is any assignment of some artifact to some environment. You can consider each of the following to be a deployment:</p>
@@ -66,7 +66,7 @@
 <li><p>Malicious insiders who try to gain more access than their role allows</p></li>
 <li><p>External attackers who compromise the machine or account of one or more insiders</p></li>
 </ul>
-<p><a data-type="xref" href="#understanding_adversaries">#understanding_adversaries</a> describes attacker profiles and provides guidance on how to model against insider risk.</p>
+<p><a data-type="xref" href="#understanding_adversaries">Chapter 2</a> describes attacker profiles and provides guidance on how to model against insider risk.</p>
 <p>Next, you must think like an attacker and try to identify all the ways an adversary can subvert the software supply chain to compromise your system. The following are some examples of common threats; you should tailor this list to reflect the specific threats to your organization. For the sake of simplicity, we use the term <em>engineer</em> to refer to benign insiders, and <em>malicious adversary</em> to refer to both malicious insiders and external attackers:</p>
 <ul>
 <li><p>An engineer submits a change that accidentally introduces a vulnerability to the system.</p></li>
@@ -88,11 +88,11 @@
 <p><a contenteditable="false" data-primary="deploying code" data-secondary="best practices" data-type="indexterm" id="ch14.html3">&nbsp;</a>The following best practices can help you mitigate threats, fill any security gaps you identified in your threat model, and continuously improve the security of your software supply chain.</p>
 <section data-type="sect2" id="require_code_reviews">
 <h2>Require Code Reviews</h2>
-<p><a contenteditable="false" data-primary="code reviews" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="code reviews" data-type="indexterm">&nbsp;</a>Code review is the practice of having a second person (or several people) review changes to the source code before those changes are checked in or deployed.<span data-type="footnote" id="ch14fn1">Code reviews also apply to changes to configuration files; see <a data-type="xref" href='#treat_configuration_as_code'>#treat_configuration_as_code</a>.</span> In addition to improving code security, code reviews provide multiple benefits for a software project: they promote knowledge sharing and education, instill coding norms, improve code readability, and reduce mistakes,<span data-type="footnote" id="ch14fn2">Sadowski, Caitlin et al. 2018. “Modern Code Review: A Case Study at Google.” <em>Proceedings of the 40th International Conference on Software Engineering</em>: 181–190. doi:10.1145/3183519.3183525.</span> all of which helps to build a culture of security and reliability (for more on this idea, see <a data-type="xref" href="#twoone_building_a_culture_of_security_a">#twoone_building_a_culture_of_security_a</a>).</p>
-<p><a contenteditable="false" data-primary="multi-party authorization (MPA)" data-secondary="code review as" data-type="indexterm">&nbsp;</a>From a security perspective, code review is a form of multi-party authorization,<span data-type="footnote" id="ch14fn3">When combined with configuration-as-code and the deployment policies described in this chapter, code reviews form the basis of a multi-party authorization system for arbitrary systems.</span> meaning that no individual has the privilege to submit changes on their own. As described in <a data-type="xref" href="#design_for_least_privilege">#design_for_least_privilege</a>, multi-party authorization provides many security benefits.</p>
-<p>To be implemented successfully, code reviews must be mandatory. An adversary will not be deterred if they can simply opt out of the review! Reviews must also be comprehensive enough to catch problems. The reviewer must understand the details of any change and its implications for the system, or ask the author for clarifications—otherwise, the process can devolve into rubber-stamping.<span data-type="footnote" id="ch14fn4">For more on the responsibilities of the code reviewer, see <a data-type="xref" href='#culture_of_review'>#culture_of_review</a>.</span></p>
+<p><a contenteditable="false" data-primary="code reviews" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="code reviews" data-type="indexterm">&nbsp;</a>Code review is the practice of having a second person (or several people) review changes to the source code before those changes are checked in or deployed.<span data-type="footnote" id="ch14fn1">Code reviews also apply to changes to configuration files; see <a data-type="xref" href='#treat_configuration_as_code'>Treat Configuration as Code</a>.</span> In addition to improving code security, code reviews provide multiple benefits for a software project: they promote knowledge sharing and education, instill coding norms, improve code readability, and reduce mistakes,<span data-type="footnote" id="ch14fn2">Sadowski, Caitlin et al. 2018. “Modern Code Review: A Case Study at Google.” <em>Proceedings of the 40th International Conference on Software Engineering</em>: 181–190. doi:10.1145/3183519.3183525.</span> all of which helps to build a culture of security and reliability (for more on this idea, see <a data-type="xref" href="#twoone_building_a_culture_of_security_a">Chapter 21</a>).</p>
+<p><a contenteditable="false" data-primary="multi-party authorization (MPA)" data-secondary="code review as" data-type="indexterm">&nbsp;</a>From a security perspective, code review is a form of multi-party authorization,<span data-type="footnote" id="ch14fn3">When combined with configuration-as-code and the deployment policies described in this chapter, code reviews form the basis of a multi-party authorization system for arbitrary systems.</span> meaning that no individual has the privilege to submit changes on their own. As described in <a data-type="xref" href="#design_for_least_privilege">Chapter 5</a>, multi-party authorization provides many security benefits.</p>
+<p>To be implemented successfully, code reviews must be mandatory. An adversary will not be deterred if they can simply opt out of the review! Reviews must also be comprehensive enough to catch problems. The reviewer must understand the details of any change and its implications for the system, or ask the author for clarifications—otherwise, the process can devolve into rubber-stamping.<span data-type="footnote" id="ch14fn4">For more on the responsibilities of the code reviewer, see <a data-type="xref" href='ch21.html#culture_of_review'>Culture of Review</a>.</span></p>
 <p>Many publicly available tools allow you to implement mandatory code reviews. For example, you can configure GitHub, GitLab, or BitBucket to require a certain number of approvals for every pull/merge request. Alternatively, you can use standalone review systems like Gerrit or Phabricator in combination with a source repository configured to accept only pushes from that review system.</p>
-<p>Code reviews have limitations with respect to security, as described in the introduction to <a data-type="xref" href="#writing_code">#writing_code</a>. Therefore, they are best implemented as one “defense in depth” security measure, alongside automated testing (described in <a data-type="xref" href="#onethree_testing_code">#onethree_testing_code</a>) and the recommendations in <a data-type="xref" href="#writing_code">#writing_code</a>.</p>
+<p>Code reviews have limitations with respect to security, as described in the introduction to <a data-type="xref" href="#writing_code">Chapter 12</a>. Therefore, they are best implemented as one “defense in depth” security measure, alongside automated testing (described in <a data-type="xref" href="#onethree_testing_code">Chapter 13</a>) and the recommendations in <a data-type="xref" href="#writing_code">Chapter 12</a>.</p>
 </section>
 <section data-type="sect2" id="rely_on_automation">
 <h2>Rely on Automation</h2>
@@ -107,14 +107,14 @@
 <dt>Lock down the automated system to prevent tampering by administrators or users.</dt>
 <dd>This is the most challenging step, and implementation details are beyond the scope of this chapter. In short, consider all of the paths where an administrator could make a change without review—for example, making a change by configuring the CI/CD pipeline directly or using SSH to run commands on the machine. For each path, consider a mitigation to prevent such access without peer review.</dd>
 </dl>
-<p>For further recommendations on locking down your automated build system, see <a data-type="xref" href='#verifiable_builds'>#verifiable_builds</a>.</p>
+<p>For further recommendations on locking down your automated build system, see <a data-type="xref" href='#verifiable_builds'>Verifiable Builds</a>.</p>
 <p>Automation is a win-win, reducing toil while simultaneously increasing reliability and security. Rely on automation whenever possible!</p>
 </section>
 <section data-type="sect2" id="verify_artifactscomma_not_just_people">
 <h2>Verify Artifacts, Not Just People</h2>
-<p><a contenteditable="false" data-primary="deploying code" data-secondary="verifying artifacts" data-type="indexterm">&nbsp;</a>The controls around the source, build, and test infrastructure have limited effect if adversaries can bypass them by deploying directly to production. It is not sufficient to verify <em>who</em> initiated a deployment, because that actor may make a mistake or may be intentionally deploying a malicious change.<span data-type="footnote" id="ch14fn7">That said, such authorization checks are still necessary for the principle of least privilege (see <a data-type="xref" href="#design_for_least_privilege">#design_for_least_privilege</a>).</span> Instead, deployment environments should verify <em>what</em> is being deployed.</p>
-<p>Deployment environments should require proof that each automated step of the deployment process occurred. Humans must not be able to bypass the automation unless some other mitigating control checks that action. For example, if you run on Google Kubernetes Engine (GKE), you can use <a href="https://cloud.google.com/binary-authorization/">Binary Authorization</a> to by default accept only images signed by your CI/CD system, and monitor the Kubernetes cluster audit log for notifications when someone uses the breakglass feature to deploy a noncompliant image.<span data-type="footnote" id="ch14fn8">A breakglass mechanism can bypass policies to allow engineers to quickly resolve outages. See <a data-type="xref" href='#breakglass'>#breakglass</a>.</span></p>
-<p>One limitation of this approach is that it assumes that all components of your setup are secure: that the CI/CD system accepts build requests only for sources that are allowed in production, that the signing keys (if used) are accessible only by the CI/CD system, and so on. <a data-type="xref" href='#advanced_mitigation_strategies'>#advanced_mitigation_strategies</a> describes a more robust approach of directly verifying the desired properties with fewer implicit assumptions.</p>
+<p><a contenteditable="false" data-primary="deploying code" data-secondary="verifying artifacts" data-type="indexterm">&nbsp;</a>The controls around the source, build, and test infrastructure have limited effect if adversaries can bypass them by deploying directly to production. It is not sufficient to verify <em>who</em> initiated a deployment, because that actor may make a mistake or may be intentionally deploying a malicious change.<span data-type="footnote" id="ch14fn7">That said, such authorization checks are still necessary for the principle of least privilege (see <a data-type="xref" href="#design_for_least_privilege">Chapter 5</a>).</span> Instead, deployment environments should verify <em>what</em> is being deployed.</p>
+<p>Deployment environments should require proof that each automated step of the deployment process occurred. Humans must not be able to bypass the automation unless some other mitigating control checks that action. For example, if you run on Google Kubernetes Engine (GKE), you can use <a href="https://cloud.google.com/binary-authorization/">Binary Authorization</a> to by default accept only images signed by your CI/CD system, and monitor the Kubernetes cluster audit log for notifications when someone uses the breakglass feature to deploy a noncompliant image.<span data-type="footnote" id="ch14fn8">A breakglass mechanism can bypass policies to allow engineers to quickly resolve outages. See <a data-type="xref" href='ch05.html#breakglass'>Breakglass</a>.</span></p>
+<p>One limitation of this approach is that it assumes that all components of your setup are secure: that the CI/CD system accepts build requests only for sources that are allowed in production, that the signing keys (if used) are accessible only by the CI/CD system, and so on. <a data-type="xref" href='#advanced_mitigation_strategies'>Advanced Mitigation Strategies</a> describes a more robust approach of directly verifying the desired properties with fewer implicit assumptions.</p>
 </section>
 <section data-type="sect2" id="treat_configuration_as_code">
 <h2>Treat Configuration as Code</h2>
@@ -150,7 +150,7 @@
 <tbody>
 <tr>
 <td>An engineer submits a change that accidentally introduces a vulnerability to the system.</td>
-<td>Code review plus automated testing (see <a data-type="xref" href="#onethree_testing_code">#onethree_testing_code</a>). This approach significantly reduces the chance of mistakes.</td>
+<td>Code review plus automated testing (see <a data-type="xref" href="#onethree_testing_code">Chapter 13</a>). This approach significantly reduces the chance of mistakes.</td>
 <td> </td>
 </tr>
 <tr>
@@ -171,7 +171,7 @@
 <tr>
 <td>A malicious adversary deploys a modified binary to production that begins exfiltrating customer credentials.</td>
 <td>The production environment requires proof that the CI/CD system built the binary. The CI/CD system is configured to pull sources from only the correct source repository.</td>
-<td>An adversary may figure out how to bypass this requirement by using emergency deployment breakglass procedures (see <a data-type="xref" href='#practical_advice'>#practical_advice</a>). Sufficient logging and auditing can mitigate this possibility.</td>
+<td>An adversary may figure out how to bypass this requirement by using emergency deployment breakglass procedures (see <a data-type="xref" href='#practical_advice'>Practical Advice</a>). Sufficient logging and auditing can mitigate this possibility.</td>
 </tr>
 <tr>
 <td>A malicious adversary modifies the ACLs of a cloud bucket, allowing them to exfiltrate data.</td>
@@ -180,15 +180,15 @@
 </tr>
 <tr>
 <td>A malicious adversary steals the integrity key used to sign the software.</td>
-<td>Store the integrity key in a key management system that is configured to allow only the CI/CD system to access the key, and that supports key rotation. For more information, see <a data-type="xref" href="#design_for_recovery">#design_for_recovery</a>. For build-specific suggestions, see the recommendations in <a data-type="xref" href='#advanced_mitigation_strategies'>#advanced_mitigation_strategies</a>.</td>
+<td>Store the integrity key in a key management system that is configured to allow only the CI/CD system to access the key, and that supports key rotation. For more information, see <a data-type="xref" href="#design_for_recovery">Chapter 9</a>. For build-specific suggestions, see the recommendations in <a data-type="xref" href='#advanced_mitigation_strategies'>Advanced Mitigation Strategies</a>.</td>
 <td> </td>
 </tr>
 </tbody>
 </table>
-<p><a data-type="xref" href="#a_typical_software_supply_chainem_dasha">#a_typical_software_supply_chainem_dasha</a> shows an updated software supply chain that includes the threats and mitigations listed in the preceding table.</p>
+<p><a data-type="xref" href="#a_typical_software_supply_chainem_dasha">Figure 14-3</a> shows an updated software supply chain that includes the threats and mitigations listed in the preceding table.</p>
 <figure id="a_typical_software_supply_chainem_dasha">
-<img src="images/bsrs_1403.png" alt="A typical software supply chain—adversaries should not be able to bypass the process"/>
-<figcaption>A typical software supply chain—adversaries should not be able to bypass the process</figcaption>
+<img src="images/bsrs_1403.png" alt="Figure 14-3: A typical software supply chain—adversaries should not be able to bypass the process"/>
+<figcaption>Figure 14-3: A typical software supply chain—adversaries should not be able to bypass the process</figcaption>
 </figure>
 <p>We have yet to match several threats with mitigations from best practices:</p>
 <ul>
@@ -257,7 +257,7 @@
 </section>
 <section data-type="sect2" id="provenance_based_deployment_policies">
 <h2>Provenance-Based Deployment Policies</h2>
-<p><a contenteditable="false" data-primary="advanced mitigation strategies" data-secondary="provenance-based deployment policies" data-type="indexterm" id="ch14.html12">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="provenance-based deployment policies" data-type="indexterm" id="ch14.html13">&nbsp;</a><a contenteditable="false" data-primary="provenance-based deployment policies" data-type="indexterm" id="ch14.html14">&nbsp;</a><a data-type="xref" href='#verify_artifactscomma_not_just_people'>#verify_artifactscomma_not_just_people</a> recommends that the official build automation pipeline should verify what is being deployed. How do you verify that the pipeline is configured properly? And what if you want to make specific guarantees for some deployment environments that don’t apply to other environments?</p>
+<p><a contenteditable="false" data-primary="advanced mitigation strategies" data-secondary="provenance-based deployment policies" data-type="indexterm" id="ch14.html12">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="provenance-based deployment policies" data-type="indexterm" id="ch14.html13">&nbsp;</a><a contenteditable="false" data-primary="provenance-based deployment policies" data-type="indexterm" id="ch14.html14">&nbsp;</a><a data-type="xref" href='#verify_artifactscomma_not_just_people'>Verify Artifacts, Not Just People</a> recommends that the official build automation pipeline should verify what is being deployed. How do you verify that the pipeline is configured properly? And what if you want to make specific guarantees for some deployment environments that don’t apply to other environments?</p>
 <p>You can use explicit deployment policies that describe the intended properties of each deployment environment to address these concerns. The deployment environments can then match these policies against the binary provenance of artifacts deployed to them.</p>
 <p>This approach has several benefits over a pure signature-based approach:</p>
 <ul>
@@ -271,10 +271,10 @@
 <ul>
 <li><p>Source code was submitted to version control and peer reviewed.</p></li>
 <li><p>Source code came from a particular location, such as a specific build target and repository.</p></li>
-<li><p>Build was through the official CI/CD pipeline (see <a data-type="xref" href='#verifiable_builds'>#verifiable_builds</a>).</p></li>
+<li><p>Build was through the official CI/CD pipeline (see <a data-type="xref" href='#verifiable_builds'>Verifiable Builds</a>).</p></li>
 <li><p>Tests have passed.</p></li>
 <li><p>Binary was explicitly allowed for this deployment environment. For example, do not allow “test” binaries in production.</p></li>
-<li><p>Version of code or build is sufficiently recent.<span data-type="footnote" id="ch14fn14">For a discussion on rollbacks to vulnerable versions, see <a data-type="xref" href='#minimum_acceptable_security_version_num'>#minimum_acceptable_security_version_num</a>.</span></p></li>
+<li><p>Version of code or build is sufficiently recent.<span data-type="footnote" id="ch14fn14">For a discussion on rollbacks to vulnerable versions, see <a data-type="xref" href='ch09.html#minimum_acceptable_security_version_num'>Minimum Acceptable Security Version Numbers</a>.</span></p></li>
 <li><p>Code is free of known vulnerabilities, as reported by a sufficiently recent security scan.<span data-type="footnote" id="ch14fn15">For example, you might require proof that <a href="https://cloud.google.com/security-scanner/">Cloud Security Scanner</a> found no results against your test instance running this specific version of the code.</span></p></li>
 </ul>
 <p>The <a href="https://in-toto.github.io">in-toto framework</a> provides one standard for implementing provenance policies.</p>
@@ -303,7 +303,7 @@
 <section data-type="sect2" id="verifiable_builds">
 <h2>Verifiable Builds</h2>
 <p><a contenteditable="false" data-primary="advanced mitigation strategies" data-secondary="verifiable builds" data-type="indexterm" id="ch14.html15">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="verifiable builds" data-type="indexterm" id="ch14.html16">&nbsp;</a><a contenteditable="false" data-primary="verifiable builds" data-type="indexterm" id="ch14.html17">&nbsp;</a>We call a build <em>verifiable</em> if the binary provenance produced by the build is trustworthy.<span data-type="footnote" id="ch14fn16">Recall that pure signatures still count as “binary provenance,” as described in the previous section.</span> Verifiability is in the eye of the beholder. Whether or not you trust a particular build system depends on your threat model and how the build system fits into your organization’s larger security story.</p>
-<p>Consider whether the following examples of nonfunctional requirements are appropriate for your organization,<span data-type="footnote" id="ch14fn17">See <a data-type="xref" href='#design_objectives_and_requirements'>#design_objectives_and_requirements</a>.</span> and add any requirements that meet your specific needs:</p>
+<p>Consider whether the following examples of nonfunctional requirements are appropriate for your organization,<span data-type="footnote" id="ch14fn17">See <a data-type="xref" href='ch04.html#design_objectives_and_requirements'>Design Objectives and Requirements</a>.</span> and add any requirements that meet your specific needs:</p>
 <ul>
 <li><p>If a single developer’s workstation is compromised, the integrity of binary provenance or output artifacts is not compromised.</p></li>
 <li><p>An adversary cannot tamper with provenance or output artifacts without detection.</p></li>
@@ -343,7 +343,7 @@
 <dd><p><a contenteditable="false" data-primary="reproducible builds" data-type="indexterm">&nbsp;</a>Running the same build commands on the same inputs is guaranteed to produce bit-by-bit identical outputs. Reproducibility almost always requires hermeticity.<span data-type="footnote" id="ch14fn19">As a counterexample, consider a build process that fetches the latest version of a dependency during the build but otherwise produces identical outputs. This process is reproducible so long as two builds happen at roughly the same time, but is not hermetic.</span></p>
 <p>Reproducible builds have the following benefits:</p>
 <ul>
-<li><p><em>Verifiability</em>—A verifier can determine the binary provenance of an artifact by reproducing the build themselves or by using a quorum of rebuilders, as described in <a data-type="xref" href='#verifiable_builds'>#verifiable_builds</a>.</p></li>
+<li><p><em>Verifiability</em>—A verifier can determine the binary provenance of an artifact by reproducing the build themselves or by using a quorum of rebuilders, as described in <a data-type="xref" href='#verifiable_builds'>Verifiable Builds</a>.</p></li>
 <li><p><em>Hermeticity</em>—Nonreproducibility often indicates nonhermeticity. Continuously testing for reproducibility can help detect nonhermeticity early, thereby ensuring all the benefits of hermeticity described earlier.</p></li>
 <li><p><em>Build caching</em>—Reproducible builds allow for better caching of intermediate build artifacts in large build graphs, such as in Bazel.</p></li>
 </ul>
@@ -356,15 +356,15 @@
 <section data-type="sect3" id="implementing_verifiable_builds">
 <h3>Implementing verifiable builds</h3>
 <p><a contenteditable="false" data-primary="continuous integration/continuous deployment (CI/CD)" data-secondary="implementing verifiable builds" data-type="indexterm" id="ch14.html18">&nbsp;</a><a contenteditable="false" data-primary="verifiable builds" data-secondary="implementation" data-type="indexterm" id="ch14.html19">&nbsp;</a>Regardless of whether a verifiable build service is a “trusted build service” or a “rebuilding service,” you should keep several important design considerations in mind.</p>
-<p>At a basic level, almost all CI/CD systems function according to the steps in <a data-type="xref" href="#a_basic_cisoliduscd_system">#a_basic_cisoliduscd_system</a>: the service takes in requests, fetches any necessary inputs, performs the build, and writes the output to a storage system.</p>
+<p>At a basic level, almost all CI/CD systems function according to the steps in <a data-type="xref" href="#a_basic_cisoliduscd_system">Figure 14-4</a>: the service takes in requests, fetches any necessary inputs, performs the build, and writes the output to a storage system.</p>
 <figure id="a_basic_cisoliduscd_system">
-<img src="images/bsrs_1404.png" alt="A basic CI/CD system"/>
-<figcaption>A basic CI/CD system</figcaption>
+<img src="images/bsrs_1404.png" alt="Figure 14-4: A basic CI/CD system"/>
+<figcaption>Figure 14-4: A basic CI/CD system</figcaption>
 </figure>
-<p>Given such a system, you can add signed provenance to the output relatively easily, as shown in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">#the_addition_of_signing_to_an_existing</a>. For a small organization with a “central build service” model, this additional signing step may be sufficient to address security concerns.</p>
+<p>Given such a system, you can add signed provenance to the output relatively easily, as shown in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">Figure 14-5</a>. For a small organization with a “central build service” model, this additional signing step may be sufficient to address security concerns.</p>
 <figure id="the_addition_of_signing_to_an_existing">
-<img src="images/bsrs_1405.png" alt="The addition of signing to an existing CI/CD system"/>
-<figcaption>The addition of signing to an existing CI/CD system</figcaption>
+<img src="images/bsrs_1405.png" alt="Figure 14-5: The addition of signing to an existing CI/CD system"/>
+<figcaption>Figure 14-5: The addition of signing to an existing CI/CD system</figcaption>
 </figure>
 <p>As the size of your organization grows and you have more resources to invest in security, you will likely want to address two more security risks: untrusted inputs and unauthenticated inputs.</p>
 <section data-type="sect4" id="untrusted_inputs">
@@ -383,10 +383,10 @@
 <h4>Unauthenticated inputs</h4>
 <p><a contenteditable="false" data-primary="verifiable builds" data-secondary="unauthenticated inputs" data-type="indexterm">&nbsp;</a>Even if the user and build steps are trustworthy, most builds have dependencies on other artifacts. Any such dependency is a surface through which adversaries can potentially subvert the build. For example, if the build system fetches a dependency over HTTP without TLS, an attacker can perform a man-in-the-middle attack to modify the dependency in transit.</p>
 <p>For this reason, we recommend hermetic builds (see <a data-type="xref" href='#hermeticcomma_reproduciblecomma_or_veri'>#hermeticcomma_reproduciblecomma_or_veri</a>). The build process should declare all inputs up front, and only the orchestrator should fetch those inputs. Hermetic builds give much higher confidence that the inputs listed in the provenance are correct.</p>
-<p>Once you’ve accounted for untrusted and unauthenticated inputs, your system resembles <a data-type="xref" href="#an_quotation_markidealquotation_mark_ci">#an_quotation_markidealquotation_mark_ci</a>. Such a model is much more resistant to attack than the simple model in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">#the_addition_of_signing_to_an_existing</a><a contenteditable="false" data-primary="" data-startref="ch14.html19" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html18" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch14.html17" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html16" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html15" data-type="indexterm">&nbsp;</a></p>
+<p>Once you’ve accounted for untrusted and unauthenticated inputs, your system resembles <a data-type="xref" href="#an_quotation_markidealquotation_mark_ci">Figure 14-6</a>. Such a model is much more resistant to attack than the simple model in <a data-type="xref" href="#the_addition_of_signing_to_an_existing">Figure 14-5</a><a contenteditable="false" data-primary="" data-startref="ch14.html19" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html18" data-type="indexterm">&nbsp;</a>.<a contenteditable="false" data-primary="" data-startref="ch14.html17" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html16" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="" data-startref="ch14.html15" data-type="indexterm">&nbsp;</a></p>
 <figure id="an_quotation_markidealquotation_mark_ci">
-<img src="images/bsrs_1406.png" alt="An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs"/>
-<figcaption>An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs</figcaption>
+<img src="images/bsrs_1406.png" alt="Figure 14-6: An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs"/>
+<figcaption>Figure 14-6: An “ideal” CI/CD design that addresses risks of untrusted and unauthenticated inputs</figcaption>
 </figure>
 </section>
 </section>
@@ -394,16 +394,16 @@
 <section data-type="sect2" id="deployment_choke_points">
 <h2>Deployment Choke Points</h2>
 <p><a contenteditable="false" data-primary="advanced mitigation strategies" data-secondary="deployment choke points" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="choke points" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="deployment choke points" data-type="indexterm">&nbsp;</a>To “verify artifacts, not just people,” deployment decisions must occur at proper choke points within the deployment environment. In this context, a <em>choke point</em> is a point through which all deployment requests must flow. Adversaries can bypass deployment decisions that don’t occur at choke points.</p>
-<p><a contenteditable="false" data-primary="Kubernetes" data-type="indexterm">&nbsp;</a>Consider Kubernetes as an example for setting up deployment choke points, as shown in <a data-type="xref" href="#kubernetes_architectureem_dashall_deplo">#kubernetes_architectureem_dashall_deplo</a>. Suppose you want to verify all deployments to the pods in a specific Kubernetes cluster. The control plane ("master") node would make a good choke point because all deployments are supposed to flow through it. To make this a proper choke point, configure the worker nodes to accept requests only from the control plane node. This way, adversaries cannot deploy directly to worker nodes.<span data-type="footnote" id="ch14fn20">In reality, there must be some way to deploy software to the node itself—the bootloader, the operating system, the Kubernetes software, and so on—and that deployment mechanism must have its own policy enforcement, which is likely a completely different implementation than the one used for pods.</span></p>
+<p><a contenteditable="false" data-primary="Kubernetes" data-type="indexterm">&nbsp;</a>Consider Kubernetes as an example for setting up deployment choke points, as shown in <a data-type="xref" href="#kubernetes_architectureem_dashall_deplo">Figure 14-7</a>. Suppose you want to verify all deployments to the pods in a specific Kubernetes cluster. The control plane ("master") node would make a good choke point because all deployments are supposed to flow through it. To make this a proper choke point, configure the worker nodes to accept requests only from the control plane node. This way, adversaries cannot deploy directly to worker nodes.<span data-type="footnote" id="ch14fn20">In reality, there must be some way to deploy software to the node itself—the bootloader, the operating system, the Kubernetes software, and so on—and that deployment mechanism must have its own policy enforcement, which is likely a completely different implementation than the one used for pods.</span></p>
 <figure id="kubernetes_architectureem_dashall_deplo">
-<img src="images/bsrs_1407.png" alt="Kubernetes architecture—all deployments must flow through the control plane (&quot;master&quot;) node"/>
-<figcaption>Kubernetes architecture—all deployments must flow through the control plane ("master" in this figure) node</figcaption>
+<img src="images/bsrs_1407.png" alt="Figure 14-7: Kubernetes architecture—all deployments must flow through the control plane (&quot;master&quot;) node"/>
+<figcaption>Figure 14-7: Kubernetes architecture—all deployments must flow through the control plane ("master" in this figure) node</figcaption>
 </figure>
 <p>Ideally, the choke point performs the policy decision, either directly or via an RPC. Kubernetes offers an <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Admission Controller</a> webhook for this exact purpose. If you use Google Kubernetes Engine, <a href="https://cloud.google.com/binary-authorization/">Binary Authorization</a> offers a hosted admission controller and many additional features. And even if you don’t use Kubernetes, you may be able to modify your “admission” point to perform the deployment decision.</p>
-<p>Alternatively, you can place a “proxy” in front of the choke point and perform the policy decision in the proxy, as shown in <a data-type="xref" href="#alternative_architecture_using_a_proxy">#alternative_architecture_using_a_proxy</a>. This approach requires configuring your “admission” point to allow access only via the proxy. Otherwise, an adversary can bypass the proxy by talking directly to the admission point.</p>
+<p>Alternatively, you can place a “proxy” in front of the choke point and perform the policy decision in the proxy, as shown in <a data-type="xref" href="#alternative_architecture_using_a_proxy">Figure 14-8</a>. This approach requires configuring your “admission” point to allow access only via the proxy. Otherwise, an adversary can bypass the proxy by talking directly to the admission point.</p>
 <figure id="alternative_architecture_using_a_proxy">
-<img src="images/bsrs_1408.png" alt="Alternative architecture using a proxy to make policy decisions"/>
-<figcaption>Alternative architecture using a proxy to make policy decisions</figcaption>
+<img src="images/bsrs_1408.png" alt="Figure 14-8: Alternative architecture using a proxy to make policy decisions"/>
+<figcaption>Figure 14-8: Alternative architecture using a proxy to make policy decisions</figcaption>
 </figure>
 </section>
 <section data-type="sect2" id="post_deployment_verification">
@@ -450,7 +450,7 @@
 </section>
 <section data-type="sect2" id="include_a_deployment_breakglass">
 <h2>Include a Deployment Breakglass</h2>
-<p><a contenteditable="false" data-primary="breakglass mechanism" data-secondary="code deployment and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="breakglass with" data-type="indexterm">&nbsp;</a>In an emergency, it may be necessary to bypass the deployment policy. For example, an engineer may need to reconfigure a frontend to divert traffic from a failing backend, and the corresponding configuration-as-code change might take too long to deploy through the regular CI/CD pipeline. A breakglass mechanism that bypasses the policy can allow engineers to quickly resolve outages and promotes a culture of security and reliability (see <a data-type="xref" href="#twoone_building_a_culture_of_security_a">#twoone_building_a_culture_of_security_a</a>).</p>
+<p><a contenteditable="false" data-primary="breakglass mechanism" data-secondary="code deployment and" data-type="indexterm">&nbsp;</a><a contenteditable="false" data-primary="deploying code" data-secondary="breakglass with" data-type="indexterm">&nbsp;</a>In an emergency, it may be necessary to bypass the deployment policy. For example, an engineer may need to reconfigure a frontend to divert traffic from a failing backend, and the corresponding configuration-as-code change might take too long to deploy through the regular CI/CD pipeline. A breakglass mechanism that bypasses the policy can allow engineers to quickly resolve outages and promotes a culture of security and reliability (see <a data-type="xref" href="#twoone_building_a_culture_of_security_a">Chapter 21</a>).</p>
 <p>Because adversaries may exploit the breakglass mechanism, all breakglass deployments must raise alarms and be audited quickly. In order to make auditing practical, breakglass events should be rare—if there are too many events, it may not be possible to differentiate malicious activity from legitimate usage.<a contenteditable="false" data-primary="" data-startref="ch14.html20" data-type="indexterm">&nbsp;</a></p>
 </section>
 </section>
@@ -489,6 +489,6 @@
 <section data-type="sect1" id="conclusion-id00013">
 <h1>Conclusion</h1>
 <p>The recommendations in this chapter can help you harden your software supply chain against various insider threats. Code reviews and automation are essential tactics for preventing mistakes and increasing attack costs for malicious actors. Configuration-as-code extends those benefits to configuration, which traditionally receives much less scrutiny than code. Meanwhile, artifact-based deployment controls, particularly those involving binary provenance and verifiable builds, bring protection against sophisticated adversaries and allow you to scale as your organization grows.</p>
-<p class="pagebreak-before">Together, these recommendations help ensure that the code you wrote and tested (following the principles in Chapters <a data-type="xref" data-xrefstyle="select:labelnumber" href="#writing_code">#writing_code</a> and <a data-type="xref" data-xrefstyle="select:labelnumber" href="#onethree_testing_code">#onethree_testing_code</a>) is the code that’s actually deployed in production. Despite your best efforts, however, your code probably won’t always behave as expected. When that happens, you can use some of the debugging strategies presented in the next chapter.<a contenteditable="false" data-primary="" data-startref="ch14.html0" data-type="indexterm">&nbsp;</a></p>
+<p class="pagebreak-before">Together, these recommendations help ensure that the code you wrote and tested (following the principles in Chapters <a data-type="xref" data-xrefstyle="select:labelnumber" href="#writing_code">Chapter 12</a> and <a data-type="xref" data-xrefstyle="select:labelnumber" href="#onethree_testing_code">Chapter 13</a>) is the code that’s actually deployed in production. Despite your best efforts, however, your code probably won’t always behave as expected. When that happens, you can use some of the debugging strategies presented in the next chapter.<a contenteditable="false" data-primary="" data-startref="ch14.html0" data-type="indexterm">&nbsp;</a></p>
 </section>
 </section>
