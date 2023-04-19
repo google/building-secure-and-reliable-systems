@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Building Secure and Reliable Systems</title>
+  <link rel="stylesheet" type="text/css" href="theme/html/html.css">
+</head>
+<body data-type="book">
 <section data-type="chapter" id="design_for_recovery" xmlns="http://www.w3.org/1999/xhtml">
 <h1>Design for Recovery</h1>
 
@@ -540,3 +548,5 @@ def IsUpdateAllowed(self, Release, KeyDatabase) -&gt; bool:
 <p>This chapter explored various aspects of designing systems for recovery. We explained why systems should be flexible in terms of the rate at which they deploy changes: this flexibility allows you to roll out changes slowly when possible and avoid coordinated failures, but also to roll out changes quickly and confidently when you have to accept more risk to meet security objectives. The ability to roll back changes is essential for building reliable systems, but sometimes you may need to prevent rollback to versions that are insecure or sufficiently old. Understanding, monitoring, and reproducing the state of your system to the greatest extent possible—through software versions, memory, wall-clock time, and so on—is key to reliably recovering the system to any previously working state, and ensuring that its current state matches your security requirements. As a last resort, emergency access permits responders to remain connected, assess a system, and mitigate the situation. Thoughtfully managing policy versus procedure, the central source of truth versus local functions, and the expected state versus the system’s actual state paves the way to recoverable systems, while also promoting resilience and robust everyday operations.<a contenteditable="false" data-primary="" data-startref="ch09.html0" data-type="indexterm">&nbsp;</a></p>
 </section>
 </section>
+</body>
+</html>

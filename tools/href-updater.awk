@@ -13,13 +13,37 @@
 
 BEGIN {
     RS = "</a>";  # Iterate over links rathar than lines of text.
+    wrap_html = 0;  # We'll run this with 1 at most once, so default to 0.
     d = 0;  # debug
 }
 END { }
 
+
+# Opportunistically insert into every HTML file the same HTML header and footer.
+BEGINFILE {
+    if (wrap_html) {
+	print "<!DOCTYPE html>"
+	print "<html lang=\"en\">"
+	print "<head>"
+	print "  <meta charset=\"utf-8\">"
+	print "  <title>Building Secure and Reliable Systems</title>"
+	print "  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme/html/html.css\">"
+	print "</head>"
+	print "<body data-type=\"book\">"
+    }
+}
+ENDFILE {
+    if (wrap_html) {
+	print "</body>";
+	print "</html>";
+    }
+}
+
 # Lines end with the <a> whose closing </a> is stored in RT.
 {
     source = $0 RT;  # We'll printf this verbatim when not updating the block.
+
+    if (wrap_html) { printf("%s", source); next; }  # For simplicity, wrap XOR edit.
 
     # Get just the <a>...</a>, for simplicity.
     match(source, /<a.+<\/a>/, matches);
