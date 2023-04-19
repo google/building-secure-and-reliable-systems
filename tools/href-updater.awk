@@ -13,7 +13,7 @@
 
 BEGIN {
     RS = "</a>";  # Iterate over links rathar than lines of text.
-    wrap_html = 1;  # We'll run this with 1 once, so default to 0.
+    wrap_html = 0;  # We'll run this with 1 at most once, so default to 0.
     d = 0;  # debug
 }
 END { }
