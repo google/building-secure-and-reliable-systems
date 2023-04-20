@@ -40,8 +40,9 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
   line-height: 1;
-        max-width: 34rem;
-        margin: 6.25rem;
+  /* Approximate the printed book's left indent and how the words split into lines. */
+  margin: 4.25rem;
+  max-width: 38rem;
 }
 ol, ul {
   list-style: none;
@@ -68,13 +69,13 @@ table {
 p { 
   margin: 10px 0 0;
   line-height: 125%;
-  text-align: left;
+  text-align: justify;  /* Approximate the printed book's appearance. */
 }
 
 /* author byline */
 p.byline {
-  text-align: left;
-  margin: 10px auto 0px;
+  text-align: right;
+  margin: 0px auto 0px;
   font-style: italic;
   font-weight: 400;
 }
@@ -247,6 +248,7 @@ div.figure {
 figure {
     margin: 15px auto !important;
     page-break-inside: avoid;
+    text-align: center;
 }
 
 div.figure h6,
@@ -284,8 +286,9 @@ aside[data-type="sidebar"] {
     margin: 15px 0px 10px 0px !important;
     page-break-inside: avoid;
     background-color: rgba(25, 25, 25, 0.05);
-    border-color: rgba(138, 130, 118, 0.1);
     padding: 0.75rem 0.75rem;
+    border: solid;
+    border-width: 1px;
 }
 
 div.sidebar-title, aside[data-type="sidebar"] h5 {
