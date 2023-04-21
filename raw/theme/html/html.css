@@ -828,10 +828,6 @@ a.co img { padding: 0; }
 
 /* ----------------- html toc ----------------- */
 
-nav[data-type="toc"] li {
-  border: 0px solid #BEBEBE;  /* For debugging, set border non-zero. */
-}
-
 nav[data-type="toc"] li[data-type="foreword"] a,
 nav[data-type="toc"] li[data-type="preface"] a,
 nav[data-type="toc"] li[data-type="afterword"] a,
