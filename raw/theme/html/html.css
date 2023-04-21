@@ -828,40 +828,37 @@ a.co img { padding: 0; }
 
 /* ----------------- html toc ----------------- */
 
-div.toc ol {
-  margin-top: 8px !important;
-  margin-bottom: 8px !important;
-  margin-left: 0px !important;
-  padding-left: 0px !important;
+nav[data-type="toc"] li {
+  border: 0px solid #BEBEBE;  /* For debugging, set border non-zero. */
 }
 
-div.toc ol ol {
-  margin-left: 30px !important;
-  padding-left: 0px !important;
-}
-
-div.toc ol li {
-  list-style-type: none;
-}
-
-div.toc a {
-  color: #8e0012;
-}
-
-div.toc ol a {
-  font-size: 1em;
+nav[data-type="toc"] li[data-type="foreword"] a,
+nav[data-type="toc"] li[data-type="preface"] a,
+nav[data-type="toc"] li[data-type="afterword"] a,
+nav[data-type="toc"] li[data-type="appendix"] a,
+nav[data-type="toc"] li[data-type="index"] a,
+nav[data-type="toc"] li[data-type="colophon"] a {
+  font-size: 1.1em;
   font-weight: bold;
 }
 
-div.toc ol > li > ol a {
+nav[data-type="toc"] li[data-type="part"] {
+  margin-top: 32px !important;
+  margin-bottom: 16px !important;
+}
+nav[data-type="toc"] li[data-type="part"] a {
+  font-size: 1.6em;
   font-weight: bold;
-  font-size: 1em;
 }
 
-div.toc ol > li > ol > li > ol a {
-  text-decoration: none;
-  font-weight: normal;
-  font-size: 1em;
+nav[data-type="toc"] li[data-type="chapter"] a {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+/* Remove bullet discs/circles from top-lever items (but not sections). */
+nav[data-type="toc"] > ul > li {
+  list-style-type: none !important;
 }
 
 /* ----------------- admonitions ----------------- */
