@@ -76,10 +76,12 @@ ENDFILE {
     # In the filename, omit any leading path since the HTML uses local directory references.
     filename_local = gensub(/(.*\/)([a-z]+[0-9]*\.html)/, "\\2", "g", FILENAME);
     if (d) { printf("filename='%s', local='%s'\n", metadata[id]["filename"], filename_local); }
-    if (metadata[id]["filename"] != filename_local) {
-        regexp = "href=['\"]#" id "['\"]";
-	href_updated = "href='" metadata[id]["filename"] "#" id "'";
-	updated = gensub(regexp,  href_updated, "g", updated);
+    if (metadata[id]["type"] != "figure") {  # Skip figures; they're always referenced locally.
+	if (metadata[id]["filename"] != filename_local) {
+	    regexp = "href=['\"]#" id "['\"]";
+	    href_updated = "href='" metadata[id]["filename"] "#" id "'";
+	    updated = gensub(regexp,  href_updated, "g", updated);
+	}
     }
     # Second, replace the HTML text for the <a>; this happens only if text_matched.
     if (text_matched) {
