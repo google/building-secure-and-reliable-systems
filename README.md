@@ -11,3 +11,5 @@ teams on these topics. The book was launched on 2020-04-08 and can be found at
 https://sre.google/books.
 
 This is not an officially supported Google product.
+
+To read the book, see the [Table of Contents](https://google.github.io/building-secure-and-reliable-systems/raw/toc.html).
