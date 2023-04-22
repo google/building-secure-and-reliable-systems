@@ -1169,6 +1169,13 @@ div.informalequation img {
 
 /* ----------------- index ----------------- */
 
+/* The indexterm <a> are sprinkled everywhere, for backreferencing from
+   the index (ix.html), but their &nbsp; inserts distracting whitespace. */
+a[id="indexterm] {
+  display: inline-block !important;
+  width: 0px !important;
+}
+
 div.index {
   text-indent: 0;
 }
