@@ -1221,10 +1221,6 @@ section[id="index"] ul {
     margin: 0px;
 }
 
-div.index a.indexterm {
-  color: #8e0012 !important;
-}
-
 /* ----------------- syntax highlighting and coloring text in general ----------------- */
 
 /* legacy stuff */
