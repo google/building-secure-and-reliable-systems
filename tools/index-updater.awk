@@ -30,6 +30,7 @@ BEGIN {
 BEGINFILE {
     # In the filename, omit any leading path since the HTML uses local directory references.
     filename = gensub(/(.*\/)([a-z_]+[0-9]*\.html)/, "\\2", "g", FILENAME);
+    id_new_counter = 1;  # When we make new id= values, use this counter (per-file).
 }
 
 {
@@ -66,6 +67,17 @@ BEGINFILE {
 	    # This way, HTML will have #anchors for the "ending place for an indexed term".
 	    regexp = " data-startref=\"" data_sta "\"";
 	    text_updated = " id=\"" data_sta "-eot\"" regexp  # Append "-eot" (end-of-term).
+	    updated = gensub(regexp, text_updated, "g", updated);
+	}
+	# For primary (with or without secondary) entries that have no id (!data_sta indicates
+	# such entries), generate an id to make the indexterm addressable via an #anchor.
+	if (!data_sta && !data_id) {
+	    # If we haven't upgraded startref-only indexterm to add id=, we'll do so now.
+	    # This way, HTML will have #anchors for the "ending place for an indexed term".
+	    # New id= values are similar to the existing ones, but use "_ix" to separate
+	    # the counter and avoid collisions with the existing id= values.
+	    regexp = "data-type=\"indexterm\"";
+	    text_updated = regexp " id=\"" filename "_ix" id_new_counter "\""
 	    updated = gensub(regexp, text_updated, "g", updated);
 	}
 	printf("%s", updated);
@@ -155,6 +167,7 @@ END {
 	    a_href = ordered[i]["filename"] "#" ordered[i]["id"];
 	    a_text = "start"  # gensub(/\.html/, "-", "g", ordered[i]["id"]);  # Replace ".html" in the middle.
 	} else {
+	    # Note: with the most recent edit mode changes, this branch won't be needed.
 	    a_href = ordered[i]["filename"]  # Not anchor, unless we add id="" to all such indexterms.
 	    a_text = "see"  # gensub(/\.html/, " ", "g", ordered[i]["filename"]);  # Trim ".html".
 	}
