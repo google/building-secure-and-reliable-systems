@@ -634,6 +634,10 @@ div[data-type="footnotes"] {
   margin-top: 2em;
 }
 
+div[data-type="footnotes"] a {
+    /* Ensure the link text size matches the non-link text size. */
+}
+
 sub, sup {
   font-size: 75%;
   line-height: 0;
