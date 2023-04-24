@@ -60,10 +60,7 @@ ENDFILE {
     # Confirm that we can proceed.
     match(a, />#([^\<]+)/, matches);
     text = matches[1];
-    if (text != href) {
-	if (d > 1) { print "  skipping href #" href " != text #" text; }
-	printf("%s", source); next;
-    }
+    text_matched = (text != href)
     # Confirm we have the metadata.
     if (!(href in metadata)) {
 	if (d) { print "  skipping href #" href " not in metadata"; }
@@ -78,15 +75,20 @@ ENDFILE {
     # First, an #anchor not to the local file needs to insert that file's name.
     # In the filename, omit any leading path since the HTML uses local directory references.
     filename_local = gensub(/(.*\/)([a-z]+[0-9]*\.html)/, "\\2", "g", FILENAME);
-    if (metadata[id]["filename"] != filename_local) {
-        regexp = "href='#" id "'";
-	href_updated = "href='" metadata[id]["filename"] "#" id "'";
-	updated = gensub(regexp,  href_updated, "g", updated);
+    if (d) { printf("filename='%s', local='%s'\n", metadata[id]["filename"], filename_local); }
+    if (metadata[id]["type"] != "figure") {  # Skip figures; they're always referenced locally.
+	if (metadata[id]["filename"] != filename_local) {
+	    regexp = "href=['\"]#" id "['\"]";
+	    href_updated = "href='" metadata[id]["filename"] "#" id "'";
+	    updated = gensub(regexp,  href_updated, "g", updated);
+	}
     }
-    # Second, replace the HTML text for the <a>; this happens unconditionally. 
-    regexp    = ">#" id "<";
-    text_updated = ">" metadata[id]["text"] "<"
-    updated = gensub(regexp, text_updated, "g", updated);
+    # Second, replace the HTML text for the <a>; this happens only if text_matched.
+    if (text_matched) {
+	regexp    = ">#" id "<";
+	text_updated = ">" metadata[id]["text"] "<"
+	updated = gensub(regexp, text_updated, "g", updated);
+    }
 
     printf("%s", updated);
 }
