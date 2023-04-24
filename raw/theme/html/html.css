@@ -1198,6 +1198,29 @@ div.index ul ul {
   margin-top: 0 !important;
 }
 
+/* ------------ index (ix.html) ------------ */
+
+section[id="index"] {
+  text-indent: 0;
+}
+
+section[id="index"] h3 {
+    padding: 0.25em;
+    margin-top: 1em !important;
+    background-color: #F0F0F0;
+}
+
+section[id="index"] li,
+section[id="index"] ul li {
+    line-height: 130% !important;
+    list-style-type: none !important;
+    margin: 0px;
+}
+
+section[id="index"] ul {
+    margin: 0px;
+}
+
 /* ----------------- syntax highlighting and coloring text in general ----------------- */
 
 /* legacy stuff */
