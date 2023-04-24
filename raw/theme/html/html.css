@@ -629,15 +629,6 @@ p.right {
 
 /* ----------------- footnotes ----------------- */
 
-div[data-type="footnotes"] {
-  border-top: 1px solid black;
-  margin-top: 2em;
-}
-
-div[data-type="footnotes"] a {
-    /* Ensure the link text size matches the non-link text size. */
-}
-
 sub, sup {
   font-size: 75%;
   line-height: 0;
@@ -647,6 +638,17 @@ sub, sup {
 sup { top: -0.5em; }
 
 sub { bottom: -0.25em; }
+
+div[data-type="footnotes"] {
+  border-top: 1px solid black;
+  margin-top: 2em;
+}
+
+/* Ensure various element types (a, em, code) match the text
+   size adjustments defined below in p[data-type="footnote"]. */
+div[data-type="footnotes"] * {
+    font-size: 90% !important;
+}
 
 p[data-type="footnote"] {
     font-size: 90% !important;
@@ -1175,7 +1177,7 @@ div.informalequation img {
 
 /* The indexterm <a> are sprinkled everywhere, for backreferencing from
    the index (ix.html), but their &nbsp; inserts distracting whitespace. */
-a[id="indexterm] {
+a[data-type="indexterm"] {
   display: inline-block !important;
   width: 0px !important;
 }
