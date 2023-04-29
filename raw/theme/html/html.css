@@ -1221,6 +1221,14 @@ section[id="index"] ul {
     margin: 0px;
 }
 
+section[id="index"] p[class="ix_toc"] a {
+    font-size: 1.2em;
+    font-family: monospace;
+    padding: 2px 3px 2px 3px !important;
+    margin: 0px !important;
+}
+
+
 /* ----------------- syntax highlighting and coloring text in general ----------------- */
 
 /* legacy stuff */
