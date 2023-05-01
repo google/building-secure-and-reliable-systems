@@ -168,6 +168,14 @@ div.toc-title {
   margin-bottom: 30px !important;
 }
 
+/* This h2 subtitle *sometimes* precedes the section>h1 elements below. */
+h2.section-subtitle {
+  font-size: 1.3em;
+  line-height: 1em;
+  /* Use -20px to compensate the 40px gap the h1 that always follows must set. */
+  margin: 40px 0 -20px 0;
+}
+
 nav[data-type="toc"] h1,
 section[data-type="dedication"] h1,
 section[data-type="foreword"] h1,
