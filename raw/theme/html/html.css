@@ -168,6 +168,8 @@ div.toc-title {
   margin-bottom: 30px !important;
 }
 
+nav[data-type="toc"] h1,
+section[data-type="dedication"] h1,
 section[data-type="foreword"] h1,
 section[data-type="preface"] h1,
 section[data-type="chapter"] h1,
@@ -840,6 +842,7 @@ a.co img { padding: 0; }
 
 /* ----------------- html toc ----------------- */
 
+nav[data-type="toc"] li[data-type="dedication"] a,
 nav[data-type="toc"] li[data-type="foreword"] a,
 nav[data-type="toc"] li[data-type="preface"] a,
 nav[data-type="toc"] li[data-type="afterword"] a,
