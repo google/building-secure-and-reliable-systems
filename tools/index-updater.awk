@@ -124,6 +124,14 @@ END {
     print "<section data-type=\"index\" id=\"index\" xmlns=\"http://www.w3.org/1999/xhtml\">";
     print "<h1>Index</h1>";
 
+    # First, generate the header that links to individual letters.
+    # Letters A-Z (ASCII codes 65-90 decimal) split into two rows.
+    print "<p class=\"ix_toc\">";
+    for (l = 65; l <= 90; l++) {
+	printf("  <a href=\"#ix_%c\">%c</a>\n", l, l);
+    }
+    print "</p>";
+
     letter = "";  # Separate index sections by the starting letter.
     primary = "";  # So we know whether to indent indexterm with the same primary, as
     secondary = "";  # well as whether we have a repeat references for the last term.
@@ -146,7 +154,7 @@ END {
 	if (entries && !same_term) {
 	    if (entries) { print "</li>"; }
 	}
-	
+
 	if (data_pri) {
 	    letter_new = toupper(substr(data_pri, 1, 1));
 	    if (letter_new != letter) {  # Advance the letter to the new letter.
@@ -155,7 +163,7 @@ END {
 		    level = level - 1;
 		}
 		print "";
-		print "  <h3> Letter " letter_new "</h3>";
+		print "  <h3 id=\"ix_" letter_new "\">" letter_new "</h3>";
 		print "";
 		letter = letter_new;
 	    }
