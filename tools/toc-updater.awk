@@ -21,11 +21,20 @@ BEGIN {
     print "  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme/html/html.css\">"
     print "</head>"
     print "<body data-type=\"book\">"
-    print "<nav xmlns=\"http://www.w3.org/1999/xhtml\" data-type=\"toc\"/>";
+    print "<nav xmlns=\"http://www.w3.org/1999/xhtml\" data-type=\"toc\">";
+    print "<h1>Table of Contents</h1>";
+    print "<p class=\"byline\">&nbsp;</p>";  # For vertical spacing consistent with other files.
 
     # The loop below creates <li> within the global <ul>, and indents section
     # headers within each file with additional levels of <ul>.
     print "<ul>"
+
+    # Combine in this first static entry the two recognition pages the paper
+    # book has before the TOC, so they weren't listed in the printed TOC.   
+    print "  <li data-type=\"dedication\">";
+    print "    <a href=\"praise.html\">Praise</a> and <a href=\"dedication.html\">Dedication</a>";
+    print "  </li>";
+    
     level = 0;
     for (i in ordered) {
 	if (d) { print " ** level=" level ", order=" ordered[i]["order"]; }
@@ -57,6 +66,7 @@ BEGIN {
     }
     print "</ul>";
 
+    print "</nav>";
     print "</body>";
     print "</html>";
 }
