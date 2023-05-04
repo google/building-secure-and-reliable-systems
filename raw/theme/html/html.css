@@ -168,7 +168,23 @@ div.toc-title {
   margin-bottom: 30px !important;
 }
 
-section[data-type="chapter"] h1, section[data-type="preface"] h1 { 
+/* This h2 subtitle *sometimes* precedes the section>h1 elements below. */
+h2.section-subtitle {
+  font-size: 1.3em;
+  line-height: 1em;
+  /* Use -20px to compensate the 40px gap the h1 that always follows must set. */
+  margin: 40px 0 -20px 0;
+}
+
+nav[data-type="toc"] h1,
+section[data-type="dedication"] h1,
+section[data-type="foreword"] h1,
+section[data-type="preface"] h1,
+section[data-type="chapter"] h1,
+section[data-type="afterword"] h1,
+section[data-type="appendix"] h1,
+section[data-type="colophon"] h1,
+section[data-type="index"] h1 {
   font-size: 2.3em;
   line-height: 1em;
   margin: 40px 0 15px 0;
@@ -629,11 +645,6 @@ p.right {
 
 /* ----------------- footnotes ----------------- */
 
-div[data-type="footnotes"] {
-  border-top: 1px solid black;
-  margin-top: 2em;
-}
-
 sub, sup {
   font-size: 75%;
   line-height: 0;
@@ -643,6 +654,19 @@ sub, sup {
 sup { top: -0.5em; }
 
 sub { bottom: -0.25em; }
+
+div[data-type="footnotes"] {
+  border-top: 1px solid black;
+  margin-top: 2em;
+}
+
+/* Ensure various element types (a, em, code) match the text
+   size adjustments defined below in p[data-type="footnote"].
+   Don't use central alignment, to match the published format. */
+div[data-type="footnotes"] * {
+    font-size: 90% !important;
+    text-align: left !important;
+}
 
 p[data-type="footnote"] {
     font-size: 90% !important;
@@ -828,6 +852,7 @@ a.co img { padding: 0; }
 
 /* ----------------- html toc ----------------- */
 
+nav[data-type="toc"] li[data-type="dedication"] a,
 nav[data-type="toc"] li[data-type="foreword"] a,
 nav[data-type="toc"] li[data-type="preface"] a,
 nav[data-type="toc"] li[data-type="afterword"] a,
@@ -1168,6 +1193,13 @@ div.informalequation img {
 }
 
 /* ----------------- index ----------------- */
+
+/* The indexterm <a> are sprinkled everywhere, for backreferencing from
+   the index (ix.html), but their &nbsp; inserts distracting whitespace. */
+a[data-type="indexterm"] {
+  display: inline-block !important;
+  width: 0px !important;
+}
 
 div.index {
   text-indent: 0;
