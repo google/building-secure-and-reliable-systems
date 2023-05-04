@@ -661,9 +661,11 @@ div[data-type="footnotes"] {
 }
 
 /* Ensure various element types (a, em, code) match the text
-   size adjustments defined below in p[data-type="footnote"]. */
+   size adjustments defined below in p[data-type="footnote"].
+   Don't use central alignment, to match the published format. */
 div[data-type="footnotes"] * {
     font-size: 90% !important;
+    text-align: left !important;
 }
 
 p[data-type="footnote"] {
