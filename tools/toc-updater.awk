@@ -60,8 +60,10 @@ BEGIN {
 	    print "  <ul>";
 	    level = level + 1;
 	}
+	anchor = "";  # For level 0 entries, link without anchors so docs open at the top.
+	if (level_new > 0) { anchor = "#" ordered[i]["id"]; }
 	print "  <li data-type=\"" ordered[i]["type"] "\">";
-	print "    <a href=\"" ordered[i]["filename"] "#" ordered[i]["id"] "\">" ordered[i]["toc"] "</a>";
+	print "    <a href=\"" ordered[i]["filename"] anchor "\">" ordered[i]["toc"] "</a>";
 	print "  </li>";
     }
     print "</ul>";
