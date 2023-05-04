@@ -117,7 +117,7 @@ END {
     print "<html lang=\"en\">"
     print "<head>"
     print "  <meta charset=\"utf-8\">"
-    print "  <title>Building Secure and Reliable Systems</title>"
+    print "  <title>Index: Building Secure and Reliable Systems</title>"
     print "  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme/html/html.css\">"
     print "</head>"
     print "<body data-type=\"book\">"
