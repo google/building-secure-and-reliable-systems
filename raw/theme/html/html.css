@@ -191,10 +191,19 @@ section[data-type="index"] h1 {
   margin: 40px 0 15px 0;
 }
 
+/* ----- subsections within whole documents (part, chapter, etc) ----- */
+/*
+   Each of sect1 - sect4 initialy had margin-top of 40px, and we reduced
+   that to 30px and added vertical space 10px, so that, when deep-linking
+   into the subsection, the browser's viewport has some vertical space
+   before the heading's text at the very top.
+*/
+
 section[data-type="sect1"] h1 { 
   font-size: 1.3em;
   color: #8e0012;
-  margin: 40px 0 8px 0;
+  margin: 30px 0 8px 0;
+  padding-top: 10px;
 }
 
 section[data-type="sect2"] h2 {
@@ -205,14 +214,16 @@ section[data-type="sect2"] h2 {
 section[data-type="sect3"] h3 {
   font-size: 1em;
   color: #555;
-  margin: 20px 0px 8px 0px !important;
+  margin: 10px 0px 8px 0px !important;
+  padding-top: 10px;
 }
 
 section[data-type="sect4"] h4 {
   font-size: 1em;
   font-weight: normal;
   font-style: italic;
-  margin: 15px 0px 6px 0px !important;
+  margin: 5px 0px 6px 0px !important;
+  padding-top: 10px;
 }
 
 section[data-type="chapter"] > div > h1,
