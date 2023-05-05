@@ -193,10 +193,10 @@ section[data-type="index"] h1 {
 
 /* ----- subsections within whole documents (part, chapter, etc) ----- */
 /*
-   Each of sect1-sect4 initialy had margin-top of 40px, and we reduced
-   that to 30px and added vertical space 10px so that, when deep-linking
-   into the sebsection, the browser's viewport has some vertical space
-   before the heading text at the very top.
+   Each of sect1 - sect4 initialy had margin-top of 40px, and we reduced
+   that to 30px and added vertical space 10px, so that, when deep-linking
+   into the subsection, the browser's viewport has some vertical space
+   before the heading's text at the very top.
 */
 
 section[data-type="sect1"] h1 { 
