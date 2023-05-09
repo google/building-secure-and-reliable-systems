@@ -894,6 +894,13 @@ nav[data-type="toc"] > ul > li {
   list-style-type: none !important;
 }
 
+/* Increase vertical density of chapter sections and subsections. */
+nav[data-type="toc"] > ul > ul ul,
+nav[data-type="toc"] > ul > ul li {
+  margin-top: 0.1em !important;
+  margin-bottom: 0.1em !important;
+}
+
 /* ----------------- admonitions ----------------- */
  
 div.tip, 
