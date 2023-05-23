@@ -1,7 +1,8 @@
 # How to Contribute
 
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+We are not currently accepting patches and contributions to this project. If you
+find something that requires immediate attention, we ask that you communicate it
+via an issue rather than a pull request.
 
 ## Contributor License Agreement
 
