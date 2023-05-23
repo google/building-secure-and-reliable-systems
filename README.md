@@ -20,4 +20,5 @@ To read the book, see the [Table of Contents](https://google.github.io/building-
 <img src="https://google.github.io/building-secure-and-reliable-systems/raw/images/cover.png"
      alt="Building Secure and Reliable Systems" />
 </a>
+</div>
 </center>
