@@ -754,7 +754,10 @@ div.refsect1 {margin-top: 3em;}
 
 /* ----------------- lists ----------------- */
 
-dl { margin-bottom: 1.5em !important; }
+dl {
+    margin-top: 15px !important;
+    margin-bottom: 1.5em !important;
+}
 
 dt {
   padding-top: 10px !important;
