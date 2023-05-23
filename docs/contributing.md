@@ -2,7 +2,7 @@
 
 We are not currently accepting patches and contributions to this project. If you
 find something that requires immediate attention, we ask that you communicate it
-via an issue rather than pull requests, please.
+via an issue rather than pull requests.
 
 ## Contributor License Agreement
 
